@@ -1,0 +1,6 @@
+=Workforce management=
+
+==Features:==
+
+# keeps track of daily activity for Employee
+# calculates productivity for Employee
