@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:flex="http://www.springframework.org/schema/flex"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/flex 
+           http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+
+	<flex:message-broker/>
+
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+	     <property name="jndiName" value="java:comp/env/jdbc/MySQLDB"/>
+	</bean>
+
+	<bean id="userDAO" class="com.suntek.dao.UserDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean> 	
+
+	<bean id="worksheetDAO" class="com.suntek.dao.WorksheetDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<bean id="employeeDAO" class="com.suntek.dao.EmployeeDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean> 	
+	 	
+	<bean id="dataService" class="com.suntek.service.DataService">
+		<flex:remoting-destination />
+		<property name="userDAO" ref="userDAO"/>
+		<property name="worksheetDAO" ref="worksheetDAO"/>
+		<property name="employeeDAO" ref="employeeDAO"/>
+	</bean>	
+</beans> 
