@@ -2,5 +2,5 @@
 
 ==Features:==
 
-# keeps track of daily activity for Employee
-# calculates productivity for Employee
+  # keeps track of daily activity for Employee
+  # calculates productivity for Employee
