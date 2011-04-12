@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   currentState="portalState" 
+			   xmlns:components="components.*" xmlns:services="services.*"  
+			   width.portalState="100%" height.portalState="100%" applicationComplete="init()">
+	
+	
+	<!-- Properties of the parent ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<s:layout>
+		<s:VerticalLayout 
+		    horizontalAlign.loginState="center"
+		    horizontalAlign.portalState="left"
+			paddingLeft="25" 
+			paddingTop="25" 
+			paddingRight="25" paddingBottom.portalState="25"/>
+	</s:layout>
+	
+	<!--
+	The states property defines the application state of the component.
+	In this case the component in question is the Application container.
+	The states block below defines two application states: portalState and loginState.
+	The first State defined is the default state.
+	-->
+	<s:states>    
+		<s:State name="portalState"/>
+		<s:State name="loginState"/>
+	</s:states>
+
+	<s:transitions>
+		<s:Transition fromState="loginState" toState="portalState">
+			<s:Sequence>
+				<s:Fade target="{loginPanel}"/>
+				<s:RemoveAction target="{loginPanel}"/>
+				<s:AddAction targets="{[portalTB,portalVS,logoutB]}"/>
+				<s:Fade targets="{[portalTB,portalVS,logoutB]}"/>
+			</s:Sequence>
+		</s:Transition>	
+	</s:transitions>
+	
+	<!-- Metadata ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	
+	
+	<!-- Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<fx:Style source="bhr.css"/>
+	
+	
+	<!-- Script ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<fx:Script>
+		<![CDATA[
+			import events.LoginEvent;
+			
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.utils.URLUtil;
+			
+			import valueObjects.User;
+			
+			[Bindable]
+			private var serverName:String;
+			[Bindable]
+			private var serverPort:String;
+			
+			private function init():void
+			{
+				serverName = URLUtil.getServerName(this.loaderInfo.url);
+				if (serverName == ""){
+					serverName = "localhost";
+				}
+				serverPort = URLUtil.getPort(this.loaderInfo.url).toString();
+				if (serverPort == "0"){
+					serverPort = "8090";
+				}
+			}
+			
+			protected function loginpanel1_loginEventHandler(event:LoginEvent):void
+			{
+				dataService.login(event.user);
+			}
+
+
+			protected function dataService_login_resultHandler(event:ResultEvent):void
+			{
+				var status:Boolean = event.result;
+				if (status){
+					currentState="portalState";
+				}else{
+					Alert.show("Invalid username or password!", "Error Message");
+				}
+			}
+
+
+			protected function dataService_faultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.fault.faultString, "Error Message");
+			}
+					
+
+
+			protected function logoutB_clickHandler(event:MouseEvent):void
+			{
+				currentState = "loginState";
+				loginPanel.usernameTF.text = "";
+				loginPanel.passwordTF.text = "";
+			}
+
+		]]>
+	</fx:Script>
+	
+	
+	<!-- Declarations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<fx:Declarations>
+		<s:RemoteObject id="dataService" 
+						destination="dataService" 
+						fault="dataService_faultHandler(event)"
+						endpoint="http://{serverName}:{serverPort}/bhr2/messagebroker/amf">
+			<mx:method name="login" result="dataService_login_resultHandler(event)"/>
+		</s:RemoteObject>		
+	</fx:Declarations>
+	
+	
+	<!-- UI components ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<mx:Image source="images/bhr_header.jpg" horizontalAlign="center"/>
+	
+	<s:TabBar id="portalTB" includeIn="portalState" dataProvider="{portalVS}"/>
+	
+	<mx:ViewStack includeIn="portalState" 
+				  id="portalVS"
+				  resizeToContent="true" width="100%" height="100%">
+		<s:NavigatorContent label="Employee">
+			<components:EmployeePanel width="100%" height="100%" dataService="{dataService}"/>			
+		</s:NavigatorContent>
+		<s:NavigatorContent label="Daily Clinic Report">
+			<components:WorksheetPanel width="100%" height="100%" dataService="{dataService}"/>			
+		</s:NavigatorContent>
+	</mx:ViewStack>
+	
+	<s:Button id="logoutB" label="Logout" 
+			  excludeFrom="loginState"
+			  click="logoutB_clickHandler(event)"/>
+	
+	<components:LoginPanel id="loginPanel" includeIn="loginState" loginEvent="loginpanel1_loginEventHandler(event)" 
+					   width="100%" height="100%"/>				
+	
+</s:Application>

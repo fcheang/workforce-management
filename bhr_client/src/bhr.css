@@ -1,0 +1,17 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+s|Application {
+	background-color: #CCCC99;
+}
+
+s|Panel {    
+	roundedBottomCorners: true;	
+}
+
+.emphasized {
+	color: #CCCC99;
+}
+
+

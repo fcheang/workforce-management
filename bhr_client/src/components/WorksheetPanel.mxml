@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="panel1_creationCompleteHandler(event)">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.rpc.remoting.mxml.RemoteObject;
+			import mx.controls.Alert;
+			
+			public var dataService:RemoteObject;
+			
+			[Bindable]
+			private var EMP_ID:String = "Id";
+			[Bindable]
+			private var EMP_NAME:String = "Name";
+			[Bindable]
+			private var HRS_WORKED:String = "Hrs Worked";
+			
+			[Bindable]
+			private var COUNTY_SEEN:String = "COUNTY Seen";
+			[Bindable]
+			private var COUNTY_FACE_MIN:String = "Billable Mins (face)";
+			[Bindable]
+			private var COUNTY_OTHER_MIN:String = "Billable Mins (other)";
+			
+			[Bindable]
+			private var CCC_SEEN:String = "CCC Seen";
+			[Bindable]
+			private var CCC_FACE_MIN:String = "Billable Mins (face)";
+			[Bindable]
+			private var CCC_OTHER_MIN:String = "Billable Mins (other)";
+			
+			[Bindable]
+			private var HMO_SEEN:String = "HMO Seen";
+			[Bindable]
+			private var HMO_FACE_MIN:String = "Billable Mins (face)";
+			
+			[Bindable]
+			private var OTHER_SEEN:String = "Other Seen";
+			[Bindable]
+			private var OTHER_FACE_MIN:String = "Billable Mins (face)";
+			
+			[Bindable]
+			private var TOTAL_SCH:String = "Total Scheduled";
+			[Bindable]
+			private var TOTAL_NOSHOW:String = "Total No-Shows";
+			[Bindable]
+			private var TOTAL_CANCEL:String = "Total Cancelation";
+			[Bindable]
+			private var NUM_NEW:String = "How many News";
+			[Bindable]
+			private var NUM_DROPIN:String = "How many Drop-Ins";
+			
+			// calculated column
+			[Bindable]
+			private var TOTAL_FACE_HRS:String = "Total Hours(face)";
+			[Bindable]
+			private var TOTAL_OTHER_HRS:String = "Total Hours (other)";
+			[Bindable]
+			private var TOTAL_SEEN:String = "Total Seen";
+			[Bindable]
+			private var PRODUCTIVITY:String = "Productivity";
+
+			protected function panel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				Alert.show("Retrieve Worksheet");
+			}
+
+		]]>
+	</fx:Script>
+	
+	<mx:HBox width="100%" height="100%" 
+			 horizontalScrollPolicy="auto" 
+			 verticalScrollPolicy="auto" minHeight="0" minWidth="0">
+		<mx:VBox 
+			width="70%" 
+			height="100%" 
+			paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10">
+			<mx:HBox paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" width="100%">
+				<s:Label text="Location:" paddingTop="6"/>
+				<s:ComboBox id="locationCB"/>
+				<s:Label text="Date:" paddingLeft="30" paddingTop="6"/>
+				<mx:DateField id="dateDF"/>
+			</mx:HBox>
+			<mx:DataGrid  
+				lockedColumnCount="2" 
+				horizontalScrollPolicy="auto" 
+				verticalScrollPolicy="auto" 
+				resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" id="worksheetDG">
+				<mx:columns>
+					<mx:DataGridColumn headerText="{EMP_ID}" dataField="col1" width="80"/>
+					<mx:DataGridColumn headerText="{EMP_NAME}" dataField="col1" width="150"/>
+					<mx:DataGridColumn headerText="{HRS_WORKED}" dataField="col2" width="120"/>
+					<mx:DataGridColumn headerText="{COUNTY_SEEN}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{COUNTY_FACE_MIN}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{COUNTY_OTHER_MIN}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{CCC_SEEN}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{CCC_FACE_MIN}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{CCC_OTHER_MIN}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{HMO_SEEN}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{HMO_FACE_MIN}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{OTHER_SEEN}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{OTHER_FACE_MIN}" dataField="col3" width="120"/>						
+					<mx:DataGridColumn headerText="{TOTAL_SCH}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{TOTAL_NOSHOW}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{TOTAL_CANCEL}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{NUM_NEW}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{NUM_DROPIN}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{TOTAL_FACE_HRS}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{TOTAL_OTHER_HRS}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{TOTAL_SEEN}" dataField="col3" width="120"/>
+					<mx:DataGridColumn headerText="{PRODUCTIVITY}" dataField="col3" width="120"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:HBox>
+				<s:Button label="New"/>
+				<s:Button label="Remove"/>
+			</mx:HBox>				
+		</mx:VBox>
+		<mx:Form 
+			horizontalScrollPolicy="auto" 
+			verticalScrollPolicy="auto" 
+			width="30%" 
+			height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10">
+			
+			<mx:FormItem label="{EMP_ID}:">
+				<s:TextInput editable="false"/>				
+			</mx:FormItem>
+			<mx:FormItem label="{EMP_NAME}:">
+				<s:ComboBox id="empCB" enabled="false"/>
+			</mx:FormItem>
+			<mx:FormItem label="{HRS_WORKED}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{COUNTY_SEEN}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{COUNTY_FACE_MIN}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{COUNTY_OTHER_MIN}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{CCC_SEEN}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{CCC_FACE_MIN}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{CCC_OTHER_MIN}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{HMO_SEEN}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{HMO_FACE_MIN}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{OTHER_SEEN}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{OTHER_FACE_MIN}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{TOTAL_SCH}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{TOTAL_NOSHOW}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{TOTAL_CANCEL}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{NUM_NEW}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="{NUM_DROPIN}:">
+				<s:TextInput/>
+			</mx:FormItem>
+			
+			<s:Button label="Save"/>
+		</mx:Form>												
+	</mx:HBox>
+	
+</s:Panel>
