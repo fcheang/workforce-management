@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+
+	<fx:Script>
+		<![CDATA[
+			import events.LoginEvent;
+			
+			import valueObjects.User;
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				var loginData:User = new User();
+				loginData.username = usernameTF.text;
+				loginData.password = passwordTF.text;
+				var loginEvent:Event = new LoginEvent("loginEvent", loginData);
+				dispatchEvent(loginEvent);
+			}
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[Event(name="loginEvent", type="events.LoginEvent")]
+	</fx:Metadata>
+	
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center">			
+		</s:VerticalLayout>
+	</s:layout>
+	
+	<s:Panel width="313" height="196" title="Login" dropShadowVisible="true" borderVisible="true" >
+		<s:Label x="43" y="26" text="Username:"/>
+		<s:TextInput x="115" y="19" id="usernameTF"/>
+		<s:Label x="43" y="60" text="Password:"/>
+		<s:TextInput x="115" y="53" id="passwordTF" displayAsPassword="true"/>
+		<s:Button x="115" y="90" label="Login" click="button1_clickHandler(event)"/>
+	</s:Panel>
+</s:Group>

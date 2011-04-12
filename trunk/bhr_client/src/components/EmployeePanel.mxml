@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="panel1_creationCompleteHandler(event)">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.remoting.mxml.RemoteObject;
+			
+			import valueObjects.Employee;
+			
+			[Bindable]
+			private var EMP_ID:String = "Id";
+			[Bindable]
+			private var TITLE:String = "Title";
+			[Bindable]
+			private var LAST_NAME:String = "Last Name";
+			[Bindable]
+			private var MIDDLE_NAME:String = "Middle Name";
+			[Bindable]
+			private var FIRST_NAME:String = "First Name";
+			
+			public var dataService:RemoteObject;
+			
+			[Bindable]
+			private var employees:ArrayCollection;
+			
+			protected function newB_clickHandler(event:MouseEvent):void
+			{
+				employeeDG.selectedIndex = -1;
+				idTI.text = "-1";
+				titleTI.setFocus();	
+			}
+
+
+			protected function rmB_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
+
+			protected function saveB_clickHandler(event:MouseEvent):void
+			{
+				// validate form
+				if (lnameTI.text == ""){
+					Alert.show("Please enter a Last Name!");
+					lnameTI.setFocus();
+					return;
+				}
+				if (fnameTI.text == ""){
+					Alert.show("Please enter a First Name!");
+					fnameTI.setFocus();
+					return;
+				}	
+				
+				var emp:Employee;
+				if (idTI.text == "-1"){ 
+					emp = new Employee();
+					emp.id = parseInt(idTI.text);
+					emp.title = titleTI.text;
+					emp.lastName = lnameTI.text;
+					emp.middleName = mnameTI.text;
+					emp.firstName = fnameTI.text;
+					dataService.createEmployee(emp);
+				}else{
+					emp = employeeDG.selectedItem as Employee;
+					dataService.updateEmployee(emp);
+				}
+			}
+			
+			protected function panel1_creationCompleteHandler(event:FlexEvent):void
+			{				
+				dataService.getAllEmployees.addEventListener(ResultEvent.RESULT, dataService_getAllEmployee_resultHandler);
+				dataService.createEmployee.addEventListener(ResultEvent.RESULT, dataService_createEmployee_resultHandler);
+				dataService.updateEmployee.addEventListener(ResultEvent.RESULT, dataService_updateEmployee_resultHandler);
+				employees = dataService.getAllEmployees();			
+			}
+			
+			protected function dataService_getAllEmployee_resultHandler(event:ResultEvent):void
+			{
+				employees = event.result as ArrayCollection;
+			}
+			
+			protected function dataService_createEmployee_resultHandler(event:ResultEvent):void
+			{
+				var emp:Employee = event.result as Employee;
+				if (emp != null){
+					Alert.show("Employee "+emp.id+" was created successfully!");
+					employees.addItem(emp);
+				}else{
+					Alert.show("Error: Problem create employee!");
+				}
+			}
+
+			protected function dataService_updateEmployee_resultHandler(event:ResultEvent):void
+			{
+				var updated:Boolean = event.result as Boolean;
+				if (updated){
+					Alert.show("Employee was updated!");
+				}else{
+					Alert.show("Error: Problem update employee!");	
+				}
+			}			
+			
+		]]>
+	</fx:Script>
+	
+	<mx:HBox width="100%" height="100%" minWidth="0" minHeight="0">
+		<mx:VBox width="70%" height="100%" paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10">
+			<mx:DataGrid 
+				id="employeeDG"
+				horizontalScrollPolicy="auto" 
+				verticalScrollPolicy="auto" 
+				resizableColumns="true"
+ 				width="100%" height="100%"
+			    dataProvider="{employees}">
+				<mx:columns>
+					<mx:DataGridColumn headerText="{EMP_ID}" dataField="id"/>
+					<mx:DataGridColumn headerText="{TITLE}" dataField="title"/>
+					<mx:DataGridColumn headerText="{LAST_NAME}" dataField="lastName"/>
+					<mx:DataGridColumn headerText="{MIDDLE_NAME}" dataField="middleName"/>
+					<mx:DataGridColumn headerText="{FIRST_NAME}" dataField="firstName"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:HBox>
+				<s:Button id="newB" label="New" click="newB_clickHandler(event)"/>
+				<s:Button id="rmB" label="Remove" click="rmB_clickHandler(event)"/>
+			</mx:HBox>					
+		</mx:VBox>
+		<mx:Form id="employeeF" horizontalScrollPolicy="auto" width="30%" height="100%" paddingTop="10" paddingRight="10" paddingBottom="10" paddingLeft="10">
+			<mx:FormItem label="{EMP_ID}">
+				<s:TextInput id="idTI" editable="false"/>
+			</mx:FormItem>
+			<mx:FormItem label="{TITLE}:">
+				<s:TextInput id="titleTI"/>
+			</mx:FormItem>
+			<mx:FormItem label="{LAST_NAME}:" required="true">
+				<s:TextInput id="lnameTI"/>
+			</mx:FormItem>
+			<mx:FormItem label="{MIDDLE_NAME}:">
+				<s:TextInput id="mnameTI"/>
+			</mx:FormItem>
+			<mx:FormItem label="{FIRST_NAME}:" required="true">
+				<s:TextInput id="fnameTI"/>
+			</mx:FormItem>
+			<s:Button label="Save" id="saveB" click="saveB_clickHandler(event)"/>
+		</mx:Form>									
+	</mx:HBox>
+
+</s:Panel>
