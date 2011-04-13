@@ -1,0 +1,21 @@
+<project name="bhr2" basedir="./" default="all">
+
+	<!-- Copy client bits -->
+	<target name="copyclient">
+		<copy todir="./bhr_server/bhr2">
+			<fileset dir="./bhr_client/bin-release"/>
+		</copy>
+	</target>
+	
+    <!-- Create binary distribution -->
+    <target name="dist" description="Create binary distribution">
+	  <delete file="bhr2.war"/>
+      <jar jarfile="bhr2.war" basedir="./bhr_server/bhr2"/>
+    </target>
+
+    <!-- Build project and create distribution-->
+    <target name="all" depends="copyclient,dist"/>
+
+</project>
+
+
