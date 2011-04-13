@@ -2,7 +2,7 @@ package com.suntek.model;
 
 public class Employee {
 
-	private int id;
+	private int empId;
 	private String title;	
 	private String firstName;
 	private String lastName;
@@ -16,11 +16,11 @@ public class Employee {
 		this.middleName = middleName;
 	}
 	
-	public int getId() {
-		return id;
+	public int getEmpId() {
+		return empId;
 	}
-	public void setId(int empId) {
-		this.id = empId;
+	public void setEmpId(int empId) {
+		this.empId = empId;
 	}
 	public String getFirstName() {
 		return firstName;

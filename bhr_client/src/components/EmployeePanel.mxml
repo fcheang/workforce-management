@@ -40,13 +40,17 @@
 				idTI.text = "-1";
 				titleTI.setFocus();	
 			}
-
-
+			
+			
 			protected function rmB_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				var emp:Employee;
+				emp = employeeDG.selectedItem as Employee;
+				if (emp != null){
+					dataService.deleteEmployee(emp);
+				}
 			}
-
+			
 			protected function saveB_clickHandler(event:MouseEvent):void
 			{
 				// validate form
@@ -64,7 +68,7 @@
 				var emp:Employee;
 				if (idTI.text == "-1"){ 
 					emp = new Employee();
-					emp.id = parseInt(idTI.text);
+					emp.empId = parseInt(idTI.text);
 					emp.title = titleTI.text;
 					emp.lastName = lnameTI.text;
 					emp.middleName = mnameTI.text;
@@ -81,7 +85,8 @@
 				dataService.getAllEmployees.addEventListener(ResultEvent.RESULT, dataService_getAllEmployee_resultHandler);
 				dataService.createEmployee.addEventListener(ResultEvent.RESULT, dataService_createEmployee_resultHandler);
 				dataService.updateEmployee.addEventListener(ResultEvent.RESULT, dataService_updateEmployee_resultHandler);
-				employees = dataService.getAllEmployees();			
+				dataService.deleteEmployee.addEventListener(ResultEvent.RESULT, dataService_deleteEmployee_resultHandler);
+				dataService.getAllEmployees();			
 			}
 			
 			protected function dataService_getAllEmployee_resultHandler(event:ResultEvent):void
@@ -93,13 +98,13 @@
 			{
 				var emp:Employee = event.result as Employee;
 				if (emp != null){
-					Alert.show("Employee "+emp.id+" was created successfully!");
+					Alert.show("Employee "+emp.empId+" was created successfully!");
 					employees.addItem(emp);
 				}else{
 					Alert.show("Error: Problem create employee!");
 				}
 			}
-
+			
 			protected function dataService_updateEmployee_resultHandler(event:ResultEvent):void
 			{
 				var updated:Boolean = event.result as Boolean;
@@ -107,6 +112,16 @@
 					Alert.show("Employee was updated!");
 				}else{
 					Alert.show("Error: Problem update employee!");	
+				}
+			}			
+			
+			protected function dataService_deleteEmployee_resultHandler(event:ResultEvent):void
+			{
+				var updated:Boolean = event.result as Boolean;
+				if (updated){
+					Alert.show("Employee was deleted!");
+				}else{
+					Alert.show("Error: Problem create employee!");	
 				}
 			}			
 			
@@ -120,10 +135,10 @@
 				horizontalScrollPolicy="auto" 
 				verticalScrollPolicy="auto" 
 				resizableColumns="true"
- 				width="100%" height="100%"
-			    dataProvider="{employees}">
+				width="100%" height="100%"
+				dataProvider="{employees}">
 				<mx:columns>
-					<mx:DataGridColumn headerText="{EMP_ID}" dataField="id"/>
+					<mx:DataGridColumn headerText="{EMP_ID}" dataField="empId"/>
 					<mx:DataGridColumn headerText="{TITLE}" dataField="title"/>
 					<mx:DataGridColumn headerText="{LAST_NAME}" dataField="lastName"/>
 					<mx:DataGridColumn headerText="{MIDDLE_NAME}" dataField="middleName"/>
@@ -154,5 +169,5 @@
 			<s:Button label="Save" id="saveB" click="saveB_clickHandler(event)"/>
 		</mx:Form>									
 	</mx:HBox>
-
+	
 </s:Panel>

@@ -1,6 +1,5 @@
 package com.suntek.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -49,17 +48,17 @@ public class DataService {
 	
 	public List<Employee> getAllEmployees(){
 		logger.debug("getAllEmployees()");
-		return new ArrayList<Employee>();
+		return empDAO.getAllEmployees();
 	}
 	
 	public Employee createEmployee(Employee emp){
 		logger.debug("createEmployee("+emp+")");
-		return emp;
+		return empDAO.createEmployee(emp);
 	}
 	
 	public boolean updateEmployee(Employee emp){
 		logger.debug("updateEmployee("+emp+")");
-		return true;
+		return empDAO.updateEmployee(emp);
 	}
 
 	// Worksheet

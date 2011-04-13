@@ -4,7 +4,7 @@ package valueObjects
 	
 	public class Employee
 	{
-		public var id:int;
+		public var empId:int;
 		public var title:String;
 		public var lastName:String;
 		public var middleName:String;

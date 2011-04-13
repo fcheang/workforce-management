@@ -2,7 +2,7 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
-			   currentState="portalState" 
+			   currentState="loginState" 
 			   xmlns:components="components.*" xmlns:services="services.*"  
 			   width.portalState="100%" height.portalState="100%" applicationComplete="init()">
 	
@@ -11,8 +11,8 @@
 	
 	<s:layout>
 		<s:VerticalLayout 
-		    horizontalAlign.loginState="center"
-		    horizontalAlign.portalState="left"
+			horizontalAlign.loginState="center"
+			horizontalAlign.portalState="left"
 			paddingLeft="25" 
 			paddingTop="25" 
 			paddingRight="25" paddingBottom.portalState="25"/>
@@ -28,7 +28,7 @@
 		<s:State name="portalState"/>
 		<s:State name="loginState"/>
 	</s:states>
-
+	
 	<s:transitions>
 		<s:Transition fromState="loginState" toState="portalState">
 			<s:Sequence>
@@ -83,8 +83,8 @@
 			{
 				dataService.login(event.user);
 			}
-
-
+			
+			
 			protected function dataService_login_resultHandler(event:ResultEvent):void
 			{
 				var status:Boolean = event.result;
@@ -94,22 +94,22 @@
 					Alert.show("Invalid username or password!", "Error Message");
 				}
 			}
-
-
+			
+			
 			protected function dataService_faultHandler(event:FaultEvent):void
 			{
 				Alert.show(event.fault.faultString, "Error Message");
 			}
-					
-
-
+			
+			
+			
 			protected function logoutB_clickHandler(event:MouseEvent):void
 			{
 				currentState = "loginState";
 				loginPanel.usernameTF.text = "";
 				loginPanel.passwordTF.text = "";
 			}
-
+			
 		]]>
 	</fx:Script>
 	
@@ -147,6 +147,6 @@
 			  click="logoutB_clickHandler(event)"/>
 	
 	<components:LoginPanel id="loginPanel" includeIn="loginState" loginEvent="loginpanel1_loginEventHandler(event)" 
-					   width="100%" height="100%"/>				
+						   width="100%" height="100%"/>				
 	
 </s:Application>
