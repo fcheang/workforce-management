@@ -100,6 +100,7 @@
 				if (emp != null){
 					Alert.show("Employee "+emp.empId+" was created successfully!");
 					employees.addItem(emp);
+					employeeDG.selectedIndex = employees.length - 1;
 				}else{
 					Alert.show("Error: Problem create employee!");
 				}
@@ -117,9 +118,10 @@
 			
 			protected function dataService_deleteEmployee_resultHandler(event:ResultEvent):void
 			{
-				var updated:Boolean = event.result as Boolean;
-				if (updated){
+				var deleted:Boolean = event.result as Boolean;
+				if (deleted){
 					Alert.show("Employee was deleted!");
+					employees.removeItemAt(employeeDG.selectedIndex);
 				}else{
 					Alert.show("Error: Problem create employee!");	
 				}
@@ -152,19 +154,19 @@
 		</mx:VBox>
 		<mx:Form id="employeeF" horizontalScrollPolicy="auto" width="30%" height="100%" paddingTop="10" paddingRight="10" paddingBottom="10" paddingLeft="10">
 			<mx:FormItem label="{EMP_ID}">
-				<s:TextInput id="idTI" editable="false"/>
+				<s:TextInput id="idTI" editable="false" text="@{employeeDG.selectedItem.empId}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{TITLE}:">
-				<s:TextInput id="titleTI"/>
+				<s:TextInput id="titleTI" text="@{employeeDG.selectedItem.title}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{LAST_NAME}:" required="true">
-				<s:TextInput id="lnameTI"/>
+				<s:TextInput id="lnameTI" text="@{employeeDG.selectedItem.lastName}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{MIDDLE_NAME}:">
-				<s:TextInput id="mnameTI"/>
+				<s:TextInput id="mnameTI" text="@{employeeDG.selectedItem.middleName}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{FIRST_NAME}:" required="true">
-				<s:TextInput id="fnameTI"/>
+				<s:TextInput id="fnameTI" text="@{employeeDG.selectedItem.firstName}"/>
 			</mx:FormItem>
 			<s:Button label="Save" id="saveB" click="saveB_clickHandler(event)"/>
 		</mx:Form>									

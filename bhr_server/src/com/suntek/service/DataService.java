@@ -61,6 +61,11 @@ public class DataService {
 		return empDAO.updateEmployee(emp);
 	}
 
+	public boolean deleteEmployee(Employee emp){
+		logger.debug("deleteEmployee("+emp+")");
+		return empDAO.deleteEmployee(emp);
+	}
+	
 	// Worksheet
 	
 	public void createWorksheet(Worksheet ws){

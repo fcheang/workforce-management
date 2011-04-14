@@ -19,7 +19,7 @@ public class EmployeeDAOImpl extends SimpleJdbcDaoSupport {
 	
 	public List<Employee> getAllEmployees(){
 		
-		String sql = "SELECT empId, firstName, middleName, lastName FROM employee where isActive = 1";		
+		String sql = "SELECT empId, title, firstName, middleName, lastName, isActive FROM employee where isActive = 1";		
 		return getSimpleJdbcTemplate().query(sql, new EmployeeRowMapper());
 	}
 	
@@ -77,9 +77,11 @@ public class EmployeeDAOImpl extends SimpleJdbcDaoSupport {
 		public Employee mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Employee e = new Employee();
 			e.setEmpId(rs.getInt(1));	
-			e.setFirstName(rs.getString(2));
-			e.setMiddleName(rs.getString(3));
-			e.setLastName(rs.getString(4));
+			e.setTitle(rs.getString(2));
+			e.setFirstName(rs.getString(3));
+			e.setMiddleName(rs.getString(4));
+			e.setLastName(rs.getString(5));
+			e.setIsActive(rs.getBoolean(6));
 			return e;
 		}
 	}	
