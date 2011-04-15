@@ -63,20 +63,29 @@ public class DataService {
 
 	public boolean deleteEmployee(Employee emp){
 		logger.debug("deleteEmployee("+emp+")");
-		return empDAO.deleteEmployee(emp);
+		return empDAO.deleteEmployee(emp.getEmpId());
 	}
 	
 	// Worksheet
 	
-	public void createWorksheet(Worksheet ws){
-		
+	public Worksheet createWorksheet(Worksheet ws){
+		logger.debug("createWorksheet("+ws+")");
+		return wsDAO.createWorksheet(ws);
 	}
 	
-	public Worksheet getWorksheet(String clinic, Date date){
+	public List<Worksheet> getWorksheetForClinicAndDate(String clinic, Date date){
 		logger.debug("getWorksheet("+clinic+", "+date+")");
-		return null;
-	}
-		
+		return wsDAO.getWorksheet(clinic, date);
+	}		
 	
+	public boolean updateWorksheet(Worksheet ws){
+		logger.debug("updateWorksheet("+ws+")");
+		return wsDAO.updateWorksheet(ws);
+	}
+	
+	public boolean deleteWorksheet(Worksheet ws){
+		logger.debug("deleteWorksheet("+ws+")");
+		return wsDAO.deleteWorksheet(ws.getEmpId(), ws.getClinic(), ws.getDate());
+	}
 
 }

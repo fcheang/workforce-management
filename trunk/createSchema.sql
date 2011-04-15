@@ -1,10 +1,3 @@
-use gold;
-
-drop table user;
-drop table version;
-drop table Employee;
-drop table Worksheet;
-
 CREATE TABLE  `user` (
   `userId` varchar(20) NOT NULL DEFAULT '',
   `password` varchar(100) DEFAULT NULL,
@@ -36,13 +29,14 @@ CREATE TABLE `Worksheet` (
   `county_seen` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `ccc_seen` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `hmo_seen` INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  `other_seen` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `county_face_min` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `county_other_min` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `ccc_face_min` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `ccc_other_min` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `hmo_face_min` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `other_face_min` INTEGER UNSIGNED NOT NULL DEFAULT 0,
-  `num_schedule` INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  `num_scheduled` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `num_noshow` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `num_cancel` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `num_new` INTEGER UNSIGNED NOT NULL DEFAULT 0,
