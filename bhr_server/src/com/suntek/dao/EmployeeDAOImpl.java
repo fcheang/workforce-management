@@ -17,8 +17,7 @@ public class EmployeeDAOImpl extends SimpleJdbcDaoSupport {
 	public EmployeeDAOImpl(){		
 	}
 	
-	public List<Employee> getAllEmployees(){
-		
+	public List<Employee> getAllEmployees(){		
 		String sql = "SELECT empId, title, firstName, middleName, lastName, isActive FROM employee where isActive = 1";		
 		return getSimpleJdbcTemplate().query(sql, new EmployeeRowMapper());
 	}
@@ -67,9 +66,9 @@ public class EmployeeDAOImpl extends SimpleJdbcDaoSupport {
 		return count > 0;
 	}
 	
-	public boolean deleteEmployee(Employee emp){
+	public boolean deleteEmployee(int empId){
 		String sql = "delete from employee where empId = ?";
-		int count = super.getSimpleJdbcTemplate().update(sql, emp.getEmpId());
+		int count = super.getSimpleJdbcTemplate().update(sql, empId);
 		return count > 0;
 	}
 	

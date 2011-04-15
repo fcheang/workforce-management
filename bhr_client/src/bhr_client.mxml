@@ -108,6 +108,8 @@
 				currentState = "loginState";
 				loginPanel.usernameTF.text = "";
 				loginPanel.passwordTF.text = "";
+				var ref:URLRequest = new URLRequest("javascript:location.reload(true)"); 
+				navigateToURL(ref, "_self"); 				
 			}
 			
 		]]>
