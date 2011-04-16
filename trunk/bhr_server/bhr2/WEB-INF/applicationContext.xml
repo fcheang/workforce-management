@@ -26,10 +26,15 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean> 	
 	 	
+	<bean id="commonDAO" class="com.suntek.dao.CommonDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean> 		 	
+	 	
 	<bean id="dataService" class="com.suntek.service.DataService">
 		<flex:remoting-destination />
 		<property name="userDAO" ref="userDAO"/>
 		<property name="worksheetDAO" ref="worksheetDAO"/>
 		<property name="employeeDAO" ref="employeeDAO"/>
+		<property name="commonDAO" ref="commonDAO"/>
 	</bean>	
 </beans> 

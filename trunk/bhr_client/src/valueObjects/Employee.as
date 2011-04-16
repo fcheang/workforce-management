@@ -10,9 +10,11 @@ package valueObjects
 		public var middleName:String;
 		public var firstName:String;
 		public var isActive:Boolean;
+		public var fullName:String;
 		
 		public function Employee()
 		{
 		}
+		
 	}
 }

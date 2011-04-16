@@ -8,7 +8,20 @@ public class Employee {
 	private String lastName;
 	private String middleName;
 	private boolean isActive;
+	private String fullName;
 	
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+	public String getFullName() {
+		if (fullName == null){
+			fullName = lastName +", "+firstName;
+		}
+		return fullName;
+	}
 	public String getMiddleName() {
 		return middleName;
 	}
@@ -50,4 +63,5 @@ public class Employee {
 	public String toString(){
 		return empId+": "+firstName+" "+lastName;		
 	}
+	
 }

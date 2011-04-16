@@ -7,10 +7,11 @@ import com.suntek.util.Constants;
 public class Worksheet {
 
 	private int empId;
+	private String empName;
 	private Date date;
 	private String clinic;
 	
-	private int hrsWorked;
+	private double hrsWorked;
 	private int countySeen;
 	private int cccSeen;
 	private int hmoSeen;
@@ -47,10 +48,10 @@ public class Worksheet {
 	public void setClinic(String clinic) {
 		this.clinic = clinic;
 	}
-	public int getHrsWorked() {
+	public double getHrsWorked() {
 		return hrsWorked;
 	}
-	public void setHrsWorked(int hrsWorked) {
+	public void setHrsWorked(double hrsWorked) {
 		this.hrsWorked = hrsWorked;
 	}
 	public int getCountySeen() {
@@ -143,8 +144,15 @@ public class Worksheet {
 	public void setNumDropin(int numDropin) {
 		this.numDropin = numDropin;
 	}
-
+	public String getEmpName() {
+		return empName;
+	}
+	public void setEmpName(String empName) {
+		this.empName = empName;
+	}
+	
 	public String toString(){
 		return empId+": "+clinic+" "+Constants.df.format(date);
-	}
+	}	
+	
 }

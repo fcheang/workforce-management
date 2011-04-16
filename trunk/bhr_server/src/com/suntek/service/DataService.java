@@ -14,6 +14,7 @@ public class DataService {
 	private UserDAOImpl userDAO = null;
 	private WorksheetDAOImpl wsDAO = null;
 	private EmployeeDAOImpl empDAO = null;
+	private CommonDAOImpl commDAO = null;
 	
 	public DataService(){		
 	}
@@ -28,6 +29,10 @@ public class DataService {
 
 	public void setEmployeeDAO(EmployeeDAOImpl empDAO){
 		this.empDAO = empDAO;
+	}
+	
+	public void setCommonDAO(CommonDAOImpl commDAO){
+		this.commDAO = commDAO;
 	}
 	
 	
@@ -88,4 +93,8 @@ public class DataService {
 		return wsDAO.deleteWorksheet(ws.getEmpId(), ws.getClinic(), ws.getDate());
 	}
 
+	// Clinic	
+	public List<String> getLocation(){
+		return commDAO.getLocation();
+	}
 }
