@@ -40,14 +40,14 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 	
 	public List<Worksheet> getWorksheet(String clinic, Date date){
 		String sql = 
-			"select empId, date, clinic, hrs_worked, " +
-			"county_seen, ccc_seen, hmo_seen, other_seen, " +
-			"county_face_min, county_other_min, " +
-			"ccc_face_min, ccc_other_min, " +
-			"hmo_face_min, other_face_min, " +
-			"num_scheduled, num_noshow, num_cancel, num_new, num_dropin " +
-			"from worksheet " +
-			"where clinic = ? and date = ?";		
+			"select w.empId, concat(e.firstName, ' ', e.lastName), w.date, w.clinic, w.hrs_worked, " +
+			"w.county_seen, w.ccc_seen, w.hmo_seen, w.other_seen, " +
+			"w.county_face_min, w.county_other_min, " +
+			"w.ccc_face_min, w.ccc_other_min, " +
+			"w.hmo_face_min, w.other_face_min, " +
+			"w.num_scheduled, w.num_noshow, w.num_cancel, w.num_new, w.num_dropin " +
+			"from worksheet w, employee e " +
+			"where w.clinic = ? and w.date = ? and w.empId = e.empId";		
 		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), clinic, date);
 	}
 	
@@ -78,29 +78,30 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 		public Worksheet mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Worksheet e = new Worksheet();
 			e.setEmpId(rs.getInt(1));	
-			e.setDate(rs.getDate(2));
-			e.setClinic(rs.getString(3));
-			e.setHrsWorked(rs.getInt(4));
+			e.setEmpName(rs.getString(2));
+			e.setDate(rs.getDate(3));
+			e.setClinic(rs.getString(4));
+			e.setHrsWorked(rs.getDouble(5));
 			
-			e.setCountySeen(rs.getInt(5));
-			e.setCccSeen(rs.getInt(6));
-			e.setHmoSeen(rs.getInt(7));
-			e.setOtherSeen(rs.getInt(8));
+			e.setCountySeen(rs.getInt(6));
+			e.setCccSeen(rs.getInt(7));
+			e.setHmoSeen(rs.getInt(8));
+			e.setOtherSeen(rs.getInt(9));
 			
-			e.setCountyFaceMin(rs.getInt(9));
-			e.setCountyOtherMin(rs.getInt(10));
+			e.setCountyFaceMin(rs.getInt(10));
+			e.setCountyOtherMin(rs.getInt(11));
 			
-			e.setCccFaceMin(rs.getInt(11));
-			e.setCccOtherMin(rs.getInt(12));
+			e.setCccFaceMin(rs.getInt(12));
+			e.setCccOtherMin(rs.getInt(13));
 			
-			e.setHmoFaceMin(rs.getInt(13));
-			e.setOtherFaceMin(rs.getInt(14));
+			e.setHmoFaceMin(rs.getInt(14));
+			e.setOtherFaceMin(rs.getInt(15));
 			
-			e.setNumScheduled(rs.getInt(15));
-			e.setNumNoShow(rs.getInt(16));
-			e.setNumCancel(rs.getInt(17));
-			e.setNumNew(rs.getInt(18));
-			e.setNumDropin(rs.getInt(19));			
+			e.setNumScheduled(rs.getInt(16));
+			e.setNumNoShow(rs.getInt(17));
+			e.setNumCancel(rs.getInt(18));
+			e.setNumNew(rs.getInt(19));
+			e.setNumDropin(rs.getInt(20));			
 			return e;
 		}
 	}	

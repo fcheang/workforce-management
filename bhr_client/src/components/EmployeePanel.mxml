@@ -86,6 +86,7 @@
 				dataService.createEmployee.addEventListener(ResultEvent.RESULT, dataService_createEmployee_resultHandler);
 				dataService.updateEmployee.addEventListener(ResultEvent.RESULT, dataService_updateEmployee_resultHandler);
 				dataService.deleteEmployee.addEventListener(ResultEvent.RESULT, dataService_deleteEmployee_resultHandler);
+				
 				dataService.getAllEmployees();			
 			}
 			
