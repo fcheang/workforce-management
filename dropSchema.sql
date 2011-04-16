@@ -1,0 +1,5 @@
+drop table user;
+drop table version;
+drop table Employee;
+drop table Worksheet;
+
