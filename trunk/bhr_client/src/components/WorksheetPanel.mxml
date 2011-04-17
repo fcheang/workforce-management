@@ -5,7 +5,7 @@
 		 creationComplete="panel1_creationCompleteHandler(event)">
 	
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:NumberFormatter id="nf" precision="2" rounding="up"/>		
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -13,12 +13,14 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.remoting.mxml.RemoteObject;
 			
 			import spark.events.IndexChangeEvent;
 			
-			import valueObjects.Employee;						
+			import valueObjects.Employee;
+			import valueObjects.Worksheet;						
 			
 			//label
 			[Bindable]
@@ -92,6 +94,12 @@
 
 			protected function dataService_createWorksheet_resultHandler(event:ResultEvent):void
 			{
+				if (event.result != null){
+					worksheets.addItem(event.result);
+					Alert.show("Worksheet entry created successfully!");
+				}else{
+					Alert.show("Problem create worksheet entry!");
+				}
 			}
 
 			protected function dataService_getWorksheetForClinicAndDate_resultHandler(event:ResultEvent):void
@@ -101,10 +109,23 @@
 
 			protected function dataService_updateWorksheet_resultHandler(event:ResultEvent):void
 			{
+				var updated:Boolean = event.result;
+				if (updated){
+					Alert.show("Worksheet entry updated!");
+				}else{
+					Alert.show("Problem update worksheet entry!");
+				}
 			}
 
 			protected function dataService_deleteWorksheet_resultHandler(event:ResultEvent):void
 			{
+				var removed:Boolean = event.result;
+				if (removed){
+					worksheets.removeItemAt(worksheetDG.selectedIndex);
+					Alert.show("Worksheet entry removed!");
+				}else{
+					Alert.show("Problem remove worksheet entry!");
+				}				
 			}			
 			
 			protected function dataService_getLocation_resultHandler(event:ResultEvent):void
@@ -126,7 +147,34 @@
 			
 			protected function saveB_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				var ws:Worksheet;
+				if (worksheetDG.selectedIndex == -1){
+					ws = new Worksheet();
+					ws.empId = (empCB.selectedItem as Employee).empId;
+					ws.empName = (empCB.selectedItem as Employee).fullName;
+					ws.date = dateDF.selectedDate;
+					ws.clinic = locationCB.selectedItem;
+					ws.hrsWorked = new Number(hrsWorkedTI.text);
+					ws.countySeen = new int(countySeenTI.text);
+					ws.cccSeen = new int(cccSeenTI.text);
+					ws.hmoSeen = new int(hmoSeenTI.text);
+					ws.otherSeen = new int(otherSeenTI.text);
+					ws.countyFaceMin = new int(countyfmTI.text);
+					ws.countyOtherMin = new int (countyomTI.text);
+					ws.cccFaceMin = new int(cccfmTI.text);
+					ws.cccOtherMin = new int(cccomTI.text);
+					ws.hmoFaceMin = new int(hmofmTI.text);
+					ws.otherFaceMin = new int (otherfmTI.text);
+					ws.numScheduled = new int(numScheduledTI.text);
+					ws.numNoShow = new int(numNoshowTI.text);
+					ws.numCancel = new int(numCancelTI.text);
+					ws.numNew = new int(numNewTI.text);
+					ws.numDropin = new int(numDropinTI.text);
+					dataService.createWorksheet(ws);					
+				}else{
+					ws = worksheetDG.selectedItem as Worksheet;
+					dataService.updateWorksheet(ws);
+				}
 			}
 
 
@@ -134,19 +182,65 @@
 			{
 				worksheetDG.selectedIndex = -1;
 				dataService.getAllEmployees();
-				empCB.enabled = true;
+				empCB.visible = true;
+				empNameTI.visible = false;
+				empCB.selectedIndex = -1;
 			}
 
 			protected function rmB_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				if (worksheetDG.selectedIndex == -1){
+					return;
+				}
+				
+				var ws:Worksheet = worksheetDG.selectedItem as Worksheet;
+				dataService.deleteWorksheet(ws);
 			}
 
 
 			protected function empCB_changeHandler(event:IndexChangeEvent):void
 			{
-				var emp:Employee = empCB.selectedItem;
-				empNameTI.text = emp.fullName;
+			}
+
+			protected function calcTotalFaceHrs(item:Object,  column:DataGridColumn):String
+			{
+				var n:Number = (item.countyFaceMin + item.cccFaceMin + item.hmoFaceMin + item.otherFaceMin)/60;
+				return n.toPrecision(2);
+			}
+			
+			protected function calcTotalOtherHrs(item:Object,  column:DataGridColumn):String
+			{
+				 var n:Number = (item.countyOtherMin + item.cccOtherMin)/60;
+				 return n.toPrecision(2);
+			}
+
+			protected function calcTotalSeen(item:Object,  column:DataGridColumn):String
+			{
+				return item.countySeen + item.cccSeen + item.hmoSeen + item.otherSeen;
+			}
+
+			protected function calcProductivity(item:Object,  column:DataGridColumn):String
+			{
+				var n:Number;
+				if (item.hrsWorked > 0){
+					n = ((item.countyFaceMin + item.cccFaceMin + item.hmoFaceMin + item.otherFaceMin + item.countySeen + item.cccSeen + item.hmoSeen + item.otherSeen) / (item.hrsWorked * 60)) * 100;
+				}else{
+					n = 0;
+				}
+				return n.toPrecision(2) + "%";				
+			}
+			
+
+			protected function worksheetDG_changeHandler(event:ListEvent):void
+			{
+				if (worksheetDG.selectedIndex == -1){
+					empCB.visible = true;
+					empNameTI.visible = false;
+					empCB.selectedIndex = -1;
+				}else{
+					empCB.visible = false;
+					empNameTI.visible = true;
+				}
 			}
 
 		]]>
@@ -166,11 +260,11 @@
 				<mx:DateField id="dateDF" selectedDate="{new Date()}" change="dateOrLoc_changeHandler(event)"/>
 			</mx:HBox>
 			<mx:DataGrid  
-				lockedColumnCount="2" 
+				lockedColumnCount="1" 
 				horizontalScrollPolicy="auto" 
 				verticalScrollPolicy="auto" 
 				resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" id="worksheetDG"
-			    dataProvider="{worksheets}">
+			    dataProvider="{worksheets}" change="worksheetDG_changeHandler(event)">
 				<mx:columns>
 					<mx:DataGridColumn headerText="{EMP_NAME}" dataField="empName" width="150"/>
 					<mx:DataGridColumn headerText="{HRS_WORKED}" dataField="hrsWorked" width="120"/>
@@ -189,10 +283,10 @@
 					<mx:DataGridColumn headerText="{TOTAL_CANCEL}" dataField="numCancel" width="120"/>
 					<mx:DataGridColumn headerText="{NUM_NEW}" dataField="numNew" width="120"/>
 					<mx:DataGridColumn headerText="{NUM_DROPIN}" dataField="numDropin" width="120"/>
-					<mx:DataGridColumn headerText="{TOTAL_FACE_HRS}" dataField="totalFaceHrs" width="120"/>
-					<mx:DataGridColumn headerText="{TOTAL_OTHER_HRS}" dataField="totalOtherHrs" width="120"/>
-					<mx:DataGridColumn headerText="{TOTAL_SEEN}" dataField="totalSeen" width="120"/>
-					<mx:DataGridColumn headerText="{PRODUCTIVITY}" dataField="productivity" width="120"/>
+					<mx:DataGridColumn headerText="{TOTAL_FACE_HRS}" labelFunction="calcTotalFaceHrs" width="120"/>
+					<mx:DataGridColumn headerText="{TOTAL_OTHER_HRS}" labelFunction="calcTotalOtherHrs" width="120"/>
+					<mx:DataGridColumn headerText="{TOTAL_SEEN}" labelFunction="calcTotalSeen" width="120"/>
+					<mx:DataGridColumn headerText="{PRODUCTIVITY}" labelFunction="calcProductivity" width="120"/>
 				</mx:columns>
 			</mx:DataGrid>
 			<mx:HBox>
@@ -207,8 +301,8 @@
 			height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10">
 			
 			<mx:FormItem label="{EMP_NAME}:">
-				<s:TextInput id="empNameTI" enabled="false" text="@{worksheetDG.selectedItem.empName}"/>
-				<s:ComboBox id="empCB" enabled="false" dataProvider="{employees}" selectedIndex="-1" labelField="fullName" change="empCB_changeHandler(event)"/>
+				<s:TextInput id="empNameTI" enabled="false" text="{worksheetDG.selectedItem.empName}"/>
+				<s:ComboBox id="empCB" visible="false" dataProvider="{employees}" selectedIndex="-1" labelField="fullName" change="empCB_changeHandler(event)"/>
 			</mx:FormItem>
 			<mx:FormItem label="{HRS_WORKED}:">
 				<s:TextInput id="hrsWorkedTI" text="@{worksheetDG.selectedItem.hrsWorked}"/>
@@ -244,13 +338,13 @@
 				<s:TextInput id="otherfmTI" text="@{worksheetDG.selectedItem.otherFaceMin}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{TOTAL_SCH}:">
-				<s:TextInput id="totalSchTI" text="@{worksheetDG.selectedItem.numScheduled}"/>
+				<s:TextInput id="numScheduledTI" text="@{worksheetDG.selectedItem.numScheduled}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{TOTAL_NOSHOW}:">
-				<s:TextInput id="totalNoshowTI" text="@{worksheetDG.selectedItem.numNoShow}"/>
+				<s:TextInput id="numNoshowTI" text="@{worksheetDG.selectedItem.numNoShow}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{TOTAL_CANCEL}:">
-				<s:TextInput id="totalCancelTI" text="@{worksheetDG.selectedItem.numCancel}"/>
+				<s:TextInput id="numCancelTI" text="@{worksheetDG.selectedItem.numCancel}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{NUM_NEW}:">
 				<s:TextInput id="numNewTI" text="@{worksheetDG.selectedItem.numNew}"/>

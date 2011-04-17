@@ -18,7 +18,7 @@ public class Employee {
 	}
 	public String getFullName() {
 		if (fullName == null){
-			fullName = lastName +", "+firstName;
+			fullName = firstName + " " + lastName;
 		}
 		return fullName;
 	}
