@@ -81,7 +81,8 @@
 			
 			protected function loginpanel1_loginEventHandler(event:LoginEvent):void
 			{
-				dataService.login(event.user);
+				//dataService.login(event.user);
+				currentState="portalState";
 			}
 			
 			
