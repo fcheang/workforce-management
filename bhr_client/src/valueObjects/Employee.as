@@ -1,7 +1,8 @@
 package valueObjects
 {
 	[RemoteClass(alias="com.suntek.model.Employee")]
-	
+
+	[Bindable]
 	public class Employee
 	{
 		public var empId:int;

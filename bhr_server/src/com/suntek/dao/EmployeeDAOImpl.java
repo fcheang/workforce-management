@@ -67,10 +67,17 @@ public class EmployeeDAOImpl extends SimpleJdbcDaoSupport {
 	}
 	
 	public boolean deleteEmployee(int empId){
-		String sql = "delete from employee where empId = ?";
-		int count = super.getSimpleJdbcTemplate().update(sql, empId);
-		return count > 0;
+		String sql = "select count(*) from worksheet where empId = ?";
+		int numws = super.getSimpleJdbcTemplate().queryForInt(sql, empId);
+		if (numws > 0){
+			sql = "update employee set isActive = 0 where empId = ?";
+			return super.getSimpleJdbcTemplate().update(sql, empId) > 0;
+		}else{		
+			sql = "delete from employee where empId = ?";
+			return super.getSimpleJdbcTemplate().update(sql, empId) > 0;
+		}				 
 	}
+		
 	
 	private class EmployeeRowMapper implements ParameterizedRowMapper<Employee>{
 		public Employee mapRow(ResultSet rs, int rowNum) throws SQLException {
