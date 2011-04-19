@@ -32,7 +32,7 @@
 			public var dataService:RemoteObject;
 			
 			[Bindable]
-			private var employees:ArrayCollection;
+			private var employees:ArrayCollection = new ArrayCollection();
 			
 			protected function newB_clickHandler(event:MouseEvent):void
 			{
