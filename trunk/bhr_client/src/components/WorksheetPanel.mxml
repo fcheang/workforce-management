@@ -5,8 +5,26 @@
 		 creationComplete="panel1_creationCompleteHandler(event)">
 	
 	<fx:Declarations>
-		<mx:NumberFormatter id="nf" precision="2" rounding="up"/>		
-	</fx:Declarations>
+		<mx:NumberFormatter id="nf" precision="2" rounding="up"/>
+		
+		<mx:NumberValidator id="hrsWorkedV" domain="int" required="false" minValue="0" maxValue="24" source="{hrsWorkedTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="countySeenV" domain="int" required="false" minValue="0" maxValue="1000" source="{countySeenTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="countyfmV" domain="int" required="false" minValue="0" maxValue="1440" source="{countyfmTI}" property="text" triggerEvent=""/>		
+		<mx:NumberValidator id="countyomV" domain="int" required="false" minValue="0" maxValue="1440" source="{countyomTI}" property="text" triggerEvent=""/>		
+		<mx:NumberValidator id="cccSeenV" domain="int" required="false" minValue="0" maxValue="1000" source="{cccSeenTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="cccfmV" domain="int" required="false" minValue="0" maxValue="1440" source="{cccfmTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="cccomV" domain="int" required="false" minValue="0" maxValue="1440" source="{cccomTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="hmoSeenV" domain="int" required="false" minValue="0" maxValue="1000" source="{hmoSeenTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="hmofmV" domain="int" required="false" minValue="0" maxValue="1440" source="{hmofmTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="otherSeenV" domain="int" required="false" minValue="0" maxValue="1000" source="{otherSeenTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="otherfmV" domain="int" required="false" minValue="0" maxValue="1440" source="{otherfmTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="numScheduledV" domain="int" required="false" minValue="0" maxValue="1000" source="{numScheduledTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="numNoshowV" domain="int" required="false" minValue="0" maxValue="1000" source="{numNoshowTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="numCancelV" domain="int" required="false" minValue="0" maxValue="1000" source="{numCancelTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="numNewV" domain="int" required="false" minValue="0" maxValue="1000" source="{numNewTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="numDropinV" domain="int" required="false" minValue="0" maxValue="1000" source="{numDropinTI}" property="text" triggerEvent=""/>
+	</fx:Declarations>	
+	
 	
 	<fx:Script>
 		<![CDATA[
@@ -16,6 +34,8 @@
 			import mx.events.ListEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.remoting.mxml.RemoteObject;
+			import mx.validators.ValidationResult;
+			import mx.validators.Validator;
 			
 			import spark.events.IndexChangeEvent;
 			
@@ -147,36 +167,60 @@
 			
 			protected function saveB_clickHandler(event:MouseEvent):void
 			{
-				var ws:Worksheet;
-				if (worksheetDG.selectedIndex == -1){
-					ws = new Worksheet();
-					ws.empId = (empCB.selectedItem as Employee).empId;
-					ws.empName = (empCB.selectedItem as Employee).fullName;
-					ws.date = dateDF.selectedDate;
-					ws.clinic = locationCB.selectedItem;
-					ws.hrsWorked = new Number(hrsWorkedTI.text);
-					ws.countySeen = new int(countySeenTI.text);
-					ws.cccSeen = new int(cccSeenTI.text);
-					ws.hmoSeen = new int(hmoSeenTI.text);
-					ws.otherSeen = new int(otherSeenTI.text);
-					ws.countyFaceMin = new int(countyfmTI.text);
-					ws.countyOtherMin = new int (countyomTI.text);
-					ws.cccFaceMin = new int(cccfmTI.text);
-					ws.cccOtherMin = new int(cccomTI.text);
-					ws.hmoFaceMin = new int(hmofmTI.text);
-					ws.otherFaceMin = new int (otherfmTI.text);
-					ws.numScheduled = new int(numScheduledTI.text);
-					ws.numNoShow = new int(numNoshowTI.text);
-					ws.numCancel = new int(numCancelTI.text);
-					ws.numNew = new int(numNewTI.text);
-					ws.numDropin = new int(numDropinTI.text);
-					dataService.createWorksheet(ws);					
-				}else{
-					ws = worksheetDG.selectedItem as Worksheet;
-					dataService.updateWorksheet(ws);
+				if (locationCB.selectedIndex == -1){
+					Alert.show("Please select a Location.");
+					locationCB.setFocus();
+					return;
+				}
+				
+				if (empCB.selectedIndex == -1){
+					Alert.show("Please select an Employee.");
+					empCB.setFocus();
+					return;
+				}
+								
+				var isValid:Boolean = validateForm();
+				if (isValid){				
+					var ws:Worksheet;
+					if (worksheetDG.selectedIndex == -1){
+						ws = new Worksheet();
+						ws.empId = (empCB.selectedItem as Employee).empId;
+						ws.empName = (empCB.selectedItem as Employee).fullName;
+						ws.date = dateDF.selectedDate;
+						ws.clinic = locationCB.selectedItem;
+						ws.hrsWorked = new Number(hrsWorkedTI.text);
+						ws.countySeen = new int(countySeenTI.text);
+						ws.cccSeen = new int(cccSeenTI.text);
+						ws.hmoSeen = new int(hmoSeenTI.text);
+						ws.otherSeen = new int(otherSeenTI.text);
+						ws.countyFaceMin = new int(countyfmTI.text);
+						ws.countyOtherMin = new int (countyomTI.text);
+						ws.cccFaceMin = new int(cccfmTI.text);
+						ws.cccOtherMin = new int(cccomTI.text);
+						ws.hmoFaceMin = new int(hmofmTI.text);
+						ws.otherFaceMin = new int (otherfmTI.text);
+						ws.numScheduled = new int(numScheduledTI.text);
+						ws.numNoShow = new int(numNoshowTI.text);
+						ws.numCancel = new int(numCancelTI.text);
+						ws.numNew = new int(numNewTI.text);
+						ws.numDropin = new int(numDropinTI.text);
+						dataService.createWorksheet(ws);					
+					}else{
+						ws = worksheetDG.selectedItem as Worksheet;
+						dataService.updateWorksheet(ws);
+					}
+					saveB.enabled = false;
 				}
 			}
 
+			private function validateForm():Boolean
+			{
+				var validationArray:Array = Validator.validateAll([hrsWorkedV,countySeenV,countyfmV,countyomV,cccSeenV,cccfmV,cccomV,hmoSeenV,hmofmV,otherSeenV,otherfmV,numScheduledV,numNoshowV,numCancelV,numNewV,numDropinV]);
+				if (validationArray.length > 0){
+					return false;
+				}
+				return true				
+			}
 
 			protected function newB_clickHandler(event:MouseEvent):void
 			{
@@ -185,6 +229,7 @@
 				empCB.visible = true;
 				empNameTI.visible = false;
 				empCB.selectedIndex = -1;
+				saveB.enabled = true;
 			}
 
 			protected function rmB_clickHandler(event:MouseEvent):void
@@ -240,6 +285,7 @@
 				}else{
 					empCB.visible = false;
 					empNameTI.visible = true;
+					validateForm();
 				}
 			}
 
@@ -302,7 +348,7 @@
 			
 			<mx:FormItem label="{EMP_NAME}:">
 				<s:TextInput id="empNameTI" enabled="false" text="{worksheetDG.selectedItem.empName}"/>
-				<s:ComboBox id="empCB" visible="false" dataProvider="{employees}" selectedIndex="-1" labelField="fullName" change="empCB_changeHandler(event)"/>
+				<s:ComboBox id="empCB" visible="false" dataProvider="{employees}" selectedIndex="-1" labelField="fullName" change="empCB_changeHandler(event)" />
 			</mx:FormItem>
 			<mx:FormItem label="{HRS_WORKED}:">
 				<s:TextInput id="hrsWorkedTI" text="@{worksheetDG.selectedItem.hrsWorked}"/>
@@ -353,7 +399,7 @@
 				<s:TextInput id="numDropinTI" text="@{worksheetDG.selectedItem.numDropin}"/>
 			</mx:FormItem>
 			
-			<s:Button label="Save" id="saveB" click="saveB_clickHandler(event)"/>
+			<s:Button label="Save" id="saveB" enabled="false" click="saveB_clickHandler(event)"/>
 		</mx:Form>												
 	</mx:HBox>
 	
