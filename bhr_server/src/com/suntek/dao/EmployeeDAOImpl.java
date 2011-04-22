@@ -14,47 +14,70 @@ import com.suntek.model.Employee;
 
 public class EmployeeDAOImpl extends SimpleJdbcDaoSupport {
 
+	private EmployeeRowMapper rm = new EmployeeRowMapper();
+	
 	public EmployeeDAOImpl(){		
 	}
 	
 	public List<Employee> getAllEmployees(){		
 		String sql = "SELECT empId, title, firstName, middleName, lastName, isActive FROM employee where isActive = 1";		
-		return getSimpleJdbcTemplate().query(sql, new EmployeeRowMapper());
+		return getSimpleJdbcTemplate().query(sql, rm);
+	}
+	
+	public Employee getEmployee(String fname, String lname){
+		String sql = "select empId, title, firstName, middleName, lastName, isActive from employee where firstName = ? and lastName = ?";
+		Employee emp = super.getSimpleJdbcTemplate().queryForObject(sql, rm, fname, lname);
+		return emp;
+	}
+	
+	public void setEmployeeActive(int empId){
+		String sql = "update employee set isActive = 1 where empId = ?";
+		super.getSimpleJdbcTemplate().update(sql, empId);		
 	}
 	
 	public Employee createEmployee(Employee emp){
-		Connection con = null;
-		try{
-			String sql = "insert into employee (title, firstName, lastName, middleName, isActive) values (?, ?, ?, ?, ?)";			
-			con = super.getDataSource().getConnection();
-
-			PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			pstmt.setString(1, emp.getTitle());
-			pstmt.setString(2, emp.getFirstName());
-			pstmt.setString(3, emp.getLastName());
-			pstmt.setString(4, emp.getMiddleName());
-			pstmt.setBoolean(5, true);
-			int count = pstmt.executeUpdate();
-			if (count == 1){
-				ResultSet rs = pstmt.getGeneratedKeys();
-				if (rs.next()){
-					int empId = rs.getInt(1);
-					emp.setEmpId(empId);
-				}				
-				rs.close();
-				pstmt.close();
-				return emp;
+		Employee newEmp = getEmployee(emp.getFirstName(), emp.getLastName());
+		if (newEmp != null){
+			if (!newEmp.getIsActive()){
+				setEmployeeActive(newEmp.getEmpId());
+				return newEmp;
 			}else{
-				throw new RuntimeException("Employee was not created!");
+				throw new RuntimeException("Employee "+newEmp+" already exist!");
 			}
-		}catch(SQLException e){
-			throw new RuntimeException("Problem create employee!", e);
-		}finally{
-			if (con != null){
-				try{
-					con.close();
-				}catch(Exception e){
-					throw new RuntimeException("Problem closing connection!", e);
+		}else{
+			Connection con = null;
+			try{
+				String sql = "insert into employee (title, firstName, lastName, middleName, isActive) values (?, ?, ?, ?, ?)";			
+				con = super.getDataSource().getConnection();
+	
+				PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+				pstmt.setString(1, emp.getTitle());
+				pstmt.setString(2, emp.getFirstName());
+				pstmt.setString(3, emp.getLastName());
+				pstmt.setString(4, emp.getMiddleName());
+				pstmt.setBoolean(5, true);
+				int count = pstmt.executeUpdate();
+				if (count == 1){
+					ResultSet rs = pstmt.getGeneratedKeys();
+					if (rs.next()){
+						int empId = rs.getInt(1);
+						emp.setEmpId(empId);
+					}				
+					rs.close();
+					pstmt.close();
+					return emp;
+				}else{
+					throw new RuntimeException("Employee was not created!");
+				}
+			}catch(SQLException e){
+				throw new RuntimeException("Problem create employee!", e);
+			}finally{
+				if (con != null){
+					try{
+						con.close();
+					}catch(Exception e){
+						throw new RuntimeException("Problem closing connection!", e);
+					}
 				}
 			}
 		}
