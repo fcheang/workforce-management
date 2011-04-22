@@ -14,6 +14,7 @@
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			import mx.rpc.events.ResultEvent;
+			import mx.rpc.events.FaultEvent;
 			import mx.rpc.remoting.mxml.RemoteObject;
 			
 			import valueObjects.Employee;
@@ -37,7 +38,6 @@
 			protected function newB_clickHandler(event:MouseEvent):void
 			{
 				employeeDG.selectedIndex = -1;
-				idTI.text = "-1";
 				titleTI.setFocus();	
 			}
 			
@@ -66,9 +66,9 @@
 				}	
 				
 				var emp:Employee;
-				if (idTI.text == "-1"){ 
+				if (employeeDG.selectedIndex == -1){ 
 					emp = new Employee();
-					emp.empId = parseInt(idTI.text);
+					emp.empId = -1;
 					emp.title = titleTI.text;
 					emp.lastName = lnameTI.text;
 					emp.middleName = mnameTI.text;
@@ -84,6 +84,7 @@
 			{				
 				dataService.getAllEmployees.addEventListener(ResultEvent.RESULT, dataService_getAllEmployee_resultHandler);
 				dataService.createEmployee.addEventListener(ResultEvent.RESULT, dataService_createEmployee_resultHandler);
+				dataService.createEmployee.addEventListener(FaultEvent.FAULT, dataService_createEmployee_faultHandler);
 				dataService.updateEmployee.addEventListener(ResultEvent.RESULT, dataService_updateEmployee_resultHandler);
 				dataService.deleteEmployee.addEventListener(ResultEvent.RESULT, dataService_deleteEmployee_resultHandler);
 				
@@ -106,6 +107,12 @@
 					Alert.show("Error: Problem create employee!");
 				}
 			}
+			
+			protected function dataService_createEmployee_faultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.fault.faultString, "Error Message");
+				dataService.getAllEmployees();
+			}			
 			
 			protected function dataService_updateEmployee_resultHandler(event:ResultEvent):void
 			{

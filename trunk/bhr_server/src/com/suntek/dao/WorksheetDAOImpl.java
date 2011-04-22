@@ -16,24 +16,29 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 	}
 	
 	public Worksheet createWorksheet(Worksheet ws){
-		String sql = 
-			"insert into worksheet (empId, clinic, date, hrs_worked, "+
-			"county_seen, ccc_seen, hmo_seen, other_seen, "+
-			"county_face_min, county_other_min, "+
-			"ccc_face_min, ccc_other_min, "+
-			"hmo_face_min, other_face_min, "+
-			"num_scheduled, num_noshow, num_cancel, num_new, num_dropin) "+
-			"values "+
-			"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		if (super.getSimpleJdbcTemplate().update(sql, 
-				ws.getEmpId(), ws.getClinic(), ws.getDate(), ws.getHrsWorked(), 
-				ws.getCountySeen(), ws.getCccSeen(), ws.getHmoSeen(), ws.getOtherSeen(),
-				ws.getCountyFaceMin(), ws.getCountyOtherMin(),
-				ws.getCccFaceMin(), ws.getCccOtherMin(),
-				ws.getHmoFaceMin(), ws.getOtherFaceMin(),
-				ws.getNumScheduled(), ws.getNumNoShow(), ws.getNumCancel(), ws.getNumNew(), ws.getNumDropin()) > 0){
-			return ws;
-		}else{
+		try{
+			String sql = 
+				"insert into worksheet (empId, clinic, date, hrs_worked, "+
+				"county_seen, ccc_seen, hmo_seen, other_seen, "+
+				"county_face_min, county_other_min, "+
+				"ccc_face_min, ccc_other_min, "+
+				"hmo_face_min, other_face_min, "+
+				"num_scheduled, num_noshow, num_cancel, num_new, num_dropin) "+
+				"values "+
+				"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			if (super.getSimpleJdbcTemplate().update(sql, 
+					ws.getEmpId(), ws.getClinic(), ws.getDate(), ws.getHrsWorked(), 
+					ws.getCountySeen(), ws.getCccSeen(), ws.getHmoSeen(), ws.getOtherSeen(),
+					ws.getCountyFaceMin(), ws.getCountyOtherMin(),
+					ws.getCccFaceMin(), ws.getCccOtherMin(),
+					ws.getHmoFaceMin(), ws.getOtherFaceMin(),
+					ws.getNumScheduled(), ws.getNumNoShow(), ws.getNumCancel(), ws.getNumNew(), ws.getNumDropin()) > 0){
+				return ws;
+			}else{
+				return null;
+			}
+		}catch(RuntimeException e){
+			e.printStackTrace();
 			return null;
 		}
 	}
