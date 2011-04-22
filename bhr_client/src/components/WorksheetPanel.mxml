@@ -33,6 +33,7 @@
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
 			import mx.rpc.events.ResultEvent;
+			import mx.rpc.events.FaultEvent;
 			import mx.rpc.remoting.mxml.RemoteObject;
 			import mx.validators.ValidationResult;
 			import mx.validators.Validator;
@@ -103,6 +104,7 @@
 			protected function panel1_creationCompleteHandler(event:FlexEvent):void
 			{
 				dataService.createWorksheet.addEventListener(ResultEvent.RESULT, dataService_createWorksheet_resultHandler);
+				dataService.createWorksheet.addEventListener(FaultEvent.FAULT, dataService_createWorksheet_faultHandler);
 				dataService.getWorksheetForClinicAndDate.addEventListener(ResultEvent.RESULT, dataService_getWorksheetForClinicAndDate_resultHandler);
 				dataService.updateWorksheet.addEventListener(ResultEvent.RESULT, dataService_updateWorksheet_resultHandler);
 				dataService.deleteWorksheet.addEventListener(ResultEvent.RESULT, dataService_deleteWorksheet_resultHandler);
@@ -121,6 +123,14 @@
 					Alert.show("Problem create worksheet entry!");
 				}
 			}
+			
+			protected function dataService_createWorksheet_faultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.fault.faultString, "Error Message");
+				if (dateDF.selectedDate != null && locationCB.selectedItem != null){
+					dataService.getWorksheetForClinicAndDate(locationCB.selectedItem, dateDF.selectedDate);
+				}
+			}						
 
 			protected function dataService_getWorksheetForClinicAndDate_resultHandler(event:ResultEvent):void
 			{
@@ -268,7 +278,7 @@
 			{
 				var n:Number;
 				if (item.hrsWorked > 0){
-					n = ((item.countyFaceMin + item.cccFaceMin + item.hmoFaceMin + item.otherFaceMin + item.countySeen + item.cccSeen + item.hmoSeen + item.otherSeen) / (item.hrsWorked * 60)) * 100;
+					n = ((item.countyFaceMin + item.cccFaceMin + item.hmoFaceMin + item.otherFaceMin + item.countyOtherMin + item.cccOtherMin) / (item.hrsWorked * 60)) * 100;
 				}else{
 					n = 0;
 				}
@@ -399,7 +409,7 @@
 				<s:TextInput id="numDropinTI" text="@{worksheetDG.selectedItem.numDropin}"/>
 			</mx:FormItem>
 			
-			<s:Button label="Save" id="saveB" enabled="false" click="saveB_clickHandler(event)"/>
+			<s:Button label="Save" id="saveB" click="saveB_clickHandler(event)"/>
 		</mx:Form>												
 	</mx:HBox>
 	
