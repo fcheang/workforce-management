@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.dao.DuplicateKeyException;
 
 import com.suntek.model.Worksheet;
 
@@ -37,9 +38,8 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 			}else{
 				return null;
 			}
-		}catch(RuntimeException e){
-			e.printStackTrace();
-			return null;
+		}catch(DuplicateKeyException e){
+			throw new RuntimeException("Worksheet already exist for employee "+ws.getEmpName());
 		}
 	}
 	
