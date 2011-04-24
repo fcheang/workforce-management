@@ -24,16 +24,16 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 				"county_face_min, county_other_min, "+
 				"ccc_face_min, ccc_other_min, "+
 				"hmo_face_min, other_face_min, "+
-				"num_scheduled, num_noshow, num_cancel, num_new, num_dropin) "+
+				"num_scheduled, num_noshow, num_cancel, num_new, num_dropin, daily_salary) "+
 				"values "+
-				"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			if (super.getSimpleJdbcTemplate().update(sql, 
 					ws.getEmpId(), ws.getClinic(), ws.getDate(), ws.getHrsWorked(), 
 					ws.getCountySeen(), ws.getCccSeen(), ws.getHmoSeen(), ws.getOtherSeen(),
 					ws.getCountyFaceMin(), ws.getCountyOtherMin(),
 					ws.getCccFaceMin(), ws.getCccOtherMin(),
 					ws.getHmoFaceMin(), ws.getOtherFaceMin(),
-					ws.getNumScheduled(), ws.getNumNoShow(), ws.getNumCancel(), ws.getNumNew(), ws.getNumDropin()) > 0){
+					ws.getNumScheduled(), ws.getNumNoShow(), ws.getNumCancel(), ws.getNumNew(), ws.getNumDropin(), ws.getDailySalary()) > 0){
 				return ws;
 			}else{
 				return null;
@@ -50,7 +50,7 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 			"w.county_face_min, w.county_other_min, " +
 			"w.ccc_face_min, w.ccc_other_min, " +
 			"w.hmo_face_min, w.other_face_min, " +
-			"w.num_scheduled, w.num_noshow, w.num_cancel, w.num_new, w.num_dropin " +
+			"w.num_scheduled, w.num_noshow, w.num_cancel, w.num_new, w.num_dropin, w.daily_salary " +
 			"from worksheet w, employee e " +
 			"where w.clinic = ? and w.date = ? and w.empId = e.empId";		
 		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), clinic, date);
@@ -68,14 +68,14 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 			"county_face_min = ?, county_other_min = ?, "+
 			"ccc_face_min = ?, ccc_other_min = ?, "+
 			"hmo_face_min = ?, other_face_min = ?, "+
-			"num_scheduled = ?, num_noshow = ?, num_cancel = ?, num_new = ?, num_dropin = ? "+
+			"num_scheduled = ?, num_noshow = ?, num_cancel = ?, num_new = ?, num_dropin = ?, daily_salary = ? "+
 			"where empId = ? and clinic = ? and date = ?";
 		return super.getSimpleJdbcTemplate().update(sql, ws.getHrsWorked(), 
 				ws.getCountySeen(), ws.getCccSeen(), ws.getHmoSeen(), ws.getOtherSeen(),
 				ws.getCountyFaceMin(), ws.getCountyOtherMin(),
 				ws.getCccFaceMin(), ws.getCccOtherMin(),
 				ws.getHmoFaceMin(), ws.getOtherFaceMin(),
-				ws.getNumScheduled(), ws.getNumNoShow(), ws.getNumCancel(), ws.getNumNew(), ws.getNumDropin(),
+				ws.getNumScheduled(), ws.getNumNoShow(), ws.getNumCancel(), ws.getNumNew(), ws.getNumDropin(), ws.getDailySalary(),
 				ws.getEmpId(), ws.getClinic(), ws.getDate()) > 0;
 	}
 	
@@ -107,6 +107,7 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 			e.setNumCancel(rs.getInt(18));
 			e.setNumNew(rs.getInt(19));
 			e.setNumDropin(rs.getInt(20));			
+			e.setDailySalary(rs.getDouble(21));
 			return e;
 		}
 	}	

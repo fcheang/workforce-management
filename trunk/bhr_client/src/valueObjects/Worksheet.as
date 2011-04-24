@@ -25,18 +25,20 @@ package valueObjects
 		public var numCancel:int;
 		public var numNew:int;
 		public var numDropin:int;	
+		public var dailySalary:Number; 
+
+		//calculated fields
+		public var countyFaceRevenue:Number;
+		public var countyOtherRevenue:Number;
+		public var cccFaceRevenue:Number;
+		public var totalRevenue:Number;
+		public var balance:Number;
+		public var totalFaceHours:Number;
+		public var totalOtherHours:Number;
+		public var productivity:Number;
 		
 		public function Worksheet()
 		{
-		}
-		
-		public function calcProductivity():Number
-		{
-			if (hrsWorked > 0){
-				return (countyFaceMin + cccFaceMin + hmoFaceMin + otherFaceMin + countySeen + cccSeen + hmoSeen + otherSeen) / (hrsWorked * 60);
-			}else{
-				return 0;
-			}
-		}
+		}		
 	}
 }

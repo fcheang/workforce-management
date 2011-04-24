@@ -1,28 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="panel1_creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.events.FlexEvent;
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.remoting.mxml.RemoteObject;
+			import flash.events.Event;
+			
+			public var dataService:RemoteObject;
+			
+			[Bindable]
+			private var locations:ArrayCollection;
+			[Bindable]
+			private var employees:ArrayCollection;
+						
+
+			protected function panel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				dataService.getWorksheetForClinicAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheetForClinicAndDateRange_resultHandler);
+				dataService.getWorksheetForEmployeeAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheetForEmployeeAndDateRange_resultHandler);
+				dataService.getLocation.addEventListener(ResultEvent.RESULT, dataService_getLocation_resultHandler);
+				dataService.getAllEmployees.addEventListener(ResultEvent.RESULT, dataService_getAllEmployee_resultHandler);
+				
+				dataService.getLocation();
+				dataService.getAllEmployees();
+			}
+			
+			protected function dataService_getLocation_resultHandler(event:ResultEvent):void
+			{
+				locations = event.result as ArrayCollection;	
+			}
+			
+			protected function dataService_getAllEmployee_resultHandler(event:ResultEvent):void
+			{
+				employees = event.result as ArrayCollection;
+			}			
+			
+			protected function dataService_getWorksheetForClinicAndDateRange_resultHandler(event:ResultEvent):void
+			{	
+			}
+			
+			protected function dataService_getWorksheetForEmployeeAndDateRange_resultHandler(event:ResultEvent):void
+			{
+			}			
+						
+			protected function dateOrLoc_changeHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+			}
+
+		]]>
+	</fx:Script>
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	
-	<fx:Script>
-		<![CDATA[
-			import mx.rpc.events.ResultEvent;
-			import mx.rpc.events.FaultEvent;
-			import mx.rpc.remoting.mxml.RemoteObject;
-			
-			public var dataService:RemoteObject;			
-		]]>
-	</fx:Script>
-	
-	<mx:LineChart x="10" y="10" id="productivityChart">
-		<mx:series>
-			<mx:LineSeries displayName="Series 1" yField=""/>
-		</mx:series>
-	</mx:LineChart>
-	<mx:Legend dataProvider="{productivityChart}"/>
+		
+	<mx:VBox paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" width="100%" height="100%">
+		<mx:HBox paddingBottom="10">
+			<s:Label text="Location:" paddingTop="6"/>
+			<s:ComboBox id="locationCB" dataProvider="{locations}" change="dateOrLoc_changeHandler(event)"/>
+			<s:ComboBox id="employeeCB" dataProvider="{employees}" change="dateOrLoc_changeHandler(event)"/>
+			<s:Label text="From:" paddingLeft="30" paddingTop="6"/>
+			<mx:DateField id="startDateDF" selectedDate="{new Date()}" change="dateOrLoc_changeHandler(event)"/>
+			<s:Label text="To:" paddingLeft="30" paddingTop="6"/>
+			<mx:DateField id="endDateDF" selectedDate="{new Date()}" change="dateOrLoc_changeHandler(event)"/>			
+		</mx:HBox>
+		<mx:Tile width="100%" height="100%">
+			<s:Panel title="Productivity">
+				<mx:LineChart x="10" y="10">
+					<mx:series>
+						<mx:LineSeries displayName="Series 1" yField=""/>
+					</mx:series>				
+				</mx:LineChart>							
+			</s:Panel>
+			<s:Panel title="Revenue">
+				<mx:LineChart x="10" y="10">
+					<mx:series>
+						<mx:LineSeries displayName="Series 1" yField=""/>
+					</mx:series>				
+				</mx:LineChart>															
+			</s:Panel>			
+			<s:Panel title="Revenue Balance">
+				<mx:LineChart x="10" y="10">
+					<mx:series>
+						<mx:LineSeries displayName="Series 1" yField=""/>
+					</mx:series>				
+				</mx:LineChart>											
+			</s:Panel>
+			<s:Panel title="Total Scheduled">
+				<mx:LineChart x="10" y="10">
+					<mx:series>
+						<mx:LineSeries displayName="Series 1" yField=""/>
+					</mx:series>				
+				</mx:LineChart>											
+			</s:Panel>
+		</mx:Tile>	
+	</mx:VBox>
 	
 	
 </s:Panel>

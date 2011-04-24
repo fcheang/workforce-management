@@ -32,8 +32,8 @@
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
-			import mx.rpc.events.ResultEvent;
 			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
 			import mx.rpc.remoting.mxml.RemoteObject;
 			import mx.validators.ValidationResult;
 			import mx.validators.Validator;
@@ -82,13 +82,25 @@
 			private static var NUM_DROPIN:String = "How many Drop-Ins";			
 			// calculated column
 			[Bindable]
-			private static var TOTAL_FACE_HRS:String = "Total Hours(face)";
+			private static var TOTAL_FACE_HRS:String = "Total Hours (face)";
 			[Bindable]
 			private static var TOTAL_OTHER_HRS:String = "Total Hours (other)";
 			[Bindable]
 			private static var TOTAL_SEEN:String = "Total Seen";
 			[Bindable]
 			private static var PRODUCTIVITY:String = "Productivity";
+			[Bindable]
+			private static var DAILY_SALARY:String = "Daily Salary";
+			[Bindable]
+			private static var COUNTY_FACE_REV:String = "County (face) $";
+			[Bindable]
+			private static var COUNTY_OTHER_REV:String = "County (other) $";
+			[Bindable]
+			private static var CCC_REV:String = "CCC $";						
+			[Bindable]
+			private static var REVENUE:String = "Total Revenue";
+			[Bindable]
+			private static var BALANCE:String = "Balance";
 			
 
 			public var dataService:RemoteObject;
@@ -183,7 +195,7 @@
 					return;
 				}
 				
-				if (empCB.selectedIndex == -1){
+				if (worksheetDG.selectedIndex == -1 && empCB.selectedIndex == -1){
 					Alert.show("Please select an Employee.");
 					empCB.setFocus();
 					return;
@@ -214,6 +226,7 @@
 						ws.numCancel = new int(numCancelTI.text);
 						ws.numNew = new int(numNewTI.text);
 						ws.numDropin = new int(numDropinTI.text);
+						ws.dailySalary = new Number(dailySalaryTI.text);
 						dataService.createWorksheet(ws);					
 					}else{
 						ws = worksheetDG.selectedItem as Worksheet;
@@ -339,10 +352,16 @@
 					<mx:DataGridColumn headerText="{TOTAL_CANCEL}" dataField="numCancel" width="120"/>
 					<mx:DataGridColumn headerText="{NUM_NEW}" dataField="numNew" width="120"/>
 					<mx:DataGridColumn headerText="{NUM_DROPIN}" dataField="numDropin" width="120"/>
+					<mx:DataGridColumn headerText="{DAILY_SALARY}" dataField="dailySalary" width="120"/>
 					<mx:DataGridColumn headerText="{TOTAL_FACE_HRS}" labelFunction="calcTotalFaceHrs" width="120"/>
 					<mx:DataGridColumn headerText="{TOTAL_OTHER_HRS}" labelFunction="calcTotalOtherHrs" width="120"/>
 					<mx:DataGridColumn headerText="{TOTAL_SEEN}" labelFunction="calcTotalSeen" width="120"/>
 					<mx:DataGridColumn headerText="{PRODUCTIVITY}" labelFunction="calcProductivity" width="120"/>
+					<mx:DataGridColumn headerText="{COUNTY_FACE_REV}" dataField="countyFaceRevenue" width="120"/>
+					<mx:DataGridColumn headerText="{COUNTY_OTHER_REV}" dataField="countyOtherRevenue" width="120"/>
+					<mx:DataGridColumn headerText="{CCC_REV}" dataField="cccFaceRevenue" width="120"/>
+					<mx:DataGridColumn headerText="{REVENUE}" dataField="totalRevenue" width="120"/>
+					<mx:DataGridColumn headerText="{BALANCE}" dataField="balance" width="120"/>					
 				</mx:columns>
 			</mx:DataGrid>
 			<mx:HBox>
@@ -407,6 +426,9 @@
 			</mx:FormItem>
 			<mx:FormItem label="{NUM_DROPIN}:">
 				<s:TextInput id="numDropinTI" text="@{worksheetDG.selectedItem.numDropin}"/>
+			</mx:FormItem>
+			<mx:FormItem label="{DAILY_SALARY}:">
+				<s:TextInput id="dailySalaryTI" text="@{worksheetDG.selectedItem.dailySalary}"/>
 			</mx:FormItem>
 			
 			<s:Button label="Save" id="saveB" click="saveB_clickHandler(event)"/>
