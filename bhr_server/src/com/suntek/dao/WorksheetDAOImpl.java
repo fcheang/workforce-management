@@ -56,6 +56,51 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), clinic, date);
 	}
 	
+	public List<Worksheet> getWorksheetForClinicAndDateRange(String clinic, Date sd, Date ed){
+		String sql =
+			"select "+
+			"0, clinic, date, clinic, sum(hrs_worked), sum(county_seen), sum(ccc_seen), "+
+			"sum(hmo_seen), sum(other_seen), sum(county_face_min), sum(county_other_min), "+
+			"sum(ccc_face_min), sum(ccc_other_min), sum(hmo_face_min), sum(other_face_min), "+
+			"sum(num_scheduled), sum(num_noshow), sum(num_cancel), sum(num_new), sum(num_dropin), "+
+			"sum(daily_salary) "+
+			"from worksheet "+
+			"where date >= ? and date <= ? and clinic = ? "+
+			"group by clinic, date "+
+			"order by date asc";
+		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), sd, ed, clinic);			
+	}
+
+	public List<Worksheet> getWorksheetForEmployeeAndDateRange(int empId, Date sd, Date ed){
+		String sql =
+			"select "+
+			"empId, 'all', date, 'all', sum(hrs_worked), sum(county_seen), sum(ccc_seen), "+
+			"sum(hmo_seen), sum(other_seen), sum(county_face_min), sum(county_other_min), "+
+			"sum(ccc_face_min), sum(ccc_other_min), sum(hmo_face_min), sum(other_face_min), "+
+			"sum(num_scheduled), sum(num_noshow), sum(num_cancel), sum(num_new), sum(num_dropin), "+
+			"sum(daily_salary) "+
+			"from worksheet "+
+			"where date >= ? and date <= ? and empId = ? "+
+			"group by empId, date "+
+			"order by date asc";
+		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), sd, ed, empId);			
+	}
+
+	public List<Worksheet> getWorksheetForClinicAndEmployeeAndDateRange(String clinic, int empId, Date sd, Date ed){
+		String sql =
+			"select "+
+			"empId, 'all', date, clinic, sum(hrs_worked), sum(county_seen), sum(ccc_seen), "+
+			"sum(hmo_seen), sum(other_seen), sum(county_face_min), sum(county_other_min), "+
+			"sum(ccc_face_min), sum(ccc_other_min), sum(hmo_face_min), sum(other_face_min), "+
+			"sum(num_scheduled), sum(num_noshow), sum(num_cancel), sum(num_new), sum(num_dropin), "+
+			"sum(daily_salary) "+
+			"from worksheet "+
+			"where date >= ? and date <= ? and clinic = ? and empId = ? "+
+			"group by empId, clinic, date "+
+			"order by date asc";
+		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), sd, ed, clinic, empId);			
+	}
+	
 	public boolean deleteWorksheet(int empId, String clinic, Date date){
 		String sql = "delete from worksheet where empId = ? and clinic = ? and date = ?";
 		return getSimpleJdbcTemplate().update(sql, empId, clinic, date) > 0;

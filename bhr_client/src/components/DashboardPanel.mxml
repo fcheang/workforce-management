@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="panel1_creationCompleteHandler(event)">
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="panel1_creationCompleteHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
+			import flash.events.Event;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.events.CalendarLayoutChangeEvent;
 			import mx.events.FlexEvent;
-			import mx.collections.ArrayCollection;
-			import mx.rpc.events.ResultEvent;
 			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
 			import mx.rpc.remoting.mxml.RemoteObject;
-			import flash.events.Event;
+			
+			import valueObjects.Employee;				
 			
 			public var dataService:RemoteObject;
 			
@@ -19,12 +24,14 @@
 			private var locations:ArrayCollection;
 			[Bindable]
 			private var employees:ArrayCollection;
-						
+			[Bindable]
+			private var worksheets:ArrayCollection;
 
 			protected function panel1_creationCompleteHandler(event:FlexEvent):void
 			{
-				dataService.getWorksheetForClinicAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheetForClinicAndDateRange_resultHandler);
-				dataService.getWorksheetForEmployeeAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheetForEmployeeAndDateRange_resultHandler);
+				dataService.getWorksheetForClinicAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
+				dataService.getWorksheetForEmployeeAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
+				dataService.getWorksheetForClinicAndEmployeeAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
 				dataService.getLocation.addEventListener(ResultEvent.RESULT, dataService_getLocation_resultHandler);
 				dataService.getAllEmployees.addEventListener(ResultEvent.RESULT, dataService_getAllEmployee_resultHandler);
 				
@@ -42,66 +49,80 @@
 				employees = event.result as ArrayCollection;
 			}			
 			
-			protected function dataService_getWorksheetForClinicAndDateRange_resultHandler(event:ResultEvent):void
+			protected function dataService_getWorksheet_resultHandler(event:ResultEvent):void				
 			{	
+				worksheets = event.result as ArrayCollection; 
 			}
-			
-			protected function dataService_getWorksheetForEmployeeAndDateRange_resultHandler(event:ResultEvent):void
-			{
-			}			
 						
-			protected function dateOrLoc_changeHandler(event:Event):void
+			protected function runReportB_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				if (locationCB.selectedIndex == -1 && employeeCB.selectedIndex == -1){
+					Alert.show("Please select a location or employee to run the report!");
+					locationCB.setFocus();
+				}else{
+					var emp:Employee = null;
+					var loc:String = null;
+					emp = employeeCB.selectedItem;
+					loc = locationCB.selectedItem;
+					if (emp != null && loc != null){
+						dataService.getWorksheetForClinicAndEmployeeAndDateRange(loc, emp.empId, startDateDF.selectedDate, endDateDF.selectedDate);
+					}else if (emp == null){
+						dataService.getWorksheetForClinicAndDateRange(loc, startDateDF.selectedDate, endDateDF.selectedDate);
+					}else{
+						dataService.getWorksheetForEmployeeAndDateRange(emp.empId, startDateDF.selectedDate, endDateDF.selectedDate);
+					}
+				}
 			}
 
+			private function categoryAxis_labelFunc(item:Object, prevValue:Object, axis:CategoryAxis, categoryItem:Object):String {
+				var tempDate:Date = item as Date;
+				return dateFormatter.format(tempDate).toUpperCase();
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:DateFormatter id="dateFormatter" formatString="MM/DD" />
 	</fx:Declarations>
 		
 	<mx:VBox paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" width="100%" height="100%">
+		
 		<mx:HBox paddingBottom="10">
 			<s:Label text="Location:" paddingTop="6"/>
-			<s:ComboBox id="locationCB" dataProvider="{locations}" change="dateOrLoc_changeHandler(event)"/>
-			<s:ComboBox id="employeeCB" dataProvider="{employees}" change="dateOrLoc_changeHandler(event)"/>
+			<s:ComboBox id="locationCB" dataProvider="{locations}"/>
+			<s:ComboBox id="employeeCB" dataProvider="{employees}" labelField="fullName"/>
 			<s:Label text="From:" paddingLeft="30" paddingTop="6"/>
-			<mx:DateField id="startDateDF" selectedDate="{new Date()}" change="dateOrLoc_changeHandler(event)"/>
+			<mx:DateField id="startDateDF" selectedDate="{new Date()}"/>
 			<s:Label text="To:" paddingLeft="30" paddingTop="6"/>
-			<mx:DateField id="endDateDF" selectedDate="{new Date()}" change="dateOrLoc_changeHandler(event)"/>			
+			<mx:DateField id="endDateDF" selectedDate="{new Date()}"/>
+			<s:Button id="runReportB" label="Run" click="runReportB_clickHandler(event)"/>
 		</mx:HBox>
+		
 		<mx:Tile width="100%" height="100%">
-			<s:Panel title="Productivity">
-				<mx:LineChart x="10" y="10">
+			<s:Panel title="Daily Activity" width="100%" height="100%">
+				<s:layout>
+					<s:HorizontalLayout/>
+				</s:layout>
+				<mx:ColumnChart id="workDoneCC" x="10" y="10" dataProvider="{worksheets}" showDataTips="true" width="100%" height="100%">
+					<mx:horizontalAxis>
+						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc"/>
+					</mx:horizontalAxis>
+					<mx:verticalAxis>
+						<mx:LinearAxis title="Count"/>						
+					</mx:verticalAxis>
 					<mx:series>
-						<mx:LineSeries displayName="Series 1" yField=""/>
+						<mx:ColumnSeries displayName="Total Scheduled" yField="numScheduled"/>
+						<mx:ColumnSeries displayName="Total No-Shows" yField="numNoShow"/>
+						<mx:ColumnSeries displayName="Total Cancelation" yField="numCancel"/>
+						<mx:ColumnSeries displayName="Total New" yField="numNew"/>
+						<mx:ColumnSeries displayName="Total Drop-Ins" yField="numDropin"/>
 					</mx:series>				
-				</mx:LineChart>							
-			</s:Panel>
-			<s:Panel title="Revenue">
-				<mx:LineChart x="10" y="10">
-					<mx:series>
-						<mx:LineSeries displayName="Series 1" yField=""/>
-					</mx:series>				
-				</mx:LineChart>															
+				</mx:ColumnChart>		
+				<mx:Legend dataProvider="{workDoneCC}"/>
 			</s:Panel>			
-			<s:Panel title="Revenue Balance">
-				<mx:LineChart x="10" y="10">
-					<mx:series>
-						<mx:LineSeries displayName="Series 1" yField=""/>
-					</mx:series>				
-				</mx:LineChart>											
-			</s:Panel>
-			<s:Panel title="Total Scheduled">
-				<mx:LineChart x="10" y="10">
-					<mx:series>
-						<mx:LineSeries displayName="Series 1" yField=""/>
-					</mx:series>				
-				</mx:LineChart>											
-			</s:Panel>
 		</mx:Tile>	
+		
 	</mx:VBox>
 	
 	

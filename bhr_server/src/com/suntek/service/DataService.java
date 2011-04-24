@@ -112,6 +112,37 @@ public class DataService {
 			return null;
 		}			
 	}		
+
+	public List<Worksheet> getWorksheetForClinicAndDateRange(String clinic, Date sd, Date ed){
+		try{
+			logger.debug("getWorksheetForClinicAndDateRange("+clinic+", "+sd+"," + ed+")");
+			return wsDAO.getWorksheetForClinicAndDateRange(clinic, sd, ed);
+		}catch(Throwable t){
+			t.printStackTrace();
+			return null;
+		}			
+	}		
+	
+	public List<Worksheet> getWorksheetForEmployeeAndDateRange(int empId, Date sd, Date ed){
+		try{
+			logger.debug("getWorksheetForEmployeeAndDateRange("+empId+", "+sd+", "+ed+")");
+			return wsDAO.getWorksheetForEmployeeAndDateRange(empId, sd, ed);
+		}catch(Throwable t){
+			t.printStackTrace();
+			return null;
+		}			
+	}		
+
+	public List<Worksheet> getWorksheetForClinicAndEmployeeAndDateRange(String clinic, int empId, Date sd, Date ed){
+		try{
+			logger.debug("getWorksheetForClinicAndEmployeeAndDateRange("+clinic+", "+empId+", "+sd+", "+ed+")");
+			return wsDAO.getWorksheetForClinicAndEmployeeAndDateRange(clinic, empId, sd, ed);
+		}catch(Throwable t){
+			t.printStackTrace();
+			return null;
+		}			
+	}		
+	
 	
 	public boolean updateWorksheet(Worksheet ws){
 		try{
