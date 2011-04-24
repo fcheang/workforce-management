@@ -29,6 +29,17 @@ public class Worksheet {
 	private int numCancel; 
 	private int numNew;
 	private int numDropin;
+	private double dailySalary;
+	
+	private double countyFaceRevenue;
+	private double countyOtherRevenue;
+	private double cccFaceRevenue;
+	private double totalRevenue;
+	private double balance;
+	private double totalFaceHours;
+	private double totalOtherHours;
+	private double productivity;
+	
 	
 	public int getEmpId() {
 		return empId;
@@ -149,10 +160,64 @@ public class Worksheet {
 	}
 	public void setEmpName(String empName) {
 		this.empName = empName;
+	}	
+	public double getCountyFaceRevenue() {
+		return countyFaceRevenue;
 	}
-	
+	public void setCountyFaceRevenue(double countyFaceRevenue) {
+		this.countyFaceRevenue = countyFaceRevenue;
+	}
+	public double getCountyOtherRevenue() {
+		return countyOtherRevenue;
+	}
+	public void setCountyOtherRevenue(double countyOtherRevenue) {
+		this.countyOtherRevenue = countyOtherRevenue;
+	}
+	public double getCccFaceRevenue() {
+		return cccFaceRevenue;
+	}
+	public void setCccFaceRevenue(double cccFaceRevenue) {
+		this.cccFaceRevenue = cccFaceRevenue;
+	}
+	public double getTotalRevenue() {
+		return totalRevenue;
+	}
+	public void setTotalRevenue(double totalRevenue) {
+		this.totalRevenue = totalRevenue;
+	}
+	public double getBalance() {
+		return balance;
+	}
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+	public double getTotalFaceHours() {
+		return totalFaceHours;
+	}
+	public void setTotalFaceHours(double totalFaceHours) {
+		this.totalFaceHours = totalFaceHours;
+	}
+	public double getTotalOtherHours() {
+		return totalOtherHours;
+	}
+	public void setTotalOtherHours(double totalOtherHours) {
+		this.totalOtherHours = totalOtherHours;
+	}
+	public double getProductivity() {
+		return productivity;
+	}
+	public void setProductivity(double productivity) {
+		this.productivity = productivity;
+	}	
+	public double getDailySalary() {
+		return dailySalary;
+	}
+	public void setDailySalary(double dailySalary) {
+		this.dailySalary = dailySalary;
+	}
+
 	public String toString(){
 		return empId+": "+clinic+" "+Constants.df.format(date);
-	}	
+	}
 	
 }
