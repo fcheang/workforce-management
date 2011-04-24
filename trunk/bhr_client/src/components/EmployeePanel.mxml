@@ -104,7 +104,7 @@
 					employees.addItem(emp);
 					employeeDG.selectedIndex = employees.length - 1;
 				}else{
-					Alert.show("Error: Problem create employee!");
+					dataService.getAllEmployees();
 				}
 			}
 			

@@ -26,8 +26,12 @@ public class EmployeeDAOImpl extends SimpleJdbcDaoSupport {
 	
 	public Employee getEmployee(String fname, String lname){
 		String sql = "select empId, title, firstName, middleName, lastName, isActive from employee where firstName = ? and lastName = ?";
-		Employee emp = super.getSimpleJdbcTemplate().queryForObject(sql, rm, fname, lname);
-		return emp;
+		List<Employee> emp = super.getSimpleJdbcTemplate().query(sql, rm, fname, lname);
+		if (emp.size() > 0){
+			return emp.get(0);
+		}else{
+			return null;
+		}
 	}
 	
 	public void setEmployeeActive(int empId){
@@ -36,13 +40,13 @@ public class EmployeeDAOImpl extends SimpleJdbcDaoSupport {
 	}
 	
 	public Employee createEmployee(Employee emp){
-		Employee newEmp = getEmployee(emp.getFirstName(), emp.getLastName());
-		if (newEmp != null){
-			if (!newEmp.getIsActive()){
-				setEmployeeActive(newEmp.getEmpId());
-				return newEmp;
+		Employee exisitEmp = getEmployee(emp.getFirstName(), emp.getLastName());
+		if (exisitEmp != null){
+			if (!exisitEmp.getIsActive()){
+				setEmployeeActive(exisitEmp.getEmpId());
+				return exisitEmp;
 			}else{
-				throw new RuntimeException("Employee "+newEmp+" already exist!");
+				return null;
 			}
 		}else{
 			Connection con = null;
@@ -76,7 +80,7 @@ public class EmployeeDAOImpl extends SimpleJdbcDaoSupport {
 					try{
 						con.close();
 					}catch(Exception e){
-						throw new RuntimeException("Problem closing connection!", e);
+						e.printStackTrace();
 					}
 				}
 			}

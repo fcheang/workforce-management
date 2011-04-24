@@ -52,49 +52,94 @@ public class DataService {
 	// Employee
 	
 	public List<Employee> getAllEmployees(){
-		logger.debug("getAllEmployees()");
-		return empDAO.getAllEmployees();
+		try{
+			logger.debug("getAllEmployees()");
+			return empDAO.getAllEmployees();
+		}catch(Throwable t){
+			t.printStackTrace();
+			return null;
+		}
 	}
 	
 	public Employee createEmployee(Employee emp){
-		logger.debug("createEmployee("+emp+")");
-		return empDAO.createEmployee(emp);
+		try{
+			logger.debug("createEmployee("+emp+")");
+			return empDAO.createEmployee(emp);
+		}catch(Throwable t){
+			t.printStackTrace();
+			return null;
+		}
 	}
 	
 	public boolean updateEmployee(Employee emp){
-		logger.debug("updateEmployee("+emp+")");
-		return empDAO.updateEmployee(emp);
+		try{
+			logger.debug("updateEmployee("+emp+")");
+			return empDAO.updateEmployee(emp);
+		}catch(Throwable t){
+			t.printStackTrace();
+			return false;
+		}
 	}
 
 	public boolean deleteEmployee(Employee emp){
-		logger.debug("deleteEmployee("+emp+")");
-		return empDAO.deleteEmployee(emp.getEmpId());
+		try{
+			logger.debug("deleteEmployee("+emp+")");
+			return empDAO.deleteEmployee(emp.getEmpId());
+		}catch(Throwable t){
+			t.printStackTrace();
+			return false;
+		}			
 	}
 	
 	// Worksheet
 	
 	public Worksheet createWorksheet(Worksheet ws){
-		logger.debug("createWorksheet("+ws+")");
-		return wsDAO.createWorksheet(ws);
+		try{
+			logger.debug("createWorksheet("+ws+")");
+			return wsDAO.createWorksheet(ws);
+		}catch(Throwable t){
+			t.printStackTrace();
+			return null;
+		}			
 	}
 	
 	public List<Worksheet> getWorksheetForClinicAndDate(String clinic, Date date){
-		logger.debug("getWorksheet("+clinic+", "+date+")");
-		return wsDAO.getWorksheet(clinic, date);
+		try{
+			logger.debug("getWorksheet("+clinic+", "+date+")");
+			return wsDAO.getWorksheet(clinic, date);
+		}catch(Throwable t){
+			t.printStackTrace();
+			return null;
+		}			
 	}		
 	
 	public boolean updateWorksheet(Worksheet ws){
-		logger.debug("updateWorksheet("+ws+")");
-		return wsDAO.updateWorksheet(ws);
+		try{
+			logger.debug("updateWorksheet("+ws+")");
+			return wsDAO.updateWorksheet(ws);
+		}catch(Throwable t){
+			t.printStackTrace();
+			return false;
+		}			
 	}
 	
 	public boolean deleteWorksheet(Worksheet ws){
-		logger.debug("deleteWorksheet("+ws+")");
-		return wsDAO.deleteWorksheet(ws.getEmpId(), ws.getClinic(), ws.getDate());
+		try{
+			logger.debug("deleteWorksheet("+ws+")");
+			return wsDAO.deleteWorksheet(ws.getEmpId(), ws.getClinic(), ws.getDate());
+		}catch(Throwable t){
+			t.printStackTrace();
+			return false;
+		}			
 	}
 
 	// Clinic	
 	public List<String> getLocation(){
-		return commDAO.getLocation();
+		try{
+			return commDAO.getLocation();
+		}catch(Throwable t){
+			t.printStackTrace();
+			return null;
+		}			
 	}
 }
