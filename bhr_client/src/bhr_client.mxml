@@ -131,8 +131,14 @@
 	<!-- UI components ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	
 	<mx:Image source="images/bhr_header.jpg" horizontalAlign="center"/>
-	
-	<s:TabBar id="portalTB" includeIn="portalState" dataProvider="{portalVS}"/>
+
+	<mx:HBox horizontalAlign.portalState="left" width.portalState="100%">
+		<s:TabBar id="portalTB" includeIn="portalState" dataProvider="{portalVS}"/>
+		<mx:Spacer width="100%"/>		
+		<s:Button id="logoutB" label="Logout" 
+				  excludeFrom="loginState"				 
+				  click="logoutB_clickHandler(event)"/>
+	</mx:HBox>
 	
 	<mx:ViewStack includeIn="portalState" 
 				  id="portalVS"
@@ -143,11 +149,11 @@
 		<s:NavigatorContent label="Daily Clinic Report">
 			<components:WorksheetPanel width="100%" height="100%" dataService="{dataService}"/>			
 		</s:NavigatorContent>
+		<s:NavigatorContent label="Dashboard">
+			<components:DashboardPanel width="100%" height="100%" dataService="{dataService}"/>
+		</s:NavigatorContent>
 	</mx:ViewStack>
 	
-	<s:Button id="logoutB" label="Logout" 
-			  excludeFrom="loginState"
-			  click="logoutB_clickHandler(event)"/>
 	
 	<components:LoginPanel id="loginPanel" includeIn="loginState" loginEvent="loginpanel1_loginEventHandler(event)" 
 						   width="100%" height="100%"/>				
