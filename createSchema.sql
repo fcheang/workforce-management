@@ -1,12 +1,12 @@
-CREATE TABLE  `user` (
-  `userId` varchar(20) NOT NULL DEFAULT '',
-  `password` varchar(100) DEFAULT NULL,
-  `firstName` varchar(30) DEFAULT NULL,
-  `lastName` varchar(30) DEFAULT NULL,
-  `description` varchar(50) DEFAULT NULL,
-  `roleName` varchar(30) DEFAULT 'Receptionist',
-  PRIMARY KEY (`userId`)
-) ENGINE=InnoDB;
+#CREATE TABLE  `user` (
+#  `userId` varchar(20) NOT NULL DEFAULT '',
+#  `password` varchar(100) DEFAULT NULL,
+#  `firstName` varchar(30) DEFAULT NULL,
+#  `lastName` varchar(30) DEFAULT NULL,
+#  `description` varchar(50) DEFAULT NULL,
+#  `roleName` varchar(30) DEFAULT 'Receptionist',
+#  PRIMARY KEY (`userId`)
+#) ENGINE=InnoDB;
 
 
 CREATE TABLE `Employee` (
@@ -50,17 +50,24 @@ CREATE TABLE `Worksheet` (
 )
 ENGINE = InnoDB;
 
-CREATE TABLE  `version` (
-  `schemaVersion` int(11) DEFAULT NULL,
-  `lastUpdated` date DEFAULT NULL,
-  `description` varchar(100) DEFAULT NULL
-) ENGINE = InnoDB;
+CREATE TABLE `property` (
+  `name` VARCHAR(100) not null,
+  `value` VARCHAR(100) not null,
+  primary key (`name`)
+)
+ENGINE = InnoDB;
+
+#CREATE TABLE  `version` (
+#  `schemaVersion` int(11) DEFAULT NULL,
+#  `lastUpdated` date DEFAULT NULL,
+#  `description` varchar(100) DEFAULT NULL
+#) ENGINE = InnoDB;
 
 # Administrator/Administrator
-insert into user (userId, password, roleName) values ('Administrator', 'vlzdCQ519B0epX0bvCUUZHV3hlYhesLAerlXbPJPGIU=', 'Administrator');
+#insert into user (userId, password, roleName) values ('Administrator', 'vlzdCQ519B0epX0bvCUUZHV3hlYhesLAerlXbPJPGIU=', 'Administrator');
 
-delete from version where schemaVersion = 1;
+#delete from version where schemaVersion = 1;
 
-insert into version (schemaVersion, lastUpdated, description) values (1, '2011-4-1', 'Daily Checkoff sheet');
+#insert into version (schemaVersion, lastUpdated, description) values (1, '2011-4-1', 'Daily Checkoff sheet');
 
 commit;

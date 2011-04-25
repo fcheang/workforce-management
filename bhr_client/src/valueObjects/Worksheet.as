@@ -28,14 +28,14 @@ package valueObjects
 		public var dailySalary:Number; 
 
 		//calculated fields
+		public var totalFaceHours:Number;
+		public var totalOtherHours:Number;
+		public var productivity:Number;
 		public var countyFaceRevenue:Number;
 		public var countyOtherRevenue:Number;
 		public var cccFaceRevenue:Number;
 		public var totalRevenue:Number;
 		public var balance:Number;
-		public var totalFaceHours:Number;
-		public var totalOtherHours:Number;
-		public var productivity:Number;
 		
 		public function Worksheet()
 		{

@@ -272,13 +272,13 @@
 
 			protected function calcTotalFaceHrs(item:Object,  column:DataGridColumn):String
 			{
-				var n:Number = (item.countyFaceMin + item.cccFaceMin + item.hmoFaceMin + item.otherFaceMin)/60;
+				var n:Number = item.totalFaceHours;
 				return n.toPrecision(2);
 			}
 			
 			protected function calcTotalOtherHrs(item:Object,  column:DataGridColumn):String
 			{
-				 var n:Number = (item.countyOtherMin + item.cccOtherMin)/60;
+				 var n:Number = item.totalOtherHours;
 				 return n.toPrecision(2);
 			}
 

@@ -31,14 +31,15 @@ public class Worksheet {
 	private int numDropin;
 	private double dailySalary;
 	
-	private double countyFaceRevenue;
-	private double countyOtherRevenue;
-	private double cccFaceRevenue;
-	private double totalRevenue;
-	private double balance;
-	private double totalFaceHours;
-	private double totalOtherHours;
-	private double productivity;
+	// calculated value
+	private double totalFaceHours = -1;
+	private double totalOtherHours = -1;
+	private double productivity = -1;
+	private double countyFaceRevenue = -1;
+	private double countyOtherRevenue = -1;
+	private double cccFaceRevenue = -1;
+	private double totalRevenue = -1;
+	private double balance = -1;
 	
 	
 	public int getEmpId() {
@@ -192,12 +193,18 @@ public class Worksheet {
 		this.balance = balance;
 	}
 	public double getTotalFaceHours() {
+		if (totalFaceHours == -1){
+			totalFaceHours = (this.countyFaceMin + this.cccFaceMin + this.hmoFaceMin + this.otherFaceMin)/60;
+		}
 		return totalFaceHours;
 	}
 	public void setTotalFaceHours(double totalFaceHours) {
 		this.totalFaceHours = totalFaceHours;
 	}
 	public double getTotalOtherHours() {
+		if (totalOtherHours == -1){
+			totalOtherHours = (this.countyOtherMin + this.cccOtherMin)/60;
+		}
 		return totalOtherHours;
 	}
 	public void setTotalOtherHours(double totalOtherHours) {
