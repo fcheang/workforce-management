@@ -23,6 +23,7 @@
 		<mx:NumberValidator id="numCancelV" domain="int" required="false" minValue="0" maxValue="1000" source="{numCancelTI}" property="text" triggerEvent=""/>
 		<mx:NumberValidator id="numNewV" domain="int" required="false" minValue="0" maxValue="1000" source="{numNewTI}" property="text" triggerEvent=""/>
 		<mx:NumberValidator id="numDropinV" domain="int" required="false" minValue="0" maxValue="1000" source="{numDropinTI}" property="text" triggerEvent=""/>
+		<mx:NumberValidator id="dailySalaryV" domain="real" required="false" minValue="0" source="{dailySalaryTI}" property="text" triggerEvent=""/>		
 	</fx:Declarations>	
 	
 	
@@ -130,7 +131,7 @@
 			{
 				if (event.result != null){
 					worksheets.addItem(event.result);
-					Alert.show("Worksheet entry created successfully!");
+					Alert.show("Worksheet entry was created successfully!");
 				}else{
 					Alert.show("Problem create worksheet entry!");
 				}
@@ -151,9 +152,9 @@
 
 			protected function dataService_updateWorksheet_resultHandler(event:ResultEvent):void
 			{
-				var updated:Boolean = event.result;
-				if (updated){
-					Alert.show("Worksheet entry updated!");
+				if (event.result != null){
+					worksheets.setItemAt(event.result, worksheetDG.selectedIndex);
+					Alert.show("Worksheet entry was updated successfully!");
 				}else{
 					Alert.show("Problem update worksheet entry!");
 				}
@@ -273,13 +274,13 @@
 			protected function calcTotalFaceHrs(item:Object,  column:DataGridColumn):String
 			{
 				var n:Number = item.totalFaceHours;
-				return n.toPrecision(2);
+				return nf.format(2);
 			}
 			
 			protected function calcTotalOtherHrs(item:Object,  column:DataGridColumn):String
 			{
 				 var n:Number = item.totalOtherHours;
-				 return n.toPrecision(2);
+				 return nf.format(2);
 			}
 
 			protected function calcTotalSeen(item:Object,  column:DataGridColumn):String
@@ -289,43 +290,37 @@
 
 			protected function calcProductivity(item:Object,  column:DataGridColumn):String
 			{
-				var n:Number;
-				if (item.hrsWorked > 0){
-					n = ((item.countyFaceMin + item.cccFaceMin + item.hmoFaceMin + item.otherFaceMin + item.countyOtherMin + item.cccOtherMin) / (item.hrsWorked * 60)) * 100;
-				}else{
-					n = 0;
-				}
-				return nf.format(n) + "%";								
+				var n:Number = item.productivity;
+				return nf.format(n)+"%";					
 			}
 			
 			protected function calcCountyFaceRev(item:Object,  column:DataGridColumn):String
 			{
-				var n:Number = item.countyFaceMin * 4.66;
+				var n:Number = item.countyFaceRevenue;
 				return "$"+nf.format(n);
 			}			
 			
 			protected function calcCountyOtherRev(item:Object,  column:DataGridColumn):String
 			{
-				var n:Number = item.countyOtherMin * 4.66;
+				var n:Number = item.countyOtherRevenue;
 				return "$"+nf.format(n);
 			}
 			
 			protected function calcCCCRev(item:Object,  column:DataGridColumn):String
 			{
-				var n:Number = item.cccFaceMin * 4.33;
+				var n:Number = item.cccFaceRevenue;
 				return "$"+nf.format(n);				
 			}
 
 			protected function calcRevenue(item:Object,  column:DataGridColumn):String
 			{
-				var n:Number = (item.countyFaceMin * 4.66) + (item.countyOtherMin * 4.66) + (item.cccFaceMin * 4.33);
+				var n:Number = item.totalRevenue;
 				return "$"+nf.format(n);
 			}			 
 
 			protected function calcBalance(item:Object,  column:DataGridColumn):String
 			{
-				var n:Number = (item.countyFaceMin * 4.66) + (item.countyOtherMin * 4.66) + (item.cccFaceMin * 4.33);
-				n = n - item.dailySalary;
+				var n:Number = item.balance;
 				return "$"+nf.format(n);
 			}		
 			
@@ -346,6 +341,11 @@
 					empNameTI.visible = true;
 					validateForm();
 				}
+			}
+
+			protected function worksheetDG_itemClickHandler(event:ListEvent):void
+			{
+				saveB.enabled = true;
 			}
 
 		]]>
@@ -369,7 +369,7 @@
 				horizontalScrollPolicy="auto" 
 				verticalScrollPolicy="auto" 
 				resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" id="worksheetDG"
-			    dataProvider="{worksheets}" change="worksheetDG_changeHandler(event)">
+			    dataProvider="{worksheets}" change="worksheetDG_changeHandler(event)" itemClick="worksheetDG_itemClickHandler(event)">
 				<mx:columns>
 					<mx:DataGridColumn headerText="{EMP_NAME}" dataField="empName" width="150"/>
 					<mx:DataGridColumn headerText="{HRS_WORKED}" dataField="hrsWorked" width="120"/>

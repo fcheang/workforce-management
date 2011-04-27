@@ -99,10 +99,45 @@
 			<s:Button id="runReportB" label="Run" click="runReportB_clickHandler(event)"/>
 		</mx:HBox>
 		
-		<mx:Tile width="100%" height="100%">
+		<mx:Tile width="100%" height="100%" >
+			<s:Panel title="Reported Hours" width="100%" height="100%">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
+				</s:layout>
+				<mx:ColumnChart id="hoursCC" x="10" y="10" dataProvider="{worksheets}" showDataTips="true" width="100%" height="100%">
+					<mx:horizontalAxis>
+						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc"/>
+					</mx:horizontalAxis>
+					<mx:verticalAxis>
+						<mx:LinearAxis title="Hours"/>						
+					</mx:verticalAxis>
+					<mx:series>
+						<mx:ColumnSeries displayName="Total Hours (face)" yField="totalFaceHours"/>
+						<mx:ColumnSeries displayName="Total Hours (other)" yField="totalOtherHours"/>
+					</mx:series>				
+				</mx:ColumnChart>		
+				<mx:Legend dataProvider="{hoursCC}"/>
+			</s:Panel>			
+			<s:Panel title="Productivity" width="100%" height="100%">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
+				</s:layout>
+				<mx:LineChart id="prodCC" x="10" y="10" dataProvider="{worksheets}" showDataTips="true" width="100%" height="100%">
+					<mx:horizontalAxis>
+						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc"/>
+					</mx:horizontalAxis>
+					<mx:verticalAxis>
+						<mx:LinearAxis title="%" minimum="0" maximum="100"/>						
+					</mx:verticalAxis>
+					<mx:series>
+						<mx:LineSeries displayName="Productivity" yField="productivity"/>
+					</mx:series>				
+				</mx:LineChart>		
+				<mx:Legend dataProvider="{prodCC}"/>
+			</s:Panel>			
 			<s:Panel title="Daily Activity" width="100%" height="100%">
 				<s:layout>
-					<s:HorizontalLayout/>
+					<s:HorizontalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
 				</s:layout>
 				<mx:ColumnChart id="workDoneCC" x="10" y="10" dataProvider="{worksheets}" showDataTips="true" width="100%" height="100%">
 					<mx:horizontalAxis>
@@ -112,6 +147,7 @@
 						<mx:LinearAxis title="Count"/>						
 					</mx:verticalAxis>
 					<mx:series>
+						<mx:ColumnSeries displayName="Total Seen" yField="totalSeen"/>
 						<mx:ColumnSeries displayName="Total Scheduled" yField="numScheduled"/>
 						<mx:ColumnSeries displayName="Total No-Shows" yField="numNoShow"/>
 						<mx:ColumnSeries displayName="Total Cancelation" yField="numCancel"/>
@@ -121,6 +157,25 @@
 				</mx:ColumnChart>		
 				<mx:Legend dataProvider="{workDoneCC}"/>
 			</s:Panel>			
+			<s:Panel title="Income and Expense" width="100%" height="100%">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
+				</s:layout>
+				<mx:ColumnChart id="incomeCC" x="10" y="10" dataProvider="{worksheets}" showDataTips="true" width="100%" height="100%">
+					<mx:horizontalAxis>
+						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc"/>
+					</mx:horizontalAxis>
+					<mx:verticalAxis>
+						<mx:LinearAxis title="$"/>						
+					</mx:verticalAxis>
+					<mx:series>
+						<mx:ColumnSeries displayName="Total Revenue" yField="totalRevenue"/>
+						<mx:ColumnSeries displayName="Daily Salary" yField="dailySalary"/>
+						<mx:ColumnSeries displayName="Balance" yField="balance"/>
+					</mx:series>				
+				</mx:ColumnChart>		
+				<mx:Legend dataProvider="{incomeCC}"/>
+			</s:Panel>						
 		</mx:Tile>	
 		
 	</mx:VBox>

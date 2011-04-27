@@ -28,6 +28,7 @@ package valueObjects
 		public var dailySalary:Number; 
 
 		//calculated fields
+		public var totalSeen:int;
 		public var totalFaceHours:Number;
 		public var totalOtherHours:Number;
 		public var productivity:Number;

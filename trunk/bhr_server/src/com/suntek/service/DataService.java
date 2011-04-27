@@ -144,13 +144,17 @@ public class DataService {
 	}		
 	
 	
-	public boolean updateWorksheet(Worksheet ws){
+	public Worksheet updateWorksheet(Worksheet ws){
 		try{
 			logger.debug("updateWorksheet("+ws+")");
-			return wsDAO.updateWorksheet(ws);
+			if (wsDAO.updateWorksheet(ws)){
+				return ws;
+			}else{
+				return null;
+			}
 		}catch(Throwable t){
 			t.printStackTrace();
-			return false;
+			return null;
 		}			
 	}
 	

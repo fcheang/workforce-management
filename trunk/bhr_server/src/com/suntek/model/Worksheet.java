@@ -32,14 +32,15 @@ public class Worksheet {
 	private double dailySalary;
 	
 	// calculated value
-	private double totalFaceHours = -1;
-	private double totalOtherHours = -1;
-	private double productivity = -1;
-	private double countyFaceRevenue = -1;
-	private double countyOtherRevenue = -1;
-	private double cccFaceRevenue = -1;
-	private double totalRevenue = -1;
-	private double balance = -1;
+	private int totalSeen;
+	private double totalFaceHours;
+	private double totalOtherHours;
+	private double productivity;
+	private double countyFaceRevenue;
+	private double countyOtherRevenue;
+	private double cccFaceRevenue;
+	private double totalRevenue;
+	private double balance;
 	
 	
 	public int getEmpId() {
@@ -163,54 +164,60 @@ public class Worksheet {
 		this.empName = empName;
 	}	
 	public double getCountyFaceRevenue() {
+		countyFaceRevenue = this.countyFaceMin * 4.66;
 		return countyFaceRevenue;
 	}
 	public void setCountyFaceRevenue(double countyFaceRevenue) {
 		this.countyFaceRevenue = countyFaceRevenue;
 	}
 	public double getCountyOtherRevenue() {
+		countyOtherRevenue = this.countyOtherMin * 4.66;
 		return countyOtherRevenue;
 	}
 	public void setCountyOtherRevenue(double countyOtherRevenue) {
 		this.countyOtherRevenue = countyOtherRevenue;
 	}
 	public double getCccFaceRevenue() {
+		cccFaceRevenue = this.cccFaceMin * 4.33;
 		return cccFaceRevenue;
 	}
 	public void setCccFaceRevenue(double cccFaceRevenue) {
 		this.cccFaceRevenue = cccFaceRevenue;
 	}
 	public double getTotalRevenue() {
+		totalRevenue = this.getCountyFaceRevenue() + this.getCountyOtherRevenue() + this.getCccFaceRevenue();
 		return totalRevenue;
 	}
 	public void setTotalRevenue(double totalRevenue) {
 		this.totalRevenue = totalRevenue;
 	}
 	public double getBalance() {
+		balance = this.getTotalRevenue() - this.dailySalary;
 		return balance;
 	}
 	public void setBalance(double balance) {
 		this.balance = balance;
 	}
 	public double getTotalFaceHours() {
-		if (totalFaceHours == -1){
-			totalFaceHours = (this.countyFaceMin + this.cccFaceMin + this.hmoFaceMin + this.otherFaceMin)/60;
-		}
+		totalFaceHours = (this.countyFaceMin + this.cccFaceMin + this.hmoFaceMin + this.otherFaceMin)/60.0;
 		return totalFaceHours;
 	}
 	public void setTotalFaceHours(double totalFaceHours) {
 		this.totalFaceHours = totalFaceHours;
 	}
 	public double getTotalOtherHours() {
-		if (totalOtherHours == -1){
-			totalOtherHours = (this.countyOtherMin + this.cccOtherMin)/60;
-		}
+		totalOtherHours = (this.countyOtherMin + this.cccOtherMin)/60.0;
 		return totalOtherHours;
 	}
 	public void setTotalOtherHours(double totalOtherHours) {
 		this.totalOtherHours = totalOtherHours;
 	}
 	public double getProductivity() {
+		if (hrsWorked > 0){
+			productivity = ((this.getTotalFaceHours() + this.getTotalOtherHours()) / (this.hrsWorked)) * 100;
+		}else{
+			productivity = 0;
+		}
 		return productivity;
 	}
 	public void setProductivity(double productivity) {
@@ -221,6 +228,15 @@ public class Worksheet {
 	}
 	public void setDailySalary(double dailySalary) {
 		this.dailySalary = dailySalary;
+	}
+	public int getTotalSeen() {
+		if (totalSeen == -1){
+			totalSeen = this.countySeen + this.cccSeen + this.hmoSeen + this.otherSeen;
+		}
+		return totalSeen;
+	}
+	public void setTotalSeen(int totalSeen) {
+		this.totalSeen = totalSeen;
 	}
 
 	public String toString(){
