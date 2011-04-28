@@ -38,14 +38,18 @@ public class DataService {
 	
 	// Common 
 	
-	public boolean login(User u) {
+	public List<String> login(User u) {
 		try{
 			logger.debug("login("+u.getUsername()+", "+u.getPassword()+")");
 			User loggedInUser = userDAO.getUser(u.getUsername(), u.getPassword());
-			return loggedInUser != null;
+			if (loggedInUser != null){
+				return userDAO.getRoles(u.getUsername());
+			}else{
+				return null;
+			}
 		}catch(Throwable t){
 			logger.error("Problem login with user: "+u.getUsername()+" pass: "+u.getPassword(), t);
-			return false;
+			return null;
 		}
 	}
 
