@@ -23,7 +23,7 @@
 		<mx:NumberValidator id="numCancelV" domain="int" required="false" minValue="0" maxValue="1000" source="{numCancelTI}" property="text" triggerEvent=""/>
 		<mx:NumberValidator id="numNewV" domain="int" required="false" minValue="0" maxValue="1000" source="{numNewTI}" property="text" triggerEvent=""/>
 		<mx:NumberValidator id="numDropinV" domain="int" required="false" minValue="0" maxValue="1000" source="{numDropinTI}" property="text" triggerEvent=""/>
-		<mx:NumberValidator id="dailySalaryV" domain="real" required="false" minValue="0" source="{dailySalaryTI}" property="text" triggerEvent=""/>		
+		<mx:NumberValidator id="dailySalaryV" domain="real" required="false" minValue="0" allowNegative="false" source="{dailySalaryTI}" property="text" triggerEvent=""/>		
 	</fx:Declarations>	
 	
 	
@@ -285,7 +285,7 @@
 
 			protected function calcTotalSeen(item:Object,  column:DataGridColumn):String
 			{
-				return item.countySeen + item.cccSeen + item.hmoSeen + item.otherSeen;
+				return item.totalSeen;
 			}
 
 			protected function calcProductivity(item:Object,  column:DataGridColumn):String

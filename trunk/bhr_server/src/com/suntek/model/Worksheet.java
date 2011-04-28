@@ -230,9 +230,7 @@ public class Worksheet {
 		this.dailySalary = dailySalary;
 	}
 	public int getTotalSeen() {
-		if (totalSeen == -1){
-			totalSeen = this.countySeen + this.cccSeen + this.hmoSeen + this.otherSeen;
-		}
+		totalSeen = this.countySeen + this.cccSeen + this.hmoSeen + this.otherSeen;
 		return totalSeen;
 	}
 	public void setTotalSeen(int totalSeen) {

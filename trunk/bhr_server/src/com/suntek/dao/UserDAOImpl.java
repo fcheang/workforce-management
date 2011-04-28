@@ -12,6 +12,9 @@ import com.suntek.util.SecurityUtil;
 
 public class UserDAOImpl extends SimpleJdbcDaoSupport {
 
+	private UserRowMapper userRm = new UserRowMapper();
+	private StringRowMapper strRm = new StringRowMapper();
+	
 	public UserDAOImpl(){		
 	}
 	
@@ -19,7 +22,7 @@ public class UserDAOImpl extends SimpleJdbcDaoSupport {
 		password = SecurityUtil.encrypt(password);
         
 		String sql = "select userId, password from user where userId = ? and password = ?";		
-		List<User> users = getSimpleJdbcTemplate().query(sql, new UserRowMapper(), userName, password);
+		List<User> users = getSimpleJdbcTemplate().query(sql, userRm, userName, password);
 		if (users.size() > 0){
 			return users.get(0);
 		}else{
@@ -27,6 +30,11 @@ public class UserDAOImpl extends SimpleJdbcDaoSupport {
 		}
 	}
 
+	public List<String> getRoles(String userName){
+		String sql = "select roleName from userRole where userId = ?";
+		return super.getSimpleJdbcTemplate().query(sql, strRm, userName);
+	}
+	
 	private class UserRowMapper implements ParameterizedRowMapper<User>{
 		public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 			User u = new User();
