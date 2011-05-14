@@ -43,5 +43,10 @@ public class UserDAOImpl extends SimpleJdbcDaoSupport {
 			return u;
 		}
 	}
+
+	public List<String> getCapability(String userId) {
+		String sql = "select object from userCapability where userId = ? order by object";
+		return super.getSimpleJdbcTemplate().query(sql, strRm, userId);
+	}
 	
 }
