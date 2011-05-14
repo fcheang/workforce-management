@@ -60,7 +60,10 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.utils.URLUtil;
-			
+			import spark.components.NavigatorContent;
+			import components.DashboardPanel;
+			import components.EmployeePanel;
+			import components.WorksheetPanel;			
 			import valueObjects.User;
 			
 			[Bindable]
@@ -88,30 +91,67 @@
 			{
 				dataService.login(event.user);
 				//currentState="portalState";
+				
 			}
 			
 			
 			protected function dataService_login_resultHandler(event:ResultEvent):void
 			{
-				var roles:ArrayCollection = event.result as ArrayCollection;
-				if (roles == null){
-					Alert.show("Invalid username or password!", "Error Message");					
-				}else{
-					if (roles.contains(ADMINISTRATOR) || roles.contains(BILLING) || roles.contains(MANAGER)){
-						currentState="portalState";
-					}else{
-						Alert.show("You do not have permission to access the system!", "No Permission");
-					}
+				var loggedInUser:User = event.result as User;
+				if (loggedInUser == null){
+					Alert.show("Invalid username or password!", "Error Message");
+					return;
 				}
+				dataService.getCapability(loggedInUser.username);
 			}
 			
+			protected function dataService_getCapability_resultHandler(event:ResultEvent):void
+			{
+				currentState="portalState";
+				
+				var caps:ArrayCollection = event.result as ArrayCollection;
+				var cap:String;
+				
+				var i:int;
+				for (i=0; i<caps.length; i++){
+					cap = caps[i];
+					var content:NavigatorContent = new NavigatorContent();
+					switch (cap){
+						case "employeeTab":
+							var empPanel:EmployeePanel = new EmployeePanel();
+							empPanel.dataService = dataService;
+							empPanel.percentWidth = 100;
+							empPanel.percentHeight = 100;
+							content.addElement(empPanel);
+							content.label = "Employee";
+							portalVS.addChild(content);							
+							break;
+						case "dashboardTab":
+							var dbPanel:DashboardPanel = new DashboardPanel();
+							dbPanel.dataService = dataService;
+							dbPanel.percentWidth = 100;
+							dbPanel.percentHeight = 100;
+							content.addElement(dbPanel);
+							content.label = "Dashboard";
+							portalVS.addChild(content);
+							break;
+						case "dailyClinicReportTab":
+							var wsPanel:WorksheetPanel = new WorksheetPanel();
+							wsPanel.dataService = dataService;
+							wsPanel.percentWidth = 100;
+							wsPanel.percentHeight = 100;
+							content.addElement(wsPanel);
+							content.label = "Daily Clinic Report";
+							portalVS.addChild(content);
+							break;							
+					};
+				} 
+			}
 			
 			protected function dataService_faultHandler(event:FaultEvent):void
 			{
 				Alert.show(event.fault.faultString, "Error Message");
-			}
-			
-			
+			}						
 			
 			protected function logoutB_clickHandler(event:MouseEvent):void
 			{
@@ -133,6 +173,7 @@
 						fault="dataService_faultHandler(event)"
 						endpoint="http://{serverName}:{serverPort}/bhr2/messagebroker/amf">
 			<mx:method name="login" result="dataService_login_resultHandler(event)"/>
+			<mx:method name="getCapability" result="dataService_getCapability_resultHandler(event)"/>
 		</s:RemoteObject>		
 	</fx:Declarations>
 	
@@ -152,15 +193,6 @@
 	<mx:ViewStack includeIn="portalState" 
 				  id="portalVS"
 				  resizeToContent="true" width="100%" height="100%">
-		<s:NavigatorContent label="Employee">
-			<components:EmployeePanel width="100%" height="100%" dataService="{dataService}"/>			
-		</s:NavigatorContent>
-		<s:NavigatorContent label="Daily Clinic Report">
-			<components:WorksheetPanel width="100%" height="100%" dataService="{dataService}"/>			
-		</s:NavigatorContent>
-		<s:NavigatorContent label="Dashboard">
-			<components:DashboardPanel width="100%" height="100%" dataService="{dataService}"/>
-		</s:NavigatorContent>
 	</mx:ViewStack>
 	
 	

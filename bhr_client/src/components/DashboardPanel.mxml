@@ -32,6 +32,11 @@
 				dataService.getWorksheetForClinicAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
 				dataService.getWorksheetForEmployeeAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
 				dataService.getWorksheetForClinicAndEmployeeAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
+				
+				dataService.getWorksheetForClinicAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
+				dataService.getWorksheetForEmployeeAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
+				dataService.getWorksheetForClinicAndEmployeeAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
+				
 				dataService.getLocation.addEventListener(ResultEvent.RESULT, dataService_getLocation_resultHandler);
 				dataService.getAllEmployees.addEventListener(ResultEvent.RESULT, dataService_getAllEmployee_resultHandler);
 				
@@ -52,7 +57,14 @@
 			protected function dataService_getWorksheet_resultHandler(event:ResultEvent):void				
 			{	
 				worksheets = event.result as ArrayCollection; 
+				runReportB.enabled = true;
 			}
+			
+			protected function dataService_getWorksheet_faultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.fault.faultString, "Error Message");
+				runReportB.enabled = true;
+			}			
 						
 			protected function runReportB_clickHandler(event:MouseEvent):void
 			{
@@ -66,11 +78,15 @@
 					loc = locationCB.selectedItem;
 					if (emp != null && loc != null){
 						dataService.getWorksheetForClinicAndEmployeeAndDateRange(loc, emp.empId, startDateDF.selectedDate, endDateDF.selectedDate);
+						this.title = "Report for "+emp.fullName+" at "+loc+" from "+dateFormatter.format(startDateDF.selectedDate)+" to "+dateFormatter.format(endDateDF.selectedDate);
 					}else if (emp == null){
 						dataService.getWorksheetForClinicAndDateRange(loc, startDateDF.selectedDate, endDateDF.selectedDate);
+						this.title = "Report for "+loc+" from "+dateFormatter.format(startDateDF.selectedDate)+" to "+dateFormatter.format(endDateDF.selectedDate);						
 					}else{
 						dataService.getWorksheetForEmployeeAndDateRange(emp.empId, startDateDF.selectedDate, endDateDF.selectedDate);
+						this.title = "Report for "+emp.fullName+" from "+dateFormatter.format(startDateDF.selectedDate)+" to "+dateFormatter.format(endDateDF.selectedDate);						
 					}
+					runReportB.enabled = false;
 				}
 			}
 

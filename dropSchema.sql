@@ -3,3 +3,4 @@
 drop table Employee;
 drop table Worksheet;
 drop table Property;
+drop table userCapability;

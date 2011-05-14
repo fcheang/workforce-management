@@ -57,6 +57,15 @@ CREATE TABLE `property` (
 )
 ENGINE = InnoDB;
 
+CREATE TABLE `userCapability` (
+  `userid` VARCHAR(20) NOT NULL,
+  `object` VARCHAR(100) NOT NULL,
+  `permission` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`userid`, `object`)
+)
+ENGINE = InnoDB;
+
+
 #CREATE TABLE  `version` (
 #  `schemaVersion` int(11) DEFAULT NULL,
 #  `lastUpdated` date DEFAULT NULL,

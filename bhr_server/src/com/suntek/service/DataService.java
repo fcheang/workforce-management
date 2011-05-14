@@ -1,5 +1,6 @@
 package com.suntek.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,18 +39,24 @@ public class DataService {
 	
 	// Common 
 	
-	public List<String> login(User u) {
+	public User login(User u) {
 		try{
 			logger.debug("login("+u.getUsername()+", "+u.getPassword()+")");
-			User loggedInUser = userDAO.getUser(u.getUsername(), u.getPassword());
-			if (loggedInUser != null){
-				return userDAO.getRoles(u.getUsername());
-			}else{
-				return null;
-			}
+			return userDAO.getUser(u.getUsername(), u.getPassword());			
 		}catch(Throwable t){
 			logger.error("Problem login with user: "+u.getUsername()+" pass: "+u.getPassword(), t);
 			return null;
+		}
+	}
+	
+	public List<String> getCapability(String userId){
+		List<String> cap = new ArrayList<String>();
+		try{
+			logger.debug("getCapability("+userId+")");
+			return userDAO.getCapability(userId);
+		}catch(Throwable t){
+			t.printStackTrace();
+			return cap;
 		}
 	}
 
