@@ -50,20 +50,29 @@ CREATE TABLE `Worksheet` (
 )
 ENGINE = InnoDB;
 
-CREATE TABLE `property` (
-  `name` VARCHAR(100) not null,
-  `value` VARCHAR(100) not null,
-  primary key (`name`)
+CREATE TABLE `permission_type` (
+  `name` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`name`)
 )
 ENGINE = InnoDB;
 
-CREATE TABLE `userCapability` (
-  `userid` VARCHAR(20) NOT NULL,
+CREATE TABLE `permission` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   `object` VARCHAR(100) NOT NULL,
-  `permission` VARCHAR(20) NOT NULL,
-  PRIMARY KEY (`userid`, `object`)
+  `userId` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `AK_permission_1`(`object`, `userId`),
+  CONSTRAINT `FK_permission_1` FOREIGN KEY `FK_permission_1` (`object`)
+    REFERENCES `permission_type` (`name`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 )
 ENGINE = InnoDB;
+
+insert into permission_type values ('adminTab');
+insert into permission_type values ('dashboardTab');
+insert into permission_type values ('employeeTab');
+insert into permission_type values ('dailyClinicReportTab');
 
 
 #CREATE TABLE  `version` (

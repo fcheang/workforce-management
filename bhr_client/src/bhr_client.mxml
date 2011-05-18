@@ -52,6 +52,11 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import components.AdminPanel;
+			import components.DashboardPanel;
+			import components.EmployeePanel;
+			import components.WorksheetPanel;
+			
 			import events.LoginEvent;
 			
 			import mx.collections.ArrayCollection;
@@ -60,10 +65,9 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.utils.URLUtil;
+			
 			import spark.components.NavigatorContent;
-			import components.DashboardPanel;
-			import components.EmployeePanel;
-			import components.WorksheetPanel;			
+			
 			import valueObjects.User;
 			
 			[Bindable]
@@ -102,10 +106,10 @@
 					Alert.show("Invalid username or password!", "Error Message");
 					return;
 				}
-				dataService.getCapability(loggedInUser.username);
+				dataService.getPermissionObject(loggedInUser.username);
 			}
 			
-			protected function dataService_getCapability_resultHandler(event:ResultEvent):void
+			protected function dataService_getPermissionObject_resultHandler(event:ResultEvent):void
 			{
 				currentState="portalState";
 				
@@ -117,6 +121,15 @@
 					cap = caps[i];
 					var content:NavigatorContent = new NavigatorContent();
 					switch (cap){
+						case "adminTab":
+							var adminPanel:AdminPanel = new AdminPanel();
+							adminPanel.dataService = dataService;
+							adminPanel.percentWidth = 100;
+							adminPanel.percentHeight = 100;
+							content.addElement(adminPanel);
+							content.label = "User Admin";
+							portalVS.addChild(content);
+							break;
 						case "employeeTab":
 							var empPanel:EmployeePanel = new EmployeePanel();
 							empPanel.dataService = dataService;
@@ -132,7 +145,7 @@
 							dbPanel.percentWidth = 100;
 							dbPanel.percentHeight = 100;
 							content.addElement(dbPanel);
-							content.label = "Dashboard";
+							content.label = "Analytics";
 							portalVS.addChild(content);
 							break;
 						case "dailyClinicReportTab":
@@ -173,7 +186,7 @@
 						fault="dataService_faultHandler(event)"
 						endpoint="http://{serverName}:{serverPort}/bhr2/messagebroker/amf">
 			<mx:method name="login" result="dataService_login_resultHandler(event)"/>
-			<mx:method name="getCapability" result="dataService_getCapability_resultHandler(event)"/>
+			<mx:method name="getPermissionObject" result="dataService_getPermissionObject_resultHandler(event)"/>
 		</s:RemoteObject>		
 	</fx:Declarations>
 	

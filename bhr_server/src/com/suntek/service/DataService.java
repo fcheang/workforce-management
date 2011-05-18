@@ -16,6 +16,7 @@ public class DataService {
 	private WorksheetDAOImpl wsDAO = null;
 	private EmployeeDAOImpl empDAO = null;
 	private CommonDAOImpl commDAO = null;
+	private PermissionDAOImpl permDAO;
 	
 	public DataService(){		
 	}
@@ -36,6 +37,10 @@ public class DataService {
 		this.commDAO = commDAO;
 	}
 	
+	public void setPermDAO(PermissionDAOImpl permDAO){
+		this.permDAO = permDAO;
+	}
+
 	
 	// Common 
 	
@@ -49,17 +54,6 @@ public class DataService {
 		}
 	}
 	
-	public List<String> getCapability(String userId){
-		List<String> cap = new ArrayList<String>();
-		try{
-			logger.debug("getCapability("+userId+")");
-			return userDAO.getCapability(userId);
-		}catch(Throwable t){
-			t.printStackTrace();
-			return cap;
-		}
-	}
-
 	// Employee
 	
 	public List<Employee> getAllEmployees(){
@@ -187,5 +181,70 @@ public class DataService {
 			t.printStackTrace();
 			return null;
 		}			
+	}
+	
+	// Permission	
+	public List<String> getAllPermissionType(){
+		try{
+			return commDAO.getAllPermissionType();
+		}catch(Throwable t){
+			t.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<String> getAllUserId(){
+		try{
+			return commDAO.getAllUserId();
+		}catch(Throwable t){
+			t.printStackTrace();
+			return null;
+		}		
+	}
+	
+	public List<String> getPermissionObject(String userId){
+		try{
+			return permDAO.getPermissionObject(userId);
+		}catch(RuntimeException t){
+			t.printStackTrace();
+			throw t;
+		}
+	}
+
+	
+	public List<Permission> getAllPermission(){
+		try{
+			return permDAO.getAllPermission();
+		}catch(Throwable t){
+			t.printStackTrace();
+			return null;
+		}				
+	}
+	
+	public Permission createPermission(Permission perm){
+		try{
+			return permDAO.createPermission(perm);
+		}catch(Throwable t){
+			t.printStackTrace();
+			return null;
+		}						
+	}
+	
+	public boolean updatePermission(Permission perm){
+		try{
+			return permDAO.updatePermission(perm);
+		}catch(Throwable t){
+			t.printStackTrace();
+			return false;
+		}								
+	}
+	
+	public boolean deletePermission(Permission perm){
+		try{
+			return permDAO.deletePermission(perm);
+		}catch(Throwable t){
+			t.printStackTrace();
+			return false;
+		}								
 	}
 }
