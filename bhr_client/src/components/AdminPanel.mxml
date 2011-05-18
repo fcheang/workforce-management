@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="panel1_creationCompleteHandler(event)">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.IList;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.remoting.mxml.RemoteObject;
+			
+			import valueObjects.Employee;
+			import valueObjects.Permission;
+			
+			[Bindable]
+			private var PERMISSION_TYPE:String = "Permission Type";
+			[Bindable]
+			private var USER_ID:String = "UserId";
+			
+			public var dataService:RemoteObject;
+			
+			[Bindable]
+			private var permissionTypes:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			private var users:ArrayCollection = new ArrayCollection();			
+				
+			[Bindable]
+			private var permissions:ArrayCollection = new ArrayCollection();
+			
+			protected function newB_clickHandler(event:MouseEvent):void
+			{
+				permissionDG.selectedIndex = -1;
+				typeL.setFocus();	
+			}
+			
+			
+			protected function rmB_clickHandler(event:MouseEvent):void
+			{
+				var permission:Permission;
+				permission = permissionDG.selectedItem as Permission;
+				if (permission != null){
+					dataService.deletePermission(permission);
+				}
+			}
+			
+			protected function saveB_clickHandler(event:MouseEvent):void
+			{
+				// validate form
+				if (typeL.selectedIndex == -1){
+					Alert.show("Please select an permission type");
+					typeL.setFocus();
+					return;
+				}
+
+				if (userL.selectedIndex == -1){
+					Alert.show("Please select an UserId");
+					userL.setFocus();
+					return;
+				}
+				
+				var permission:Permission;
+				if (permissionDG.selectedIndex == -1){ 
+					permission = new Permission();
+					permission.object = typeL.selectedItem;
+					permission.userId = userL.selectedItem;
+					dataService.createPermission(permission);
+				}else{
+					permission = permissionDG.selectedItem as Permission;
+					dataService.updatePermission(permission);
+				}
+			}
+			
+			protected function panel1_creationCompleteHandler(event:FlexEvent):void
+			{				
+				dataService.getAllPermissionType.addEventListener(ResultEvent.RESULT, dataService_getAllPermissionType_resultHandler);
+				dataService.getAllUserId.addEventListener(ResultEvent.RESULT, dataService_getAllUserId_resultHandler);
+				dataService.getAllPermission.addEventListener(ResultEvent.RESULT, dataService_getAllPermission_resultHandler);
+				dataService.createPermission.addEventListener(ResultEvent.RESULT, dataService_createPermission_resultHandler);
+				dataService.updatePermission.addEventListener(ResultEvent.RESULT, dataService_updatePermission_resultHandler);
+				dataService.deletePermission.addEventListener(ResultEvent.RESULT, dataService_deletePermission_resultHandler);
+				
+				dataService.getAllPermissionType();
+				dataService.getAllUserId();	
+				dataService.getAllPermission();
+			}
+			
+			protected function dataService_getAllPermissionType_resultHandler(event:ResultEvent):void
+			{
+				permissionTypes = event.result as ArrayCollection;
+			}
+
+			protected function dataService_getAllUserId_resultHandler(event:ResultEvent):void
+			{
+				users = event.result as ArrayCollection;
+			}
+
+			protected function dataService_getAllPermission_resultHandler(event:ResultEvent):void
+			{
+				permissions = event.result as ArrayCollection;
+			}
+			
+			protected function dataService_createPermission_resultHandler(event:ResultEvent):void
+			{							
+				var permission:Permission = event.result as Permission;
+				if (permission != null){
+					permissions.addItem(permission);
+					permissionDG.selectedIndex = permissions.length - 1;
+				}else{
+					Alert.show("Problem create Permission!");
+					dataService.getAllPermissions();
+				}
+			}
+			
+			protected function dataService_updatePermission_resultHandler(event:ResultEvent):void
+			{
+				var updated:Boolean = event.result as Boolean;
+				if (!updated){
+					Alert.show("Problem update Permission!");
+					dataService.getAllPermissions();
+				}
+			}			
+			
+			protected function dataService_deletePermission_resultHandler(event:ResultEvent):void
+			{
+				var deleted:Boolean = event.result as Boolean;
+				if (!deleted){
+					Alert.show("Problem remove Permission!");
+					dataService.getAllPermissions();
+				}
+			}			
+			
+		]]>
+	</fx:Script>
+	
+	<mx:HBox width="100%" height="100%" minWidth="0" minHeight="0">
+		<mx:VBox width="70%" height="100%" paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10">
+			<mx:DataGrid 
+				id="permissionDG"
+				horizontalScrollPolicy="auto" 
+				verticalScrollPolicy="auto" 
+				resizableColumns="true"
+				width="100%" height="100%"
+				dataProvider="{permissions}">
+				<mx:columns>
+					<mx:DataGridColumn headerText="{PERMISSION_TYPE}" dataField="object"/>
+					<mx:DataGridColumn headerText="{USER_ID}" dataField="userId"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:HBox>
+				<s:Button id="newB" label="New" click="newB_clickHandler(event)"/>
+				<s:Button id="rmB" label="Remove" click="rmB_clickHandler(event)"/>
+			</mx:HBox>					
+		</mx:VBox>
+		<mx:Form id="permissionF" horizontalScrollPolicy="auto" width="30%" height="100%" paddingTop="10" paddingRight="10" paddingBottom="10" paddingLeft="10">
+			<mx:FormItem label="{PERMISSION_TYPE}">
+				<s:DropDownList id="typeL" dataProvider="{permissionTypes}" selectedItem="@{permissionDG.selectedItem.object}"/>
+			</mx:FormItem>
+			<mx:FormItem label="{USER_ID}">
+				<s:DropDownList id="userL" dataProvider="{users}" selectedItem="@{permissionDG.selectedItem.userId}"/>								
+			</mx:FormItem>
+			<s:Button label="Save" id="saveB" click="saveB_clickHandler(event)"/>
+		</mx:Form>									
+	</mx:HBox>
+	
+</s:Panel>
