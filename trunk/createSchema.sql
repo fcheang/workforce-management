@@ -69,10 +69,10 @@ CREATE TABLE `permission` (
 )
 ENGINE = InnoDB;
 
-insert into permission_type values ('adminTab');
-insert into permission_type values ('dashboardTab');
-insert into permission_type values ('employeeTab');
-insert into permission_type values ('dailyClinicReportTab');
+insert into permission_type values ('User Admin');
+insert into permission_type values ('Analytics');
+insert into permission_type values ('Employee');
+insert into permission_type values ('Daily Clinic Report');
 
 
 #CREATE TABLE  `version` (
