@@ -133,7 +133,9 @@
 			protected function dataService_deletePermission_resultHandler(event:ResultEvent):void
 			{
 				var deleted:Boolean = event.result as Boolean;
-				if (!deleted){
+				if (deleted){
+					permissions.removeItemAt(permissionDG.selectedIndex);
+				}else{
 					Alert.show("Problem remove Permission!");
 					dataService.getAllPermissions();
 				}
@@ -152,7 +154,7 @@
 				width="100%" height="100%"
 				dataProvider="{permissions}">
 				<mx:columns>
-					<mx:DataGridColumn headerText="{PERMISSION_TYPE}" dataField="object"/>
+					<mx:DataGridColumn headerText="{PERMISSION_TYPE}" dataField="object" width="150"/>
 					<mx:DataGridColumn headerText="{USER_ID}" dataField="userId"/>
 				</mx:columns>
 			</mx:DataGrid>

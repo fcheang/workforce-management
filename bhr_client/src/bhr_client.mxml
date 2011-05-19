@@ -75,9 +75,10 @@
 			[Bindable]
 			private var serverPort:String;
 			
-			private var ADMINISTRATOR:String = "Administrator";
-			private var BILLING:String = "Billing";
-			private var MANAGER:String = "Manager";
+			private var USER_ADMIN:String = "User Admin";
+			private var EMPLOYEE:String = "Employee";
+			private var ANALYTICS:String = "Analytics";
+			private var DAILY_CLINIC_REPORT:String = "Daily Clinic Report";
 			
 			private function init():void
 			{
@@ -121,40 +122,40 @@
 					cap = caps[i];
 					var content:NavigatorContent = new NavigatorContent();
 					switch (cap){
-						case "adminTab":
+						case USER_ADMIN:
 							var adminPanel:AdminPanel = new AdminPanel();
 							adminPanel.dataService = dataService;
 							adminPanel.percentWidth = 100;
 							adminPanel.percentHeight = 100;
 							content.addElement(adminPanel);
-							content.label = "User Admin";
+							content.label = USER_ADMIN;
 							portalVS.addChild(content);
 							break;
-						case "employeeTab":
+						case EMPLOYEE:
 							var empPanel:EmployeePanel = new EmployeePanel();
 							empPanel.dataService = dataService;
 							empPanel.percentWidth = 100;
 							empPanel.percentHeight = 100;
 							content.addElement(empPanel);
-							content.label = "Employee";
+							content.label = EMPLOYEE;
 							portalVS.addChild(content);							
 							break;
-						case "dashboardTab":
+						case ANALYTICS:
 							var dbPanel:DashboardPanel = new DashboardPanel();
 							dbPanel.dataService = dataService;
 							dbPanel.percentWidth = 100;
 							dbPanel.percentHeight = 100;
 							content.addElement(dbPanel);
-							content.label = "Analytics";
+							content.label = ANALYTICS;
 							portalVS.addChild(content);
 							break;
-						case "dailyClinicReportTab":
+						case DAILY_CLINIC_REPORT:
 							var wsPanel:WorksheetPanel = new WorksheetPanel();
 							wsPanel.dataService = dataService;
 							wsPanel.percentWidth = 100;
 							wsPanel.percentHeight = 100;
 							content.addElement(wsPanel);
-							content.label = "Daily Clinic Report";
+							content.label = DAILY_CLINIC_REPORT;
 							portalVS.addChild(content);
 							break;							
 					};
