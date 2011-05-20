@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 creationComplete="panel1_creationCompleteHandler(event)">
+		 creationComplete="panel1_creationCompleteHandler(event)" dropShadowVisible="true" borderWeight="1" backgroundColor="white">
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
@@ -139,7 +139,7 @@
 	</fx:Script>
 	
 	<mx:HBox width="100%" height="100%" minWidth="0" minHeight="0">
-		<mx:VBox width="70%" height="100%" paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10">
+		<mx:VBox width="70%" height="100%" paddingLeft="10" paddingTop="10" paddingBottom="10">
 			<mx:DataGrid 
 				id="employeeDG"
 				horizontalScrollPolicy="auto" 
@@ -160,7 +160,11 @@
 				<s:Button id="rmB" label="Remove" click="rmB_clickHandler(event)"/>
 			</mx:HBox>					
 		</mx:VBox>
-		<mx:Form id="employeeF" horizontalScrollPolicy="auto" width="30%" height="100%" paddingTop="10" paddingRight="10" paddingBottom="10" paddingLeft="10">
+		<mx:Form id="employeeF" horizontalScrollPolicy="auto" 
+				 width="30%" height="100%" 
+				 paddingTop="10" paddingRight="10" paddingBottom="10"
+				 labelWidth="120">
+			<mx:FormHeading label="Employee Information"/>
 			<mx:FormItem label="{EMP_ID}">
 				<s:TextInput id="idTI" editable="false" text="@{employeeDG.selectedItem.empId}"/>
 			</mx:FormItem>
@@ -176,8 +180,10 @@
 			<mx:FormItem label="{FIRST_NAME}:" required="true">
 				<s:TextInput id="fnameTI" text="@{employeeDG.selectedItem.firstName}"/>
 			</mx:FormItem>
-			<s:Button label="Save" id="saveB" click="saveB_clickHandler(event)"/>
+			<mx:FormItem>
+				<s:Button label="Submit" id="saveB" click="saveB_clickHandler(event)"/>				
+			</mx:FormItem>
 		</mx:Form>									
 	</mx:HBox>
 	
-</s:Panel>
+</s:BorderContainer>

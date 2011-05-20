@@ -63,7 +63,7 @@ public class PermissionDAOImpl extends SimpleJdbcDaoSupport {
 	}
 
 	public boolean updatePermission(Permission perm) {
-		String sql = "update permission set object = ? userId = ? where id = ?";
+		String sql = "update permission set object = ?, userId = ? where id = ?";
 		return getSimpleJdbcTemplate().update(sql, perm.getObject(), perm.getUserId(), perm.getId()) > 0;
 	}
 
@@ -82,4 +82,8 @@ public class PermissionDAOImpl extends SimpleJdbcDaoSupport {
 		return getSimpleJdbcTemplate().query(sql, strRm, userId);
 	}	
 	
+	public boolean permissionExist(String userId, String object){
+		String sql = "select count(*) from permission where userId = ? and object = ?";
+		return getSimpleJdbcTemplate().queryForInt(sql, userId, object) > 0;
+	}
 }

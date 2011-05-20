@@ -203,7 +203,7 @@
 				  excludeFrom="loginState"				 
 				  click="logoutB_clickHandler(event)"/>
 	</mx:HBox>
-	
+
 	<mx:ViewStack includeIn="portalState" 
 				  id="portalVS"
 				  resizeToContent="true" width="100%" height="100%">

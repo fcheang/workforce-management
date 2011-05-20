@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 creationComplete="panel1_creationCompleteHandler(event)">
+		 creationComplete="panel1_creationCompleteHandler(event)"
+		 dropShadowVisible="true" borderWeight="1" backgroundColor="white">
 	
 	<fx:Declarations>
 		<mx:NumberFormatter id="nf" precision="2" rounding="up"/>
@@ -409,7 +410,8 @@
 			horizontalScrollPolicy="auto" 
 			verticalScrollPolicy="auto" 
 			width="30%" 
-			height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10">
+			height="100%" paddingLeft="10" paddingTop="10" paddingBottom="10"
+			labelWidth="120">
 			
 			<mx:FormItem label="{EMP_NAME}:">
 				<s:TextInput id="empNameTI" enabled="false" text="{worksheetDG.selectedItem.empName}"/>
@@ -471,4 +473,4 @@
 		</mx:Form>												
 	</mx:HBox>
 	
-</s:Panel>
+</s:BorderContainer>
