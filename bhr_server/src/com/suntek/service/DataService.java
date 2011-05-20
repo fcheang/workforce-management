@@ -223,7 +223,11 @@ public class DataService {
 	
 	public Permission createPermission(Permission perm){
 		try{
-			return permDAO.createPermission(perm);
+			if (!permDAO.permissionExist(perm.getUserId(), perm.getObject())){
+				return permDAO.createPermission(perm);
+			}else{
+				return null;
+			}
 		}catch(Throwable t){
 			t.printStackTrace();
 			return null;

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 creationComplete="panel1_creationCompleteHandler(event)">
+		 creationComplete="panel1_creationCompleteHandler(event)"
+		 dropShadowVisible="true" borderWeight="1" backgroundColor="white">
 	
 	<fx:Script>
 		<![CDATA[
@@ -78,13 +79,10 @@
 					loc = locationCB.selectedItem;
 					if (emp != null && loc != null){
 						dataService.getWorksheetForClinicAndEmployeeAndDateRange(loc, emp.empId, startDateDF.selectedDate, endDateDF.selectedDate);
-						this.title = "Report for "+emp.fullName+" at "+loc+" from "+dateFormatter.format(startDateDF.selectedDate)+" to "+dateFormatter.format(endDateDF.selectedDate);
 					}else if (emp == null){
-						dataService.getWorksheetForClinicAndDateRange(loc, startDateDF.selectedDate, endDateDF.selectedDate);
-						this.title = "Report for "+loc+" from "+dateFormatter.format(startDateDF.selectedDate)+" to "+dateFormatter.format(endDateDF.selectedDate);						
+						dataService.getWorksheetForClinicAndDateRange(loc, startDateDF.selectedDate, endDateDF.selectedDate);						
 					}else{
-						dataService.getWorksheetForEmployeeAndDateRange(emp.empId, startDateDF.selectedDate, endDateDF.selectedDate);
-						this.title = "Report for "+emp.fullName+" from "+dateFormatter.format(startDateDF.selectedDate)+" to "+dateFormatter.format(endDateDF.selectedDate);						
+						dataService.getWorksheetForEmployeeAndDateRange(emp.empId, startDateDF.selectedDate, endDateDF.selectedDate);						
 					}
 					runReportB.enabled = false;
 				}
@@ -197,4 +195,4 @@
 	</mx:VBox>
 	
 	
-</s:Panel>
+</s:BorderContainer>
