@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   creationComplete="panel1_creationCompleteHandler(event)"
+				   dropShadowVisible="true" borderWeight="1" backgroundColor="white">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.*;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.rpc.events.*;
+			import mx.rpc.remoting.*;
+			
+			import valueObjects.*;
+						
+			public var dataService:RemoteObject;
+			public var user:User;
+			
+			[Bindable]
+			private var contribution:Contribution;
+			[Bindable]
+			private var contributionItems:ArrayCollection;
+			
+			protected function panel1_creationCompleteHandler(event:FlexEvent):void
+			{				
+				dataService.getContribution.addEventListener(ResultEvent.RESULT, dataService_getContribution_resultHandler);
+				dataService.getContributionItems.addEventListener(ResultEvent.RESULT, dataService_getContributionItems_resultHandler);
+				dataService.updateContribution.addEventListener(ResultEvent.RESULT, dataService_updateContribution_resultHandler);
+				dataService.updateContributionItems.addEventListener(ResultEvent.RESULT, dataService_updateContributionItems_resultHandler);
+				
+				nameL.text = "Staff Name: "+user.getDisplayName(); 
+				
+				dataService.getContribution(dateDF.selectedDate, user);
+				dataService.getContributionItems(dateDF.selectedDate, user);	
+			}
+			
+			protected function dataService_getContribution_resultHandler(event:ResultEvent):void
+			{
+				contribution = event.result as Contribution;
+			}			
+
+			protected function dataService_getContributionItems_resultHandler(event:ResultEvent):void
+			{
+				contributionItems = event.result as ArrayCollection;
+			}			
+
+			protected function dataService_updateContribution_resultHandler(event:ResultEvent):void
+			{
+				var updated:Boolean = event.result as Boolean;
+				if (!updated){
+					Alert.show("Problem update Contribution!");
+					dataService.getContribution(dateDF.selectedDate, user);
+				}
+			}			
+
+			protected function dataService_updateContributionItems_resultHandler(event:ResultEvent):void
+			{
+				var updated:Boolean = event.result as Boolean;
+				if (!updated){
+					Alert.show("Problem update Contribution Items!");
+					dataService.getContributionItems(dateDF.selectedDate, user);
+				}
+			}			
+			
+			protected function dateDF_changeHandler(event:CalendarLayoutChangeEvent):void
+			{
+				if (dateDF.selectedDate != null){
+					dataService.getContribution(dateDF.selectedDate, user);
+					dataService.getContributionItems(dateDF.selectedDate, user);
+				}
+			}			
+			
+			protected function submitB_clickHandler(event:MouseEvent):void
+			{
+				dataService.updateContribution(contribution);
+				dataService.updateContributionItems(contributionItems);
+			}
+			
+			protected function calcTotal(item:Object,  column:DataGridColumn):String
+			{
+				return item.hmo + item.ac + item.acChild + item.ccc + item.cccChild + item.sf + item.other;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<mx:VBox 
+		width="100%" 
+		height="100%" 
+		paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10">
+
+		<mx:HBox paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" width="100%">
+			<s:Label text="Date:" paddingLeft="30" paddingTop="6"/>
+			<mx:DateField id="dateDF" selectedDate="{new Date()}" change="dateDF_changeHandler(event)"/>
+			<s:Label id="nameL" paddingLeft="30" paddingTop="6"/>
+		</mx:HBox>
+		
+		<mx:DataGrid  
+			lockedColumnCount="1" 
+			horizontalScrollPolicy="auto" 
+			verticalScrollPolicy="auto" 
+			resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" id="contributionReportDG"
+			dataProvider="{contributionItems}">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Type" dataField="type" width="150"/>
+				<mx:DataGridColumn headerText="Private Pay" dataField="privatePay" width="120"/>
+				<mx:DataGridColumn headerText="HMO" dataField="hmo" width="120"/>
+				<mx:DataGridColumn headerText="Alameda County" dataField="ac" width="120"/>
+				<mx:DataGridColumn headerText="Alameda County Child (any type)" dataField="acChild" width="120"/>
+				<mx:DataGridColumn headerText="Contra Costa County" dataField="ccc" width="120"/>
+				<mx:DataGridColumn headerText="Contra Costa County Child (any type)" dataField="cccChild" width="120"/>
+				<mx:DataGridColumn headerText="San Francisco and Sacramento Counties" dataField="sf" width="120"/>
+				<mx:DataGridColumn headerText="Other" dataField="other" width="120"/>
+				<mx:DataGridColumn headerText="TOTAL" labelFunction="calcTotal" width="120"/>
+			</mx:columns>
+		</mx:DataGrid>
+		
+		<mx:Form width="100%">
+			<mx:FormHeading label="Other Activities:"/>
+			<mx:FormItem label="Hours worked:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="Auths entered today:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label=" Interpreters Scheduled/Ordered:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="Collateral collected:">
+				<s:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="Other:">
+				<s:TextArea width="100%"/>
+			</mx:FormItem>
+		</mx:Form>
+		
+		<s:Button label="Submit" id="submitB" click="submitB_clickHandler(event)"/>
+				
+	</mx:VBox>
+	
+</s:BorderContainer>

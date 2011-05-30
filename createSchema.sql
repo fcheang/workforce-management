@@ -45,8 +45,8 @@ CREATE TABLE `Worksheet` (
   PRIMARY KEY (`empId`, `date`, `clinic`),
   CONSTRAINT `FK_Worksheet_1` FOREIGN KEY `FK_Worksheet_1` (`empId`)
     REFERENCES `employee` (`empId`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 )
 ENGINE = InnoDB;
 
@@ -73,7 +73,35 @@ insert into permission_type values ('User Admin');
 insert into permission_type values ('Analytics');
 insert into permission_type values ('Employee');
 insert into permission_type values ('Daily Clinic Report');
+insert into permission_type values ('Daily Contribution Report');
 
+CREATE TABLE `contribution` (
+  `userId` VARCHAR(20) NOT NULL,
+  `date` DATETIME NOT NULL,
+  `hrs_worked` DECIMAL(10,1) UNSIGNED NOT NULL DEFAULT 0,
+  `auths_entered` VARCHAR(100),
+  `interpreters_ordered` VARCHAR(100),
+  `collateral_received` VARCHAR(100),
+  `other` VARCHAR(200),
+  PRIMARY KEY (`userId`, `date`)
+)
+ENGINE = InnoDB;
+
+CREATE TABLE `contribution_item` (
+  `userId` VARCHAR(20) NOT NULL,
+  `date` DATETIME NOT NULL,
+  `type` VARCHAR(100) NOT NULL,
+  `private_pay` INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  `hmo` INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  `ac` INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  `ac_child` INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  `ccc` INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  `ccc_child` INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  `sf` INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  `other` INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`userId`, `date`, `type`)
+)
+ENGINE = InnoDB;
 
 #CREATE TABLE  `version` (
 #  `schemaVersion` int(11) DEFAULT NULL,

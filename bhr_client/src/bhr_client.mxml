@@ -53,6 +53,7 @@
 	<fx:Script>
 		<![CDATA[
 			import components.AdminPanel;
+			import components.DailyContributionReportPanel;
 			import components.DashboardPanel;
 			import components.EmployeePanel;
 			import components.WorksheetPanel;
@@ -79,6 +80,9 @@
 			private var EMPLOYEE:String = "Employee";
 			private var ANALYTICS:String = "Analytics";
 			private var DAILY_CLINIC_REPORT:String = "Daily Clinic Report";
+			private var DAILY_CONTRIBUTION_REPORT:String = "Daily Contribution Report";
+			
+			private var loggedInUser:User;
 			
 			private function init():void
 			{
@@ -102,7 +106,7 @@
 			
 			protected function dataService_login_resultHandler(event:ResultEvent):void
 			{
-				var loggedInUser:User = event.result as User;
+				loggedInUser = event.result as User;
 				if (loggedInUser == null){
 					Alert.show("Invalid username or password!", "Error Message");
 					return;
@@ -156,6 +160,16 @@
 							wsPanel.percentHeight = 100;
 							content.addElement(wsPanel);
 							content.label = DAILY_CLINIC_REPORT;
+							portalVS.addChild(content);
+							break;
+						case DAILY_CONTRIBUTION_REPORT:
+							var dcrPanel:DailyContributionReportPanel = new DailyContributionReportPanel();
+							dcrPanel.dataService = dataService;
+							dcrPanel.user = loggedInUser;
+							dcrPanel.percentWidth = 100;
+							dcrPanel.percentHeight = 100;
+							content.addElement(dcrPanel);
+							content.label = DAILY_CONTRIBUTION_REPORT;
 							portalVS.addChild(content);
 							break;							
 					};

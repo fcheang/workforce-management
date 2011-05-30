@@ -100,7 +100,7 @@
 			{
 				var emp:Employee = event.result as Employee;
 				if (emp != null){
-					Alert.show("Employee "+emp.empId+" was created successfully!");
+					//Alert.show("Employee "+emp.empId+" was created successfully!");
 					employees.addItem(emp);
 					employeeDG.selectedIndex = employees.length - 1;
 				}else{
@@ -118,7 +118,7 @@
 			{
 				var updated:Boolean = event.result as Boolean;
 				if (updated){
-					Alert.show("Employee was updated!");
+					//Alert.show("Employee was updated!");
 				}else{
 					Alert.show("Error: Problem update employee!");	
 				}
@@ -128,7 +128,7 @@
 			{
 				var deleted:Boolean = event.result as Boolean;
 				if (deleted){
-					Alert.show("Employee was deleted!");
+					//Alert.show("Employee was deleted!");
 					employees.removeItemAt(employeeDG.selectedIndex);
 				}else{
 					Alert.show("Error: Problem create employee!");	
