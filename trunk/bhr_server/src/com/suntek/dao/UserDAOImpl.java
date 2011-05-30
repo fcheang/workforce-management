@@ -21,7 +21,7 @@ public class UserDAOImpl extends SimpleJdbcDaoSupport {
 	public User getUser(String userName, String password){		
 		password = SecurityUtil.encrypt(password);
         
-		String sql = "select userId, password from user where userId = ? and password = ?";		
+		String sql = "select userId, password, firstName, lastName from user where userId = ? and password = ?";		
 		List<User> users = getSimpleJdbcTemplate().query(sql, userRm, userName, password);
 		if (users.size() > 0){
 			return users.get(0);
@@ -40,6 +40,8 @@ public class UserDAOImpl extends SimpleJdbcDaoSupport {
 			User u = new User();
 			u.setUsername(rs.getString("userId"));
 			u.setPassword(rs.getString("password"));
+			u.setFirstname(rs.getString("firstName"));
+			u.setLastname(rs.getString("lastName"));
 			return u;
 		}
 	}

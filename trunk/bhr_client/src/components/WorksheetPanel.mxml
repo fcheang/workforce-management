@@ -132,7 +132,7 @@
 			{
 				if (event.result != null){
 					worksheets.addItem(event.result);
-					Alert.show("Worksheet entry was created successfully!");
+					//Alert.show("Worksheet entry was created successfully!");
 				}else{
 					Alert.show("Problem create worksheet entry!");
 				}
@@ -155,7 +155,7 @@
 			{
 				if (event.result != null){
 					worksheets.setItemAt(event.result, worksheetDG.selectedIndex);
-					Alert.show("Worksheet entry was updated successfully!");
+					//Alert.show("Worksheet entry was updated successfully!");
 				}else{
 					Alert.show("Problem update worksheet entry!");
 				}
@@ -166,7 +166,7 @@
 				var removed:Boolean = event.result;
 				if (removed){
 					worksheets.removeItemAt(worksheetDG.selectedIndex);
-					Alert.show("Worksheet entry removed!");
+					//Alert.show("Worksheet entry removed!");
 				}else{
 					Alert.show("Problem remove worksheet entry!");
 				}				
@@ -251,9 +251,8 @@
 			{
 				worksheetDG.selectedIndex = -1;
 				dataService.getAllEmployees();
-				empCB.visible = true;
-				empNameTI.visible = false;
 				empCB.selectedIndex = -1;
+				empCB.enabled = true;
 				saveB.enabled = true;
 			}
 
@@ -267,10 +266,6 @@
 				dataService.deleteWorksheet(ws);
 			}
 
-
-			protected function empCB_changeHandler(event:IndexChangeEvent):void
-			{
-			}
 
 			protected function calcTotalFaceHrs(item:Object,  column:DataGridColumn):String
 			{
@@ -331,22 +326,10 @@
 				return "$"+nf.format(n);
 			}
 			
-			protected function worksheetDG_changeHandler(event:ListEvent):void
-			{
-				if (worksheetDG.selectedIndex == -1){
-					empCB.visible = true;
-					empNameTI.visible = false;
-					empCB.selectedIndex = -1;
-				}else{
-					empCB.visible = false;
-					empNameTI.visible = true;
-					validateForm();
-				}
-			}
-
 			protected function worksheetDG_itemClickHandler(event:ListEvent):void
 			{
 				saveB.enabled = true;
+				empCB.enabled = false;
 			}
 
 		]]>
@@ -370,7 +353,7 @@
 				horizontalScrollPolicy="auto" 
 				verticalScrollPolicy="auto" 
 				resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" id="worksheetDG"
-			    dataProvider="{worksheets}" change="worksheetDG_changeHandler(event)" itemClick="worksheetDG_itemClickHandler(event)">
+			    dataProvider="{worksheets}" itemClick="worksheetDG_itemClickHandler(event)">
 				<mx:columns>
 					<mx:DataGridColumn headerText="{EMP_NAME}" dataField="empName" width="150"/>
 					<mx:DataGridColumn headerText="{HRS_WORKED}" dataField="hrsWorked" width="120"/>
@@ -413,9 +396,9 @@
 			height="100%" paddingLeft="10" paddingTop="10" paddingBottom="10"
 			labelWidth="120">
 			
+			<mx:FormHeading label="Daily Report Information"/>
 			<mx:FormItem label="{EMP_NAME}:">
-				<s:TextInput id="empNameTI" enabled="false" text="{worksheetDG.selectedItem.empName}"/>
-				<s:ComboBox id="empCB" visible="false" dataProvider="{employees}" selectedIndex="-1" labelField="fullName" change="empCB_changeHandler(event)" />
+				<s:ComboBox id="empCB" enabled="false" dataProvider="{employees}" labelField="fullName" selectedItem="{worksheetDG.selectedItem.empName}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{HRS_WORKED}:">
 				<s:TextInput id="hrsWorkedTI" text="@{worksheetDG.selectedItem.hrsWorked}"/>
@@ -468,8 +451,9 @@
 			<mx:FormItem label="{DAILY_SALARY}:">
 				<s:TextInput id="dailySalaryTI" text="@{worksheetDG.selectedItem.dailySalary}"/>
 			</mx:FormItem>
-			
-			<s:Button label="Save" id="saveB" click="saveB_clickHandler(event)"/>
+			<mx:FormItem>
+				<s:Button label="Submit" id="saveB" click="saveB_clickHandler(event)"/>				
+			</mx:FormItem>			
 		</mx:Form>												
 	</mx:HBox>
 	

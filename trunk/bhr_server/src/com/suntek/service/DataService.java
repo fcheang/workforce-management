@@ -1,6 +1,5 @@
 package com.suntek.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +16,7 @@ public class DataService {
 	private EmployeeDAOImpl empDAO = null;
 	private CommonDAOImpl commDAO = null;
 	private PermissionDAOImpl permDAO;
+	private ContributionDAOImpl contDAO;
 	
 	public DataService(){		
 	}
@@ -41,6 +41,9 @@ public class DataService {
 		this.permDAO = permDAO;
 	}
 
+	public void setContDAO(ContributionDAOImpl contDAO){
+		this.contDAO = contDAO;
+	}
 	
 	// Common 
 	
@@ -250,5 +253,22 @@ public class DataService {
 			t.printStackTrace();
 			return false;
 		}								
+	}
+	
+	// Contribution
+	public Contribution getContribution(Date date, User user){
+		return contDAO.getContribution(date, user);
+	}
+	
+	public List<ContributionItem> getContributionItems(Date date, User user){
+		return contDAO.getContributionItems(date, user);
+	}
+	
+	public boolean updateContribution(Contribution cont){
+		return contDAO.updateContribution(cont);
+	}
+	
+	public boolean updateContributionItems(List<ContributionItem> items){
+		return contDAO.updateContributionItems(items);
 	}
 }
