@@ -16,5 +16,15 @@ package valueObjects
 		public function Contribution()
 		{
 		}
+		
+		public function get hrsWorkedStr():String
+		{
+			return hrsWorked.toString();	
+		}
+		
+		public function set hrsWorkedStr(hrsWorkedStr:String):void
+		{
+			hrsWorked = Number(hrsWorkedStr);
+		}
 	}
 }

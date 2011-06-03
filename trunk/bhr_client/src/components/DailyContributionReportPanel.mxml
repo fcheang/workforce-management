@@ -80,7 +80,8 @@
 			
 			protected function calcTotal(item:Object,  column:DataGridColumn):String
 			{
-				return item.hmo + item.ac + item.acChild + item.ccc + item.cccChild + item.sf + item.other;
+				var contItem:ContributionItem = item as ContributionItem;
+				return contItem.calcTotal().toString();
 			}
 			
 			
@@ -107,37 +108,37 @@
 			horizontalScrollPolicy="auto" 
 			verticalScrollPolicy="auto" 
 			resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" id="contributionReportDG"
-			dataProvider="{contributionItems}">
+			dataProvider="{contributionItems}" editable="true" variableRowHeight="true" wordWrap="true">
 			<mx:columns>
-				<mx:DataGridColumn headerText="Type" dataField="type" width="150"/>
-				<mx:DataGridColumn headerText="Private Pay" dataField="privatePay" width="120"/>
-				<mx:DataGridColumn headerText="HMO" dataField="hmo" width="120"/>
-				<mx:DataGridColumn headerText="Alameda County" dataField="ac" width="120"/>
-				<mx:DataGridColumn headerText="Alameda County Child (any type)" dataField="acChild" width="120"/>
-				<mx:DataGridColumn headerText="Contra Costa County" dataField="ccc" width="120"/>
-				<mx:DataGridColumn headerText="Contra Costa County Child (any type)" dataField="cccChild" width="120"/>
-				<mx:DataGridColumn headerText="San Francisco and Sacramento Counties" dataField="sf" width="120"/>
-				<mx:DataGridColumn headerText="Other" dataField="other" width="120"/>
-				<mx:DataGridColumn headerText="TOTAL" labelFunction="calcTotal" width="120"/>
+				<mx:DataGridColumn headerText="Type" dataField="type" editable="false"/>
+				<mx:DataGridColumn headerText="Private Pay" dataField="privatePay"/>
+				<mx:DataGridColumn headerText="HMO" dataField="hmo"/>
+				<mx:DataGridColumn headerText="Alameda County" dataField="ac"/>
+				<mx:DataGridColumn headerText="Alameda County Child (any type)" dataField="acChild"/>
+				<mx:DataGridColumn headerText="Contra Costa County" dataField="ccc"/>
+				<mx:DataGridColumn headerText="Contra Costa County Child (any type)" dataField="cccChild"/>
+				<mx:DataGridColumn headerText="San Francisco and Sacramento Counties" dataField="sf"/>
+				<mx:DataGridColumn headerText="Other" dataField="other"/>
+				<mx:DataGridColumn headerText="TOTAL" labelFunction="calcTotal" editable="false"/>
 			</mx:columns>
 		</mx:DataGrid>
 		
 		<mx:Form width="100%">
 			<mx:FormHeading label="Other Activities:"/>
 			<mx:FormItem label="Hours worked:">
-				<s:TextInput/>
+				<s:TextInput id="hrsWorkedTI" width="500" text="@{contribution.hrsWorkedStr}"/>
 			</mx:FormItem>
 			<mx:FormItem label="Auths entered today:">
-				<s:TextInput/>
+				<s:TextInput id="authsEnteredTI" width="500" text="@{contribution.authsEntered}"/>
 			</mx:FormItem>
 			<mx:FormItem label=" Interpreters Scheduled/Ordered:">
-				<s:TextInput/>
+				<s:TextInput id="interpretersOrderedTI" width="500" text="@{contribution.interpretersOrdered}"/>
 			</mx:FormItem>
 			<mx:FormItem label="Collateral collected:">
-				<s:TextInput/>
+				<s:TextInput id="collRcvTI" width="500" text="@{contribution.collateralReceived}"/>
 			</mx:FormItem>
 			<mx:FormItem label="Other:">
-				<s:TextArea width="100%"/>
+				<s:TextInput id="otherTI" width="500" text="@{contribution.other}"/>
 			</mx:FormItem>
 		</mx:Form>
 		

@@ -2,16 +2,16 @@ package com.suntek.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List; 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
-
-import com.suntek.model.Contribution;
-import com.suntek.model.ContributionItem;
+import com.suntek.model.Contribution; 
+import com.suntek.model.ContributionItem; 
 import com.suntek.model.User;
+
 
 public class ContributionDAOImpl extends SimpleJdbcDaoSupport {
 
@@ -33,7 +33,7 @@ public class ContributionDAOImpl extends SimpleJdbcDaoSupport {
 
 	public List<ContributionItem> getContributionItems(Date date, User user) {
 		List<ContributionItem> items = new ArrayList<ContributionItem>();
-		String sql = "SELECT userId, date, type, private_pay, hmo, ac, ac_child, ccc, ccc_child, sf, other from contributionItem where userId = ? and date = ? and type = ?";
+		String sql = "SELECT userId, date, type, private_pay, hmo, ac, ac_child, ccc, ccc_child, sf, other from contribution_item where userId = ? and date = ? and type = ?";
 		List<ContributionItem> ic = getSimpleJdbcTemplate().query(sql, contItemRm, user.getUsername(), date, ContributionItem.INCOMING_CALLS);
 		List<ContributionItem> oc = getSimpleJdbcTemplate().query(sql, contItemRm, user.getUsername(), date, ContributionItem.OUTGOING_CALLS);
 		List<ContributionItem> rc = getSimpleJdbcTemplate().query(sql, contItemRm, user.getUsername(), date, ContributionItem.REMINDER_CALLS);		
@@ -81,13 +81,14 @@ public class ContributionDAOImpl extends SimpleJdbcDaoSupport {
 		return getSimpleJdbcTemplate().queryForInt(sql, userId, date) > 0;
 	}
 
-	public boolean updateContributionItems(List<ContributionItem> items) {		
-		for (ContributionItem item : items){
+	public boolean updateContributionItems(List items) {	
+		for (int i=0; i<items.size(); i++){
+			ContributionItem item = (ContributionItem)items.get(i);
 			if (contributionItemExist(item.getUserId(), item.getDate(), item.getType())){
-				String sql = "update contributionItem set private_pay = ?, hmo = ?, ac = ?, ac_child = ?, ccc = ?, ccc_child = ?, sf = ?, other = ? where userId = ? and date = ? and type = ?";
+				String sql = "update contribution_item set private_pay = ?, hmo = ?, ac = ?, ac_child = ?, ccc = ?, ccc_child = ?, sf = ?, other = ? where userId = ? and date = ? and type = ?";
 				return getSimpleJdbcTemplate().update(sql, item.getPrivatePay(), item.getHmo(), item.getAc(), item.getAcChild(), item.getCcc(), item.getCccChild(), item.getSf(), item.getOther(), item.getUserId(), item.getDate(), item.getType()) > 0; 
 			}else{
-				String sql = "insert into contributionItem (userId, date, type, private_pay, hmo, ac, ac_child, ccc, ccc_child, sf, other) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				String sql = "insert into contribution_item (userId, date, type, private_pay, hmo, ac, ac_child, ccc, ccc_child, sf, other) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				return getSimpleJdbcTemplate().update(sql, item.getUserId(), item.getDate(), item.getType(), item.getPrivatePay(), item.getHmo(), item.getAc(), item.getAcChild(), item.getCcc(), item.getCccChild(), item.getSf(), item.getOther()) > 0;				
 			}
 		}
@@ -95,7 +96,7 @@ public class ContributionDAOImpl extends SimpleJdbcDaoSupport {
 	}
 	
 	private boolean contributionItemExist(String userId, Date date, String type) {
-		String sql = "SELECT count(*) from contributionItem where userId = ? and date = ? and type = ?";
+		String sql = "SELECT count(*) from contribution_item where userId = ? and date = ? and type = ?";
 		return getSimpleJdbcTemplate().queryForInt(sql, userId, date, type) > 0;
 	}
 
