@@ -268,7 +268,7 @@ public class DataService {
 		return contDAO.updateContribution(cont);
 	}
 	
-	public boolean updateContributionItems(List<ContributionItem> items){
+	public boolean updateContributionItems(List items){
 		return contDAO.updateContributionItems(items);
 	}
 }

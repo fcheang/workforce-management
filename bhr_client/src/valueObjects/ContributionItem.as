@@ -1,11 +1,10 @@
 package valueObjects
 {
-	[RemoteClass(alias="com.suntek.model.ContributionItem")]
+	[RemoteClass(alias="com.suntek.model.ContributionItem")]	
 	
 	[Bindable]	
 	public class ContributionItem
-	{
-		
+	{		
 		public var userId:String;
 		public var date:Date;
 		public var type:String;
@@ -20,6 +19,13 @@ package valueObjects
 		
 		public function ContributionItem()
 		{
+		}
+		
+		public function calcTotal():int
+		{
+			var total:int;
+			total = privatePay + hmo + ac + acChild + ccc + cccChild + sf + other;
+			return total;
 		}
 	}
 }
