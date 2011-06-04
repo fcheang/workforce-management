@@ -81,15 +81,16 @@ public class ContributionDAOImpl extends SimpleJdbcDaoSupport {
 		return getSimpleJdbcTemplate().queryForInt(sql, userId, date) > 0;
 	}
 
-	public boolean updateContributionItems(List items) {	
-		for (int i=0; i<items.size(); i++){
+	public boolean updateContributionItems(List items) {
+		int size = items.size();
+		for (int i=0; i<size; i++){
 			ContributionItem item = (ContributionItem)items.get(i);
 			if (contributionItemExist(item.getUserId(), item.getDate(), item.getType())){
 				String sql = "update contribution_item set private_pay = ?, hmo = ?, ac = ?, ac_child = ?, ccc = ?, ccc_child = ?, sf = ?, other = ? where userId = ? and date = ? and type = ?";
-				return getSimpleJdbcTemplate().update(sql, item.getPrivatePay(), item.getHmo(), item.getAc(), item.getAcChild(), item.getCcc(), item.getCccChild(), item.getSf(), item.getOther(), item.getUserId(), item.getDate(), item.getType()) > 0; 
+				getSimpleJdbcTemplate().update(sql, item.getPrivatePay(), item.getHmo(), item.getAc(), item.getAcChild(), item.getCcc(), item.getCccChild(), item.getSf(), item.getOther(), item.getUserId(), item.getDate(), item.getType()); 
 			}else{
 				String sql = "insert into contribution_item (userId, date, type, private_pay, hmo, ac, ac_child, ccc, ccc_child, sf, other) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-				return getSimpleJdbcTemplate().update(sql, item.getUserId(), item.getDate(), item.getType(), item.getPrivatePay(), item.getHmo(), item.getAc(), item.getAcChild(), item.getCcc(), item.getCccChild(), item.getSf(), item.getOther()) > 0;				
+				getSimpleJdbcTemplate().update(sql, item.getUserId(), item.getDate(), item.getType(), item.getPrivatePay(), item.getHmo(), item.getAc(), item.getAcChild(), item.getCcc(), item.getCccChild(), item.getSf(), item.getOther());				
 			}
 		}
 		return true;

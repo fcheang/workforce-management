@@ -75,6 +75,8 @@ insert into permission_type values ('Employee');
 insert into permission_type values ('Daily Clinic Report');
 insert into permission_type values ('Daily Contribution Report');
 
+insert into permission (object, userId) values ('User Admin', 'Administrator');
+
 CREATE TABLE `contribution` (
   `userId` VARCHAR(20) NOT NULL,
   `date` DATETIME NOT NULL,
