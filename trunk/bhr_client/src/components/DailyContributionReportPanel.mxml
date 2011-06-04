@@ -13,6 +13,8 @@
 			import mx.rpc.events.*;
 			import mx.rpc.remoting.*;
 			
+			import spark.events.TextOperationEvent;
+			
 			import valueObjects.*;
 						
 			public var dataService:RemoteObject;
@@ -27,8 +29,7 @@
 			{				
 				dataService.getContribution.addEventListener(ResultEvent.RESULT, dataService_getContribution_resultHandler);
 				dataService.getContributionItems.addEventListener(ResultEvent.RESULT, dataService_getContributionItems_resultHandler);
-				dataService.updateContribution.addEventListener(ResultEvent.RESULT, dataService_updateContribution_resultHandler);
-				dataService.updateContributionItems.addEventListener(ResultEvent.RESULT, dataService_updateContributionItems_resultHandler);
+				dataService.updateContributionReport.addEventListener(ResultEvent.RESULT, dataService_updateContributionReport_resultHandler);
 				
 				nameL.text = "Staff Name: "+user.getDisplayName(); 
 				
@@ -45,21 +46,15 @@
 			{
 				contributionItems = event.result as ArrayCollection;
 			}			
-
-			protected function dataService_updateContribution_resultHandler(event:ResultEvent):void
+			
+			protected function dataService_updateContributionReport_resultHandler(event:ResultEvent):void
 			{
 				var updated:Boolean = event.result as Boolean;
-				if (!updated){
-					Alert.show("Problem update Contribution!");
+				if (updated){
+					Alert.show("Contribution report was submitted successfully!");
+				}else{
+					Alert.show("Problem submitting Contribution Report!");
 					dataService.getContribution(dateDF.selectedDate, user);
-				}
-			}			
-
-			protected function dataService_updateContributionItems_resultHandler(event:ResultEvent):void
-			{
-				var updated:Boolean = event.result as Boolean;
-				if (!updated){
-					Alert.show("Problem update Contribution Items!");
 					dataService.getContributionItems(dateDF.selectedDate, user);
 				}
 			}			
@@ -74,8 +69,8 @@
 			
 			protected function submitB_clickHandler(event:MouseEvent):void
 			{
-				dataService.updateContribution(contribution);
-				dataService.updateContributionItems(contributionItems);
+				submitB.enabled = false;
+				dataService.updateContributionReport(contribution, contributionItems);
 			}
 			
 			protected function calcTotal(item:Object,  column:DataGridColumn):String
@@ -84,7 +79,11 @@
 				return contItem.calcTotal().toString();
 			}
 			
-			
+			protected function enableSubmitBtn():void
+			{
+				submitB.enabled = true;
+			}			
+
 		]]>
 	</fx:Script>
 	
@@ -108,7 +107,7 @@
 			horizontalScrollPolicy="auto" 
 			verticalScrollPolicy="auto" 
 			resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" id="contributionReportDG"
-			dataProvider="{contributionItems}" editable="true" variableRowHeight="true" wordWrap="true">
+			dataProvider="{contributionItems}" editable="true" variableRowHeight="true" wordWrap="true" itemEditEnd="enableSubmitBtn()">
 			<mx:columns>
 				<mx:DataGridColumn headerText="Type" dataField="type" editable="false"/>
 				<mx:DataGridColumn headerText="Private Pay" dataField="privatePay"/>
@@ -126,23 +125,23 @@
 		<mx:Form width="100%">
 			<mx:FormHeading label="Other Activities:"/>
 			<mx:FormItem label="Hours worked:">
-				<s:TextInput id="hrsWorkedTI" width="500" text="@{contribution.hrsWorkedStr}"/>
+				<s:TextInput id="hrsWorkedTI" width="500" text="@{contribution.hrsWorkedStr}" change="enableSubmitBtn()"/>
 			</mx:FormItem>
 			<mx:FormItem label="Auths entered today:">
-				<s:TextInput id="authsEnteredTI" width="500" text="@{contribution.authsEntered}"/>
+				<s:TextInput id="authsEnteredTI" width="500" text="@{contribution.authsEntered}" change="enableSubmitBtn()"/>
 			</mx:FormItem>
 			<mx:FormItem label=" Interpreters Scheduled/Ordered:">
-				<s:TextInput id="interpretersOrderedTI" width="500" text="@{contribution.interpretersOrdered}"/>
+				<s:TextInput id="interpretersOrderedTI" width="500" text="@{contribution.interpretersOrdered}" change="enableSubmitBtn()"/>
 			</mx:FormItem>
 			<mx:FormItem label="Collateral collected:">
-				<s:TextInput id="collRcvTI" width="500" text="@{contribution.collateralReceived}"/>
+				<s:TextInput id="collRcvTI" width="500" text="@{contribution.collateralReceived}" change="enableSubmitBtn()"/>
 			</mx:FormItem>
 			<mx:FormItem label="Other:">
-				<s:TextInput id="otherTI" width="500" text="@{contribution.other}"/>
+				<s:TextInput id="otherTI" width="500" text="@{contribution.other}" change="enableSubmitBtn()"/>
 			</mx:FormItem>
 		</mx:Form>
 		
-		<s:Button label="Submit" id="submitB" click="submitB_clickHandler(event)"/>
+		<s:Button label="Submit" id="submitB" click="submitB_clickHandler(event)" enabled="false"/>
 				
 	</mx:VBox>
 	

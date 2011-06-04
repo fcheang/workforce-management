@@ -264,11 +264,17 @@ public class DataService {
 		return contDAO.getContributionItems(date, user);
 	}
 	
-	public boolean updateContribution(Contribution cont){
+	public boolean updateContributionReport(Contribution cont, List items){
+		updateContribution(cont);
+		updateContributionItems(items);
+		return true;
+	}
+	
+	private boolean updateContribution(Contribution cont){
 		return contDAO.updateContribution(cont);
 	}
 	
-	public boolean updateContributionItems(List items){
+	private boolean updateContributionItems(List items){
 		return contDAO.updateContributionItems(items);
 	}
 }
