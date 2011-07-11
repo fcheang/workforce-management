@@ -154,7 +154,7 @@
 				width="100%" height="100%"
 				dataProvider="{permissions}">
 				<mx:columns>
-					<mx:DataGridColumn headerText="{PERMISSION_TYPE}" dataField="object" width="200"/>
+					<mx:DataGridColumn headerText="{PERMISSION_TYPE}" dataField="object" width="300"/>
 					<mx:DataGridColumn headerText="{USER_ID}" dataField="userId"/>
 				</mx:columns>
 			</mx:DataGrid>
@@ -169,10 +169,10 @@
 				 labelWidth="120">
 			<mx:FormHeading label="Permission Information"/>
 			<mx:FormItem label="{PERMISSION_TYPE}">
-				<s:DropDownList id="typeL" dataProvider="{permissionTypes}" selectedItem="@{permissionDG.selectedItem.object}" width="150"/>
+				<s:DropDownList id="typeL" dataProvider="{permissionTypes}" selectedItem="@{permissionDG.selectedItem.object}" width="250"/>
 			</mx:FormItem>
 			<mx:FormItem label="{USER_ID}">
-				<s:DropDownList id="userL" dataProvider="{users}" selectedItem="@{permissionDG.selectedItem.userId}" width="150"/>								
+				<s:DropDownList id="userL" dataProvider="{users}" selectedItem="@{permissionDG.selectedItem.userId}" width="250"/>								
 			</mx:FormItem>
 			<mx:FormItem>
 				<s:Button label="Submit" id="saveB" click="saveB_clickHandler(event)"/>				
