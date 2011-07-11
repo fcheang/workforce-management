@@ -40,6 +40,10 @@
 	<bean id="contDAO" class="com.suntek.dao.ContributionDAOImpl">
 		<property name="dataSource" ref="dataSource"/>
 	</bean> 		 	
+
+	<bean id="dctDAO" class="com.suntek.dao.DataComplianceTaskDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean> 		 	
 	 	
 	<bean id="dataService" class="com.suntek.service.DataService">
 		<flex:remoting-destination />
@@ -49,6 +53,7 @@
 		<property name="commonDAO" ref="commonDAO"/>
 		<property name="permDAO" ref="permDAO"/>
 		<property name="contDAO" ref="contDAO"/>
+		<property name="dctDAO" ref="dctDAO"/>
 	</bean>	
 
 </beans> 

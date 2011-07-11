@@ -1,6 +1,9 @@
 package com.suntek.service;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -17,6 +20,7 @@ public class DataService {
 	private CommonDAOImpl commDAO = null;
 	private PermissionDAOImpl permDAO;
 	private ContributionDAOImpl contDAO;
+	private DataComplianceTaskDAOImpl dctDAO;
 	
 	public DataService(){		
 	}
@@ -43,6 +47,10 @@ public class DataService {
 
 	public void setContDAO(ContributionDAOImpl contDAO){
 		this.contDAO = contDAO;
+	}
+	
+	public void setDctDAO(DataComplianceTaskDAOImpl dctDAO){
+		this.dctDAO = dctDAO;
 	}
 	
 	// Common 
@@ -276,5 +284,41 @@ public class DataService {
 	
 	private boolean updateContributionItems(List items){
 		return contDAO.updateContributionItems(items);
+	}
+	
+	// DataComplianceTask
+	public List<DataComplianceTask> getDataComplianceTaskForWeek(Date date, User user){
+		List<DataComplianceTask> dctList = new ArrayList<DataComplianceTask>();		
+		try{
+			logger.debug("getDataComplianceTaskForWeek("+date+", "+user+")");		
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(date);
+			int offsetToSunday = 1 - cal.get(Calendar.DAY_OF_WEEK);
+			cal.add(Calendar.DATE, offsetToSunday);
+			for (int i=0; i<6; i++){
+				cal.add(Calendar.DATE, 1);
+				DataComplianceTask dct = dctDAO.getDataComplianceTask(cal.getTime(), user.getUsername());
+				if (dct == null){
+					dct = new DataComplianceTask();
+					dct.setDate(cal.getTime());
+					dct.setUserId(user.getUsername());
+				}
+				dctList.add(dct);			
+			}		
+		}catch(Throwable t){
+			t.printStackTrace();
+		}
+		return dctList;
+	}
+	
+	public boolean updateComplianceTask(List<DataComplianceTask> tasks){
+		try{
+			logger.debug("updateComplianceTask("+tasks+")");
+			dctDAO.updateDataComplianceTask(tasks);
+			return true;
+		}catch(Throwable t){
+			t.printStackTrace();
+			return false;
+		}		
 	}
 }
