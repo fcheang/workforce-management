@@ -21,6 +21,7 @@ public class DataService {
 	private PermissionDAOImpl permDAO;
 	private ContributionDAOImpl contDAO;
 	private DataComplianceTaskDAOImpl dctDAO;
+	private URPersonnelTaskDAOImpl urDAO;
 	
 	public DataService(){		
 	}
@@ -51,6 +52,10 @@ public class DataService {
 	
 	public void setDctDAO(DataComplianceTaskDAOImpl dctDAO){
 		this.dctDAO = dctDAO;
+	}
+
+	public void setUrDAO(URPersonnelTaskDAOImpl urDAO){
+		this.urDAO = urDAO;
 	}
 	
 	// Common 
@@ -321,4 +326,41 @@ public class DataService {
 			return false;
 		}		
 	}
+	
+	// URPersonnelTask
+	public List<URPersonnelTask> getURPersonnelTaskForWeek(Date date, User user){
+		List<URPersonnelTask> urList = new ArrayList<URPersonnelTask>();		
+		try{
+			logger.debug("getURPersonnelTaskForWeek("+date+", "+user+")");		
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(date);
+			int offsetToSunday = 1 - cal.get(Calendar.DAY_OF_WEEK);
+			cal.add(Calendar.DATE, offsetToSunday);
+			for (int i=0; i<6; i++){
+				cal.add(Calendar.DATE, 1);
+				URPersonnelTask ur = urDAO.getURPersonnelTask(cal.getTime(), user.getUsername());
+				if (ur == null){
+					ur = new URPersonnelTask();
+					ur.setDate(cal.getTime());
+					ur.setUserId(user.getUsername());
+				}
+				urList.add(ur);			
+			}		
+		}catch(Throwable t){
+			t.printStackTrace();
+		}
+		return urList;
+	}
+	
+	public boolean updateURPersonnelTask(List<URPersonnelTask> tasks){
+		try{
+			logger.debug("updateURPersonnelTask("+tasks+")");
+			urDAO.updateURPersonnelTask(tasks);
+			return true;
+		}catch(Throwable t){
+			t.printStackTrace();
+			return false;
+		}		
+	}
+	
 }

@@ -4,12 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
-
 import com.suntek.model.DataComplianceTask;
-import com.suntek.model.User;
 
 public class DataComplianceTaskDAOImpl extends SimpleJdbcDaoSupport {
 

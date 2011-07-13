@@ -52,12 +52,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import components.AdminPanel;
-			import components.DailyContributionReportPanel;
-			import components.DashboardPanel;
-			import components.DataComplianceTaskPanel;
-			import components.EmployeePanel;
-			import components.WorksheetPanel;
+			import components.*;
 			
 			import events.LoginEvent;
 			
@@ -83,6 +78,7 @@
 			private var DAILY_CLINIC_REPORT:String = "Daily Clinic Report";
 			private var DAILY_CONTRIBUTION_REPORT:String = "Daily Contribution Report";
 			private var DATA_COMPLIANCE_PERSONNEL_TASKS:String = "Data Compliance Personnel Tasks";
+			private var UR_PERSONNEL_TASKS:String = "UR Personnel Tasks";
 			
 			private var loggedInUser:User;
 			
@@ -181,7 +177,17 @@
 							content.addElement(dctPanel);
 							content.label = DATA_COMPLIANCE_PERSONNEL_TASKS;
 							portalVS.addChild(content);
-							break;									
+							break;
+						case UR_PERSONNEL_TASKS:
+							var urPanel:URPersonnelTaskPanel = new URPersonnelTaskPanel();
+							urPanel.dataService = dataService;
+							urPanel.user = loggedInUser;
+							urPanel.percentWidth = 100;
+							urPanel.percentHeight = 100;
+							content.addElement(urPanel);
+							content.label = UR_PERSONNEL_TASKS;
+							portalVS.addChild(content);
+							break;															
 					};
 				} 
 			}
