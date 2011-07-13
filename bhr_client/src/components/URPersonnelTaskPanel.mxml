@@ -25,55 +25,59 @@
 			
 			protected function panel1_creationCompleteHandler(event:FlexEvent):void
 			{				
-				dataService.getDataComplianceTaskForWeek.addEventListener(ResultEvent.RESULT, dataService_getDataComplianceTaskForWeek_resultHandler);
-				dataService.updateComplianceTask.addEventListener(ResultEvent.RESULT, dataService_updateDataComplianceTask_resultHandler);
+				dataService.getURPersonnelTaskForWeek.addEventListener(ResultEvent.RESULT, dataService_getURPersonnelTaskForWeek_resultHandler);
+				dataService.updateURPersonnelTask.addEventListener(ResultEvent.RESULT, dataService_updateURPersonnelTask_resultHandler);
 				
 				nameL.text = "Staff Name: "+user.getDisplayName(); 
 				
-				dataService.getDataComplianceTaskForWeek(dateDF.selectedDate, user);	
+				dataService.getURPersonnelTaskForWeek(dateDF.selectedDate, user);	
 			}
 			
-			protected function dataService_getDataComplianceTaskForWeek_resultHandler(event:ResultEvent):void
+			protected function dataService_getURPersonnelTaskForWeek_resultHandler(event:ResultEvent):void
 			{
 				tasks.removeAll();
 				var objects:ArrayCollection = event.result as ArrayCollection;
 				for each (var obj:Object in objects)
 				{
-					var task:DataComplianceTask = new DataComplianceTask();
+					var task:URPersonnelTask= new URPersonnelTask();
 					task.userId = obj.userId;
 					task.date = obj.date;
-					task.dateStr = obj.dateStr;
-					task.epsOpened = obj.epsOpened;
-					task.billErrsFound = obj.billErrsFound;
+					task.dateStr = obj.dateStr;					
 					task.chartsReviewed = obj.chartsReviewed;
-					task.chartErrsFound = obj.chartErrsFound;
-					task.itemsEntered = obj.itemsEntered;
+					task.dischargeDone = obj.dischargeDone;
+					task.billSvcProvided = obj.billSvcProvided;
+					task.epsOpened = obj.epsOpened;
+					task.chartsTransfered = obj.chartsTransfered;					
+					task.ruCompleted = obj.ruCompleted;
+					task.mdChartsAudited = obj.mdChartsAudited;
+					task.mhsChartsAudited = obj.mhsChartsAudited;
+					task.txTeamMtgs = obj.txTeamMtgs;					
 					tasks.addItem(task);
 				}
 			}			
-						
-			protected function dataService_updateDataComplianceTask_resultHandler(event:ResultEvent):void
+			
+			protected function dataService_updateURPersonnelTask_resultHandler(event:ResultEvent):void
 			{
 				var updated:Boolean = event.result as Boolean;
 				if (updated){
 					Alert.show("Tasks was submitted successfully!");
 				}else{
 					Alert.show("Problem submitting Tasks!");
-					dataService.getDataComplianceTaskForWeek(dateDF.selectedDate, user);
+					dataService.getURPersonnelTaskForWeek(dateDF.selectedDate, user);
 				}
 			}			
 			
 			protected function dateDF_changeHandler(event:CalendarLayoutChangeEvent):void
 			{
 				if (dateDF.selectedDate != null){
-					dataService.getDataComplianceTaskForWeek(dateDF.selectedDate, user);
+					dataService.getURPersonnelTaskForWeek(dateDF.selectedDate, user);
 				}
 			}			
 			
 			protected function submitB_clickHandler(event:MouseEvent):void
 			{
 				submitB.enabled = false;
-				dataService.updateComplianceTask(tasks);
+				dataService.updateURPersonnelTask(tasks);
 			}
 			
 			protected function enableSubmitBtn():void
@@ -107,11 +111,15 @@
 			dataProvider="{tasks}" editable="true" variableRowHeight="true" wordWrap="true" itemEditEnd="enableSubmitBtn()">
 			<mx:columns>
 				<mx:DataGridColumn headerText="Date" dataField="dateStr" editable="false"/>
-				<mx:DataGridColumn headerText="# of Episodes opened today" dataField="epsOpened"/>
-				<mx:DataGridColumn headerText="# of Errors found on billing sheets today" dataField="billErrsFound"/>
-				<mx:DataGridColumn headerText="# of Charts reviewed today" dataField="chartsReviewed"/>
-				<mx:DataGridColumn headerText="# of Errors found in charts today" dataField="chartErrsFound"/>
-				<mx:DataGridColumn headerText="# of Items entered into Insyst and completed from the 485 Report" dataField="itemsEntered"/>
+				<mx:DataGridColumn headerText="# of Charts you reviewed today" dataField="chartsReviewed"/>
+				<mx:DataGridColumn headerText="# of Discharge Summaries done today" dataField="dischargeDone"/>
+				<mx:DataGridColumn headerText="# of billable services you provided today" dataField="billSvcProvided"/>
+				<mx:DataGridColumn headerText="# of Episodes opened or closed today" dataField="epsOpened"/>
+				<mx:DataGridColumn headerText="# of transferred charts you coordinated today" dataField="chartsTransfered"/>
+				<mx:DataGridColumn headerText="# of RU changes you completed today" dataField="ruCompleted"/>
+				<mx:DataGridColumn headerText="# of new MD charts you audited today" dataField="mdChartsAudited"/>
+				<mx:DataGridColumn headerText="# of new MHS charts you audited today" dataField="mhsChartsAudited"/>
+				<mx:DataGridColumn headerText="How many tx team mtgs did you setup for this week?" dataField="txTeamMtgs"/>
 			</mx:columns>
 		</mx:DataGrid>
 		
