@@ -128,6 +128,7 @@
 					Alert.show("Problem update Permission!");
 					dataService.getAllPermission();
 				}
+				permissionDG.selectedIndex = -1;
 			}			
 			
 			protected function dataService_deletePermission_resultHandler(event:ResultEvent):void
@@ -139,6 +140,7 @@
 					Alert.show("Problem remove Permission!");
 					dataService.getAllPermission();
 				}
+				permissionDG.selectedIndex = -1;
 			}			
 			
 		]]>

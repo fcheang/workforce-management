@@ -22,6 +22,8 @@ public class DataService {
 	private ContributionDAOImpl contDAO;
 	private DataComplianceTaskDAOImpl dctDAO;
 	private URPersonnelTaskDAOImpl urDAO;
+	private BillingTaskDAOImpl btDAO;
+	private ProjectListDAOImpl plDAO;
 	
 	public DataService(){		
 	}
@@ -57,7 +59,15 @@ public class DataService {
 	public void setUrDAO(URPersonnelTaskDAOImpl urDAO){
 		this.urDAO = urDAO;
 	}
-	
+
+	public void setBtDAO(BillingTaskDAOImpl btDAO){
+		this.btDAO = btDAO;
+	}
+
+	public void setPlDAO(ProjectListDAOImpl plDAO){
+		this.plDAO = plDAO;
+	}
+
 	// Common 
 	
 	public User login(User u) {
@@ -356,6 +366,78 @@ public class DataService {
 		try{
 			logger.debug("updateURPersonnelTask("+tasks+")");
 			urDAO.updateURPersonnelTask(tasks);
+			return true;
+		}catch(Throwable t){
+			t.printStackTrace();
+			return false;
+		}		
+	}
+
+	// Billing Task
+	public List<BillingTask> getBillingTaskForWeek(Date date, User user){
+		List<BillingTask> urList = new ArrayList<BillingTask>();		
+		try{
+			logger.debug("getBillingTaskForWeek("+date+", "+user+")");		
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(date);
+			int offsetToSunday = 1 - cal.get(Calendar.DAY_OF_WEEK);
+			cal.add(Calendar.DATE, offsetToSunday);
+			for (int i=0; i<6; i++){
+				cal.add(Calendar.DATE, 1);
+				BillingTask bt = btDAO.getBillingTask(cal.getTime(), user.getUsername());
+				if (bt == null){
+					bt = new BillingTask();
+					bt.setDate(cal.getTime());
+					bt.setUserId(user.getUsername());
+				}
+				urList.add(bt);			
+			}		
+		}catch(Throwable t){
+			t.printStackTrace();
+		}
+		return urList;
+	}
+	
+	public boolean updateBillingTask(List<BillingTask> tasks){
+		try{
+			logger.debug("updateBillingTask("+tasks+")");
+			btDAO.updateBillingTask(tasks);
+			return true;
+		}catch(Throwable t){
+			t.printStackTrace();
+			return false;
+		}		
+	}
+	
+	// Project List
+	public List<ProjectList> getProjectListForWeek(Date date, User user){
+		List<ProjectList> urList = new ArrayList<ProjectList>();		
+		try{
+			logger.debug("getProjectListForWeek("+date+", "+user+")");		
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(date);
+			int offsetToSunday = 1 - cal.get(Calendar.DAY_OF_WEEK);
+			cal.add(Calendar.DATE, offsetToSunday);
+			for (int i=0; i<6; i++){
+				cal.add(Calendar.DATE, 1);
+				ProjectList pl = plDAO.getProjectList(cal.getTime(), user.getUsername());
+				if (pl == null){
+					pl = new ProjectList();
+					pl.setDate(cal.getTime());
+					pl.setUserId(user.getUsername());
+				}
+				urList.add(pl);			
+			}		
+		}catch(Throwable t){
+			t.printStackTrace();
+		}
+		return urList;
+	}
+	
+	public boolean updateProjectList(List<ProjectList> tasks){
+		try{
+			logger.debug("updateProjectList("+tasks+")");
+			plDAO.updateProjectList(tasks);
 			return true;
 		}catch(Throwable t){
 			t.printStackTrace();

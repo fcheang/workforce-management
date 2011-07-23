@@ -79,6 +79,8 @@
 			private var DAILY_CONTRIBUTION_REPORT:String = "Daily Contribution Report";
 			private var DATA_COMPLIANCE_PERSONNEL_TASKS:String = "Data Compliance Personnel Tasks";
 			private var UR_PERSONNEL_TASKS:String = "UR Personnel Tasks";
+			private var BILLING_DEPT_TASKS:String = "Billing Department Tasks";
+			private var PROJECT_LIST:String = "Project List and Daily Assignment";
 			
 			private var loggedInUser:User;
 			
@@ -111,13 +113,13 @@
 			}
 			
 			protected function dataService_getPermissionObject_resultHandler(event:ResultEvent):void
-			{
+			{ 
 				currentState="portalState";
 				
 				var caps:ArrayCollection = event.result as ArrayCollection;
 				var cap:String;
 				
-				var i:int;
+				var i:int;				
 				for (i=0; i<caps.length; i++){
 					cap = caps[i];
 					var content:NavigatorContent = new NavigatorContent();
@@ -138,8 +140,7 @@
 							empPanel.percentHeight = 100;
 							content.addElement(empPanel);
 							content.label = EMPLOYEE;
-							portalVS.addChild(content);							
-							break;
+							portalVS.addChild(content);							break;
 						case ANALYTICS:
 							var dbPanel:DashboardPanel = new DashboardPanel();
 							dbPanel.dataService = dataService;
@@ -147,8 +148,7 @@
 							dbPanel.percentHeight = 100;
 							content.addElement(dbPanel);
 							content.label = ANALYTICS;
-							portalVS.addChild(content);
-							break;
+							portalVS.addChild(content);							break;
 						case DAILY_CLINIC_REPORT:
 							var wsPanel:WorksheetPanel = new WorksheetPanel();
 							wsPanel.dataService = dataService;
@@ -156,8 +156,7 @@
 							wsPanel.percentHeight = 100;
 							content.addElement(wsPanel);
 							content.label = DAILY_CLINIC_REPORT;
-							portalVS.addChild(content);
-							break;
+							portalVS.addChild(content);							break;
 						case DAILY_CONTRIBUTION_REPORT:
 							var dcrPanel:DailyContributionReportPanel = new DailyContributionReportPanel();
 							dcrPanel.dataService = dataService;
@@ -166,8 +165,7 @@
 							dcrPanel.percentHeight = 100;
 							content.addElement(dcrPanel);
 							content.label = DAILY_CONTRIBUTION_REPORT;
-							portalVS.addChild(content);
-							break;		
+							portalVS.addChild(content);							break;		
 						case DATA_COMPLIANCE_PERSONNEL_TASKS:
 							var dctPanel:DataComplianceTaskPanel = new DataComplianceTaskPanel();
 							dctPanel.dataService = dataService;
@@ -176,8 +174,7 @@
 							dctPanel.percentHeight = 100;
 							content.addElement(dctPanel);
 							content.label = DATA_COMPLIANCE_PERSONNEL_TASKS;
-							portalVS.addChild(content);
-							break;
+							portalVS.addChild(content);							break;
 						case UR_PERSONNEL_TASKS:
 							var urPanel:URPersonnelTaskPanel = new URPersonnelTaskPanel();
 							urPanel.dataService = dataService;
@@ -186,8 +183,25 @@
 							urPanel.percentHeight = 100;
 							content.addElement(urPanel);
 							content.label = UR_PERSONNEL_TASKS;
-							portalVS.addChild(content);
-							break;															
+							portalVS.addChild(content);							break;		
+						case BILLING_DEPT_TASKS:
+							var btPanel:BillingTaskPanel = new BillingTaskPanel();
+							btPanel.dataService = dataService;
+							btPanel.user = loggedInUser;
+							btPanel.percentWidth = 100;
+							btPanel.percentHeight = 100;
+							content.addElement(btPanel);
+							content.label = BILLING_DEPT_TASKS;
+							portalVS.addChild(content);							break;		
+						case PROJECT_LIST:
+							var plPanel:ProjectListPanel = new ProjectListPanel();
+							plPanel.dataService = dataService;
+							plPanel.user = loggedInUser;
+							plPanel.percentWidth = 100;
+							plPanel.percentHeight = 100;
+							content.addElement(plPanel);
+							content.label = PROJECT_LIST;
+							portalVS.addChild(content);							break;									
 					};
 				} 
 			}
@@ -226,8 +240,8 @@
 	
 	<mx:Image source="images/bhr_header.jpg" horizontalAlign="center"/>
 
-	<mx:HBox horizontalAlign.portalState="left" width.portalState="100%">
-		<s:TabBar id="portalTB" includeIn="portalState" dataProvider="{portalVS}"/>
+	<mx:HBox horizontalAlign.portalState="left" width.portalState="100%" paddingBottom="20">
+		<s:TabBar id="portalTB" includeIn="portalState" dataProvider="{portalVS}"/>						
 		<mx:Spacer width="100%"/>		
 		<s:Button id="logoutB" label="Logout" 
 				  excludeFrom="loginState"				 
@@ -237,8 +251,7 @@
 	<mx:ViewStack includeIn="portalState" 
 				  id="portalVS"
 				  resizeToContent="true" width="100%" height="100%">
-	</mx:ViewStack>
-	
+	</mx:ViewStack>	
 	
 	<components:LoginPanel id="loginPanel" includeIn="loginState" loginEvent="loginpanel1_loginEventHandler(event)" 
 						   width="100%" height="100%"/>				

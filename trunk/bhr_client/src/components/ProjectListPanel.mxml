@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   creationComplete="panel1_creationCompleteHandler(event)"
+				   dropShadowVisible="true" borderWeight="1" backgroundColor="white">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.*;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.rpc.events.*;
+			import mx.rpc.remoting.*;
+			
+			import spark.events.TextOperationEvent;
+			
+			import valueObjects.*;
+			
+			public var dataService:RemoteObject;
+			public var user:User;
+			
+			[Bindable]
+			private var tasks:ArrayCollection = new ArrayCollection();
+			
+			protected function panel1_creationCompleteHandler(event:FlexEvent):void
+			{				
+				dataService.getProjectListForWeek.addEventListener(ResultEvent.RESULT, dataService_getProjectListForWeek_resultHandler);
+				dataService.updateProjectList.addEventListener(ResultEvent.RESULT, dataService_updateProjectList_resultHandler);
+				
+				nameL.text = "Name: "+user.getDisplayName(); 
+				
+				dataService.getProjectListForWeek(dateDF.selectedDate, user);	
+			}
+			
+			protected function dataService_getProjectListForWeek_resultHandler(event:ResultEvent):void
+			{
+				tasks.removeAll();
+				var objects:ArrayCollection = event.result as ArrayCollection;
+				for each (var obj:Object in objects)
+				{
+					var task:ProjectList= new ProjectList();
+					task.userId = obj.userId;
+					task.date = obj.date;
+					task.dateStr = obj.dateStr;					
+					task.task1 = obj.task1;
+					task.task2 = obj.task2;
+					task.task3 = obj.task3;
+					task.task4 = obj.task4;
+					task.task5 = obj.task5;
+					task.task6 = obj.task6;
+					task.task7 = obj.task7;
+					task.task8 = obj.task8;
+					task.task9 = obj.task9;
+					task.task10 = obj.task10;
+					task.task11 = obj.task11;
+					task.task12 = obj.task12;
+					task.task13 = obj.task13;
+					task.task14 = obj.task14;
+					task.task15 = obj.task15;
+					task.task16 = obj.task16;
+					task.task17 = obj.task17;
+					task.task18 = obj.task18;
+					task.task19 = obj.task19;
+					task.task20 = obj.task20;
+					task.task21 = obj.task21;
+					task.task22 = obj.task22;
+					task.task23 = obj.task23;
+					task.task24 = obj.task24;
+					task.task25 = obj.task25;
+					task.task26 = obj.task26;
+					task.task27 = obj.task27;
+					tasks.addItem(task);
+				}
+			}			
+			
+			protected function dataService_updateProjectList_resultHandler(event:ResultEvent):void
+			{
+				var updated:Boolean = event.result as Boolean;
+				if (updated){
+					Alert.show("Tasks was submitted successfully!");
+				}else{
+					Alert.show("Problem submitting Tasks!");
+					dataService.getURPersonnelTaskForWeek(dateDF.selectedDate, user);
+				}
+			}			
+			
+			protected function dateDF_changeHandler(event:CalendarLayoutChangeEvent):void
+			{
+				if (dateDF.selectedDate != null){
+					dataService.getProjectListForWeek(dateDF.selectedDate, user);
+				}
+			}			
+			
+			protected function submitB_clickHandler(event:MouseEvent):void
+			{
+				submitB.enabled = false;
+				dataService.updateProjectList(tasks);
+			}
+			
+			protected function enableSubmitBtn():void
+			{
+				submitB.enabled = true;
+			}			
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<mx:VBox 
+		width="100%" 
+		height="100%" 
+		paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10">
+		
+		<mx:HBox paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" width="100%">
+			<s:Label text="Date:" paddingLeft="30" paddingTop="6"/>
+			<mx:DateField id="dateDF" selectedDate="{new Date()}" change="dateDF_changeHandler(event)"/>
+			<s:Label id="nameL" paddingLeft="30" paddingTop="6"/>
+		</mx:HBox>
+		
+		<mx:DataGrid  
+			lockedColumnCount="1" 
+			horizontalScrollPolicy="auto" 
+			verticalScrollPolicy="auto" 
+			resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" id="projectListDG"
+			dataProvider="{tasks}" editable="true" variableRowHeight="true" wordWrap="true" itemEditEnd="enableSubmitBtn()" sortableColumns="false">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Date" dataField="dateStr" editable="false"/>
+				<mx:DataGridColumn headerText="8:30 - 9:30" editable="false" backgroundColor="0x888888" width="100"/>
+				<mx:DataGridColumn headerText="Task" dataField="task1"/>
+				<mx:DataGridColumn headerText="Task" dataField="task2"/>
+				<mx:DataGridColumn headerText="Task" dataField="task3"/>
+				<mx:DataGridColumn headerText="9:30 - 10:30" editable="false" backgroundColor="0x888888" width="100"/>
+				<mx:DataGridColumn headerText="Task" dataField="task4"/>
+				<mx:DataGridColumn headerText="Task" dataField="task5"/>
+				<mx:DataGridColumn headerText="Task" dataField="task6"/>
+				<mx:DataGridColumn headerText="10:30 - 11:30" editable="false" backgroundColor="0x888888" width="100"/>
+				<mx:DataGridColumn headerText="Task" dataField="task7"/>
+				<mx:DataGridColumn headerText="Task" dataField="task8"/>
+				<mx:DataGridColumn headerText="Task" dataField="task9"/>
+				<mx:DataGridColumn headerText="11:30 - 12:30" editable="false" backgroundColor="0x888888" width="100"/>
+				<mx:DataGridColumn headerText="Task" dataField="task10"/>
+				<mx:DataGridColumn headerText="Task" dataField="task11"/>
+				<mx:DataGridColumn headerText="Task" dataField="task12"/>
+				<mx:DataGridColumn headerText="12:30 - 1:30" editable="false" backgroundColor="0x888888" width="100"/>
+				<mx:DataGridColumn headerText="Task" dataField="task13"/>
+				<mx:DataGridColumn headerText="Task" dataField="task14"/>
+				<mx:DataGridColumn headerText="Task" dataField="task15"/>
+				<mx:DataGridColumn headerText="1:30 - 2:30" editable="false" backgroundColor="0x888888" width="100"/>
+				<mx:DataGridColumn headerText="Task" dataField="task16"/>
+				<mx:DataGridColumn headerText="Task" dataField="task17"/>
+				<mx:DataGridColumn headerText="Task" dataField="task18"/>
+				<mx:DataGridColumn headerText="2:30 - 3:30" editable="false" backgroundColor="0x888888" width="100"/>
+				<mx:DataGridColumn headerText="Task" dataField="task19"/>
+				<mx:DataGridColumn headerText="Task" dataField="task20"/>
+				<mx:DataGridColumn headerText="Task" dataField="task21"/>
+				<mx:DataGridColumn headerText="3:30 - 4:30" editable="false" backgroundColor="0x888888" width="100"/>
+				<mx:DataGridColumn headerText="Task" dataField="task22"/>
+				<mx:DataGridColumn headerText="Task" dataField="task23"/>
+				<mx:DataGridColumn headerText="Task" dataField="task24"/>
+				<mx:DataGridColumn headerText="4:30 - 5:30" editable="false" backgroundColor="0x888888" width="100"/>
+				<mx:DataGridColumn headerText="Task" dataField="task25"/>
+				<mx:DataGridColumn headerText="Task" dataField="task26"/>
+				<mx:DataGridColumn headerText="Task" dataField="task27"/>				
+			</mx:columns>
+		</mx:DataGrid>
+		
+		<s:Button label="Submit" id="submitB" click="submitB_clickHandler(event)" enabled="false"/>
+		
+	</mx:VBox>
+	
+</s:BorderContainer>
