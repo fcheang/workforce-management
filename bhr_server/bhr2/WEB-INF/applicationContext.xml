@@ -48,6 +48,14 @@
 	<bean id="urDAO" class="com.suntek.dao.URPersonnelTaskDAOImpl">
 		<property name="dataSource" ref="dataSource"/>
 	</bean> 		 	
+
+	<bean id="btDAO" class="com.suntek.dao.BillingTaskDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean> 		 	
+
+	<bean id="plDAO" class="com.suntek.dao.ProjectListDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean> 		 	
 	 	
 	<bean id="dataService" class="com.suntek.service.DataService">
 		<flex:remoting-destination />
@@ -59,6 +67,8 @@
 		<property name="contDAO" ref="contDAO"/>
 		<property name="dctDAO" ref="dctDAO"/>
 		<property name="urDAO" ref="urDAO"/>
+		<property name="btDAO" ref="btDAO"/>
+		<property name="plDAO" ref="plDAO"/>
 	</bean>	
 
 </beans> 

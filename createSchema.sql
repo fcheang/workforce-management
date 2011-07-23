@@ -153,6 +153,9 @@ CREATE TABLE `billing_task` (
   `ccc_amt` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,  
   `private_amt` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,  
   `other_amt` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,    
+  other_task1 VARCHAR(100),
+  other_task2 varchar(100),
+  other_task3 varchar(100),
   PRIMARY KEY (`userId`, `date`)
 )
 ENGINE = InnoDB;
@@ -166,13 +169,38 @@ CREATE TABLE `other_billing_task` (
 )
 ENGINE = InnoDB;
 
+
 CREATE TABLE `project_list` (
   `userId` VARCHAR(20) NOT NULL,
   `date` DATETIME NOT NULL,
-  `task` varchar(200) NOT NULL,
-  `timeslot` INTEGER UNSIGNED NOT NULL,
-  `order` INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY (`userId`, `date`, `task`, `timeslot`, `order`)
+  `task1` varchar(100),
+  `task2` varchar(100),
+  `task3` varchar(100),
+  `task4` varchar(100),
+  `task5` varchar(100),
+  `task6` varchar(100),
+  `task7` varchar(100),
+  `task8` varchar(100),
+  `task9` varchar(100),
+  `task10` varchar(100),
+  `task11` varchar(100),
+  `task12` varchar(100),
+  `task13` varchar(100),
+  `task14` varchar(100),
+  `task15` varchar(100),
+  `task16` varchar(100),
+  `task17` varchar(100),
+  `task18` varchar(100),
+  `task19` varchar(100),
+  `task20` varchar(100),
+  `task21` varchar(100),
+  `task22` varchar(100),
+  `task23` varchar(100),
+  `task24` varchar(100),
+  `task25` varchar(100),
+  `task26` varchar(100),
+  `task27` varchar(100),
+  PRIMARY KEY (`userId`, `date`)
 )
 ENGINE = InnoDB;
 

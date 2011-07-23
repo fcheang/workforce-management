@@ -25,66 +25,71 @@
 			
 			protected function panel1_creationCompleteHandler(event:FlexEvent):void
 			{				
-				dataService.getURPersonnelTaskForWeek.addEventListener(ResultEvent.RESULT, dataService_getURPersonnelTaskForWeek_resultHandler);
-				dataService.updateURPersonnelTask.addEventListener(ResultEvent.RESULT, dataService_updateURPersonnelTask_resultHandler);
+				dataService.getBillingTaskForWeek.addEventListener(ResultEvent.RESULT, dataService_getBillingTaskForWeek_resultHandler);
+				dataService.updateBillingTask.addEventListener(ResultEvent.RESULT, dataService_updateBillingTask_resultHandler);
 				
-				nameL.text = "Staff Name: "+user.getDisplayName(); 
+				nameL.text = "Biller's Name: "+user.getDisplayName(); 
 				
-				dataService.getURPersonnelTaskForWeek(dateDF.selectedDate, user);	
+				dataService.getBillingTaskForWeek(dateDF.selectedDate, user);	
 			}
 			
-			protected function dataService_getURPersonnelTaskForWeek_resultHandler(event:ResultEvent):void
+			protected function dataService_getBillingTaskForWeek_resultHandler(event:ResultEvent):void
 			{
 				tasks.removeAll();
 				var objects:ArrayCollection = event.result as ArrayCollection;
 				for each (var obj:Object in objects)
 				{
-					var task:URPersonnelTask= new URPersonnelTask();
+					var task:BillingTask= new BillingTask();
 					task.userId = obj.userId;
 					task.date = obj.date;
 					task.dateStr = obj.dateStr;					
-					task.chartsReviewed = obj.chartsReviewed;
-					task.dischargeDone = obj.dischargeDone;
-					task.billSvcProvided = obj.billSvcProvided;
-					task.epsOpened = obj.epsOpened;
-					task.chartsTransfered = obj.chartsTransfered;					
-					task.ruCompleted = obj.ruCompleted;
-					task.mdChartsAudited = obj.mdChartsAudited;
-					task.mhsChartsAudited = obj.mhsChartsAudited;
-					task.txTeamMtgs = obj.txTeamMtgs;					
+					task.claimsDroppedC = obj.claimsDroppedC;
+					task.claimsDroppedP = obj.claimsDroppedP;
+					task.errors = obj.errors;
+					task.denials = obj.denials;
+					task.followUps = obj.followUps;					
+					task.appeals = obj.appeals;
+					task.hmoAmt = obj.hmoAmt;
+					task.acAmt = obj.acAmt;
+					task.cccAmt = obj.cccAmt;					
+					task.privateAmt = obj.privateAmt;
+					task.otherAmt = obj.otherAmt;
+					task.otherTask1 = obj.otherTask1;
+					task.otherTask2 = obj.otherTask2;
+					task.otherTask3 = obj.otherTask3;
 					tasks.addItem(task);
 				}
 			}			
 			
-			protected function dataService_updateURPersonnelTask_resultHandler(event:ResultEvent):void
+			protected function dataService_updateBillingTask_resultHandler(event:ResultEvent):void
 			{
 				var updated:Boolean = event.result as Boolean;
 				if (updated){
 					Alert.show("Tasks was submitted successfully!");
 				}else{
 					Alert.show("Problem submitting Tasks!");
-					dataService.getURPersonnelTaskForWeek(dateDF.selectedDate, user);
+					dataService.getBillingTaskForWeek(dateDF.selectedDate, user);
 				}
 			}			
 			
 			protected function dateDF_changeHandler(event:CalendarLayoutChangeEvent):void
 			{
 				if (dateDF.selectedDate != null){
-					dataService.getURPersonnelTaskForWeek(dateDF.selectedDate, user);
+					dataService.getBillingTaskForWeek(dateDF.selectedDate, user);
 				}
 			}			
 			
 			protected function submitB_clickHandler(event:MouseEvent):void
 			{
 				submitB.enabled = false;
-				dataService.updateURPersonnelTask(tasks);
+				dataService.updateBillingTask(tasks);
 			}
 			
 			protected function enableSubmitBtn():void
 			{
 				submitB.enabled = true;
 			}			
-			
+						
 		]]>
 	</fx:Script>
 	
@@ -107,19 +112,24 @@
 			lockedColumnCount="1" 
 			horizontalScrollPolicy="auto" 
 			verticalScrollPolicy="auto" 
-			resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" id="dataComplianceTaskDG"
+			resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" id="billingTaskDG"
 			dataProvider="{tasks}" editable="true" variableRowHeight="true" wordWrap="true" itemEditEnd="enableSubmitBtn()" sortableColumns="false">
 			<mx:columns>
 				<mx:DataGridColumn headerText="Date" dataField="dateStr" editable="false"/>
-				<mx:DataGridColumn headerText="# of Charts you reviewed today" dataField="chartsReviewed"/>
-				<mx:DataGridColumn headerText="# of Discharge Summaries done today" dataField="dischargeDone"/>
-				<mx:DataGridColumn headerText="# of billable services you provided today" dataField="billSvcProvided"/>
-				<mx:DataGridColumn headerText="# of Episodes opened or closed today" dataField="epsOpened"/>
-				<mx:DataGridColumn headerText="# of transferred charts you coordinated today" dataField="chartsTransfered"/>
-				<mx:DataGridColumn headerText="# of RU changes you completed today" dataField="ruCompleted"/>
-				<mx:DataGridColumn headerText="# of new MD charts you audited today" dataField="mdChartsAudited"/>
-				<mx:DataGridColumn headerText="# of new MHS charts you audited today" dataField="mhsChartsAudited"/>
-				<mx:DataGridColumn headerText="How many tx team mtgs did you setup for this week?" dataField="txTeamMtgs"/>
+				<mx:DataGridColumn headerText="# of claims dropped (Completed)" dataField="claimsDroppedC"/>
+				<mx:DataGridColumn headerText="# of claims dropped (Still Pending)" dataField="claimsDroppedP"/>
+				<mx:DataGridColumn headerText="# of errors" dataField="errors"/>
+				<mx:DataGridColumn headerText="# of denials" dataField="denials"/>
+				<mx:DataGridColumn headerText="# of follow-ups" dataField="followUps"/>
+				<mx:DataGridColumn headerText="# of appeals" dataField="appeals"/>
+				<mx:DataGridColumn headerText="HMO (list amounts past 30+ days)" dataField="hmoAmt"/>
+				<mx:DataGridColumn headerText="AC (list amounts past 30+ days)" dataField="acAmt"/>
+				<mx:DataGridColumn headerText="CCC (list amounts past 30+ days)" dataField="cccAmt"/>
+				<mx:DataGridColumn headerText="Private (list amounts past 30+ days)" dataField="privateAmt"/>
+				<mx:DataGridColumn headerText="Other (list amounts past 30+ days)" dataField="otherAmt"/>
+				<mx:DataGridColumn headerText="Other Billing Task 1" dataField="otherTask1"/>
+				<mx:DataGridColumn headerText="Other Billing Task 2" dataField="otherTask2"/>
+				<mx:DataGridColumn headerText="Other Billing Task 3" dataField="otherTask3"/>				
 			</mx:columns>
 		</mx:DataGrid>
 		
