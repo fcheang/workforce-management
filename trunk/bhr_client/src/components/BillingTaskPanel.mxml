@@ -89,12 +89,42 @@
 			{
 				submitB.enabled = true;
 			}			
-						
+			
+			protected function getHmoAmt(item:Object,  column:DataGridColumn):String
+			{
+				var n:Number = item.hmoAmt;
+				return "$"+nf.format(n);
+			}			
+
+			protected function getAcAmt(item:Object,  column:DataGridColumn):String
+			{
+				var n:Number = item.acAmt;
+				return "$"+nf.format(n);
+			}			
+
+			protected function getCccAmt(item:Object,  column:DataGridColumn):String
+			{
+				var n:Number = item.cccAmt;
+				return "$"+nf.format(n);
+			}			
+
+			protected function getPrivateAmt(item:Object,  column:DataGridColumn):String
+			{
+				var n:Number = item.privateAmt;
+				return "$"+nf.format(n);
+			}			
+			
+			protected function getOtherAmt(item:Object,  column:DataGridColumn):String
+			{
+				var n:Number = item.otherAmt;
+				return "$"+nf.format(n);
+			}						
+			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:NumberFormatter id="nf" precision="2" rounding="up"/>
 	</fx:Declarations>
 	
 	<mx:VBox 
@@ -122,11 +152,11 @@
 				<mx:DataGridColumn headerText="# of denials" dataField="denials"/>
 				<mx:DataGridColumn headerText="# of follow-ups" dataField="followUps"/>
 				<mx:DataGridColumn headerText="# of appeals" dataField="appeals"/>
-				<mx:DataGridColumn headerText="HMO (list amounts past 30+ days)" dataField="hmoAmt"/>
-				<mx:DataGridColumn headerText="AC (list amounts past 30+ days)" dataField="acAmt"/>
-				<mx:DataGridColumn headerText="CCC (list amounts past 30+ days)" dataField="cccAmt"/>
-				<mx:DataGridColumn headerText="Private (list amounts past 30+ days)" dataField="privateAmt"/>
-				<mx:DataGridColumn headerText="Other (list amounts past 30+ days)" dataField="otherAmt"/>
+				<mx:DataGridColumn headerText="HMO (list amounts past 30+ days)" labelFunction="getHmoAmt" dataField="hmoAmt"/>
+				<mx:DataGridColumn headerText="AC (list amounts past 30+ days)" labelFunction="getAcAmt" dataField="acAmt"/>
+				<mx:DataGridColumn headerText="CCC (list amounts past 30+ days)" labelFunction="getCccAmt" dataField="cccAmt"/>
+				<mx:DataGridColumn headerText="Private (list amounts past 30+ days)" labelFunction="getPrivateAmt" dataField="privateAmt"/>
+				<mx:DataGridColumn headerText="Other (list amounts past 30+ days)" labelFunction="getOtherAmt" dataField="otherAmt"/>
 				<mx:DataGridColumn headerText="Other Billing Task 1" dataField="otherTask1"/>
 				<mx:DataGridColumn headerText="Other Billing Task 2" dataField="otherTask2"/>
 				<mx:DataGridColumn headerText="Other Billing Task 3" dataField="otherTask3"/>				
