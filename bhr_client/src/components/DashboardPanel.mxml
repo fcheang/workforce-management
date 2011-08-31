@@ -136,7 +136,7 @@
 				<s:layout>
 					<s:HorizontalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
 				</s:layout>
-				<mx:LineChart id="prodCC" x="10" y="10" dataProvider="{worksheets}" showDataTips="true" width="100%" height="100%">
+				<mx:ColumnChart id="prodCC" x="10" y="10" dataProvider="{worksheets}" showDataTips="true" width="100%" height="100%">
 					<mx:horizontalAxis>
 						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc"/>
 					</mx:horizontalAxis>
@@ -144,9 +144,9 @@
 						<mx:LinearAxis title="%" minimum="0" maximum="100"/>						
 					</mx:verticalAxis>
 					<mx:series>
-						<mx:LineSeries displayName="Productivity" yField="productivity"/>
+						<mx:ColumnSeries displayName="Productivity" yField="productivity"/>
 					</mx:series>				
-				</mx:LineChart>		
+				</mx:ColumnChart>		
 				<mx:Legend dataProvider="{prodCC}"/>
 			</s:Panel>			
 			<s:Panel title="Daily Activity" width="100%" height="100%">
