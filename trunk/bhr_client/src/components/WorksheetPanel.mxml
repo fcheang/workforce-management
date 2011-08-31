@@ -270,13 +270,13 @@
 			protected function calcTotalFaceHrs(item:Object,  column:DataGridColumn):String
 			{
 				var n:Number = item.totalFaceHours;
-				return nf.format(2);
+				return nf.format(n);
 			}
 			
 			protected function calcTotalOtherHrs(item:Object,  column:DataGridColumn):String
 			{
 				 var n:Number = item.totalOtherHours;
-				 return nf.format(2);
+				 return nf.format(n);
 			}
 
 			protected function calcTotalSeen(item:Object,  column:DataGridColumn):String
