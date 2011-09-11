@@ -10,4 +10,14 @@ To build the project:
 4. run ant from the current directory to create the bhr2.war file
 5. you can deploy the bhr2.war file to Tomcat
 
-
+Todo:
+9/10
+- print report
+- MHS staff report
+- QA staff report
+- Daily CLinic Report
+  - remove County(other)$, CCC$, daily salary, revenue, balance, 
+  - add modifyBy, modificationDate
+  - add DailyClinicReportForManager
+  - use provider list
+  - support hours worked in decimal

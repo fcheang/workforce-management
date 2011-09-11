@@ -24,7 +24,7 @@ CREATE TABLE `Employee` (
 ENGINE = InnoDB;
 
 CREATE TABLE `Worksheet` (
-  `empId` INTEGER UNSIGNED NOT NULL,
+  `providerId` INTEGER UNSIGNED NOT NULL,
   `date` DATETIME NOT NULL,
   `clinic` VARCHAR(30) NOT NULL,
   `hrs_worked` DECIMAL(10,0) UNSIGNED NOT NULL DEFAULT 0,
@@ -44,11 +44,9 @@ CREATE TABLE `Worksheet` (
   `num_new` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `num_dropin` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `daily_salary` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,  
-  PRIMARY KEY (`empId`, `date`, `clinic`),
-  CONSTRAINT `FK_Worksheet_1` FOREIGN KEY `FK_Worksheet_1` (`empId`)
-    REFERENCES `employee` (`empId`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
+  `modifyBy` varchar(20) DEFAULT NULL,
+  `modificationDate` datetime DEFAULT NULL,  
+  PRIMARY KEY (`providerId`, `date`, `clinic`)
 )
 ENGINE = InnoDB;
 
@@ -75,13 +73,25 @@ insert into permission_type values ('User Admin');
 insert into permission_type values ('Analytics');
 insert into permission_type values ('Employee');
 insert into permission_type values ('Daily Clinic Report');
-insert into permission_type values ('Daily Contribution Report');
-insert into permission_type values ('Data Compliance Personnel Tasks');
-insert into permission_type values ('Billing Department Tasks');
-insert into permission_type values ('UR Personnel Tasks');
-insert into permission_type values ('Project List and Daily Assignment');
+insert into permission_type values ('Intake Staff Report');
+insert into permission_type values ('Data Staff Report');
+insert into permission_type values ('Billing Staff Report');
+insert into permission_type values ('UR Staff Report');
+insert into permission_type values ('Administrative Staff Report');
 
 insert into permission (object, userId) values ('User Admin', 'Administrator');
+
+update permission set object = 'Intake Staff Report' where object = 'Daily Contribution Report';
+update permission set object = 'Data Staff Report' where object = 'Data Compliance Personnel Tasks';
+update permission set object = 'Billing Staff Report' where object = 'Billing Department Tasks';
+update permission set object = 'UR Staff Report' where object = 'UR Personnel Tasks';
+update permission set object = 'Administrative Staff Report' where object = 'Project List & Daily Assignment';
+update permission_type set name = 'Intake Staff Report' where name = 'Daily Contribution Report';
+update permission_type set name = 'Data Staff Report' where name = 'Data Compliance Personnel Tasks';
+update permission_type set name = 'Billing Staff Report' where name = 'Billing Department Tasks';
+update permission_type set name = 'UR Staff Report' where name = 'UR Personnel Tasks';
+update permission_type set name = 'Administrative Staff Report' where name = 'Project List & Daily Assignment';
+
 
 CREATE TABLE `contribution` (
   `userId` VARCHAR(20) NOT NULL,

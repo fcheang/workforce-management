@@ -76,11 +76,11 @@
 			private var EMPLOYEE:String = "Employee";
 			private var ANALYTICS:String = "Analytics";
 			private var DAILY_CLINIC_REPORT:String = "Daily Clinic Report";
-			private var DAILY_CONTRIBUTION_REPORT:String = "Daily Contribution Report";
-			private var DATA_COMPLIANCE_PERSONNEL_TASKS:String = "Data Compliance Personnel Tasks";
-			private var UR_PERSONNEL_TASKS:String = "UR Personnel Tasks";
-			private var BILLING_DEPT_TASKS:String = "Billing Department Tasks";
-			private var PROJECT_LIST:String = "Project List and Daily Assignment";
+			private var DAILY_CONTRIBUTION_REPORT:String = "Intake Staff Report";
+			private var DATA_COMPLIANCE_PERSONNEL_TASKS:String = "Data Staff Report";
+			private var UR_PERSONNEL_TASKS:String = "UR Staff Report";
+			private var BILLING_DEPT_TASKS:String = "Billing Staff Report";
+			private var PROJECT_LIST:String = "Administrative Staff Report";
 			
 			private var loggedInUser:User;
 			
@@ -150,7 +150,7 @@
 							content.label = ANALYTICS;
 							portalVS.addChild(content);							break;
 						case DAILY_CLINIC_REPORT:
-							var wsPanel:WorksheetPanel = new WorksheetPanel();
+							var wsPanel:DailyClinicReportPanel = new DailyClinicReportPanel();
 							wsPanel.dataService = dataService;
 							wsPanel.percentWidth = 100;
 							wsPanel.percentHeight = 100;

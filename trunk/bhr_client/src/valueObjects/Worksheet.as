@@ -5,8 +5,8 @@ package valueObjects
 	[Bindable]
 	public class Worksheet
 	{		
-		public var empId:int;
-		public var empName:String;
+		public var providerId:int;
+		public var providerName:String;
 		public var date:Date;
 		public var clinic:String;
  		public var hrsWorked:Number;

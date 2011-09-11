@@ -16,7 +16,7 @@ public class DataService {
 	private Logger logger = Logger.getLogger(DataService.class.getName());
 	private UserDAOImpl userDAO = null;
 	private WorksheetDAOImpl wsDAO = null;
-	private EmployeeDAOImpl empDAO = null;
+	private EmployeeDAOImpl empDAO = null; 
 	private CommonDAOImpl commDAO = null;
 	private PermissionDAOImpl permDAO;
 	private ContributionDAOImpl contDAO;
@@ -76,6 +76,17 @@ public class DataService {
 			return userDAO.getUser(u.getUsername(), u.getPassword());			
 		}catch(Throwable t){
 			logger.error("Problem login with user: "+u.getUsername()+" pass: "+u.getPassword(), t);
+			return null;
+		}
+	}
+	
+	// Provider
+	public List<Provider> getAllProvider(){
+		try{
+			logger.debug("getAllEmployees()");
+			return commDAO.getAllProvider();
+		}catch(Throwable t){
+			t.printStackTrace();
 			return null;
 		}
 	}
@@ -157,7 +168,7 @@ public class DataService {
 	public List<Worksheet> getWorksheetForEmployeeAndDateRange(int empId, Date sd, Date ed){
 		try{
 			logger.debug("getWorksheetForEmployeeAndDateRange("+empId+", "+sd+", "+ed+")");
-			return wsDAO.getWorksheetForEmployeeAndDateRange(empId, sd, ed);
+			return wsDAO.getWorksheetForProviderAndDateRange(empId, sd, ed);
 		}catch(Throwable t){
 			t.printStackTrace();
 			return null;
@@ -167,7 +178,7 @@ public class DataService {
 	public List<Worksheet> getWorksheetForClinicAndEmployeeAndDateRange(String clinic, int empId, Date sd, Date ed){
 		try{
 			logger.debug("getWorksheetForClinicAndEmployeeAndDateRange("+clinic+", "+empId+", "+sd+", "+ed+")");
-			return wsDAO.getWorksheetForClinicAndEmployeeAndDateRange(clinic, empId, sd, ed);
+			return wsDAO.getWorksheetForClinicAndProviderAndDateRange(clinic, empId, sd, ed);
 		}catch(Throwable t){
 			t.printStackTrace();
 			return null;
@@ -192,7 +203,7 @@ public class DataService {
 	public boolean deleteWorksheet(Worksheet ws){
 		try{
 			logger.debug("deleteWorksheet("+ws+")");
-			return wsDAO.deleteWorksheet(ws.getEmpId(), ws.getClinic(), ws.getDate());
+			return wsDAO.deleteWorksheet(ws.getProviderId(), ws.getClinic(), ws.getDate());
 		}catch(Throwable t){
 			t.printStackTrace();
 			return false;
