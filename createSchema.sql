@@ -27,7 +27,7 @@ CREATE TABLE `Worksheet` (
   `providerId` INTEGER UNSIGNED NOT NULL,
   `date` DATETIME NOT NULL,
   `clinic` VARCHAR(30) NOT NULL,
-  `hrs_worked` DECIMAL(10,0) UNSIGNED NOT NULL DEFAULT 0,
+  `hrs_worked` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
   `county_seen` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `ccc_seen` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `hmo_seen` INTEGER UNSIGNED NOT NULL DEFAULT 0,
@@ -44,8 +44,8 @@ CREATE TABLE `Worksheet` (
   `num_new` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `num_dropin` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `daily_salary` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,  
-  `modifyBy` varchar(20) DEFAULT NULL,
-  `modificationDate` datetime DEFAULT NULL,  
+  `enteredBy` varchar(20) DEFAULT NULL,
+  `dateEntered` datetime DEFAULT NULL,
   PRIMARY KEY (`providerId`, `date`, `clinic`)
 )
 ENGINE = InnoDB;
@@ -73,6 +73,7 @@ insert into permission_type values ('User Admin');
 insert into permission_type values ('Analytics');
 insert into permission_type values ('Employee');
 insert into permission_type values ('Daily Clinic Report');
+insert into permission_type values ('Daily Clinic Report for Manager');
 insert into permission_type values ('Intake Staff Report');
 insert into permission_type values ('Data Staff Report');
 insert into permission_type values ('Billing Staff Report');

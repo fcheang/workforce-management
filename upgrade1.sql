@@ -3,6 +3,7 @@ update permission_type set name = 'Data Staff Report' where name = 'Data Complia
 update permission_type set name = 'Billing Staff Report' where name = 'Billing Department Tasks';
 update permission_type set name = 'UR Staff Report' where name = 'UR Personnel Tasks';
 update permission_type set name = 'Administrative Staff Report' where name = 'Project List & Daily Assignment';
+insert into permission_type values ('Daily Clinic Report for Manager');
 
 drop table Worksheet;
 
@@ -10,7 +11,7 @@ CREATE TABLE `Worksheet` (
   `providerId` INTEGER UNSIGNED NOT NULL,
   `date` DATETIME NOT NULL,
   `clinic` VARCHAR(30) NOT NULL,
-  `hrs_worked` DECIMAL(10,0) UNSIGNED NOT NULL DEFAULT 0,
+  `hrs_worked` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
   `county_seen` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `ccc_seen` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `hmo_seen` INTEGER UNSIGNED NOT NULL DEFAULT 0,
@@ -27,8 +28,8 @@ CREATE TABLE `Worksheet` (
   `num_new` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `num_dropin` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `daily_salary` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,  
-  `modifyBy` varchar(20) DEFAULT NULL,
-  `modificationDate` datetime DEFAULT NULL,  
+  `enteredBy` varchar(20) DEFAULT NULL,
+  `dateEntered` datetime DEFAULT NULL,
   PRIMARY KEY (`providerId`, `date`, `clinic`)
 )
 ENGINE = InnoDB;

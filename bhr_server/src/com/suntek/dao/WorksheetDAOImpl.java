@@ -2,6 +2,7 @@ package com.suntek.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -24,16 +25,18 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 				"county_face_min, county_other_min, "+
 				"ccc_face_min, ccc_other_min, "+
 				"hmo_face_min, other_face_min, "+
-				"num_scheduled, num_noshow, num_cancel, num_new, num_dropin, daily_salary) "+
+				"num_scheduled, num_noshow, num_cancel, num_new, num_dropin, daily_salary, "+
+				"enteredBy, dateEntered) "+
 				"values "+
-				"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			if (super.getSimpleJdbcTemplate().update(sql, 
 					ws.getProviderId(), ws.getClinic(), ws.getDate(), ws.getHrsWorked(), 
 					ws.getCountySeen(), ws.getCccSeen(), ws.getHmoSeen(), ws.getOtherSeen(),
 					ws.getCountyFaceMin(), ws.getCountyOtherMin(),
 					ws.getCccFaceMin(), ws.getCccOtherMin(),
 					ws.getHmoFaceMin(), ws.getOtherFaceMin(),
-					ws.getNumScheduled(), ws.getNumNoShow(), ws.getNumCancel(), ws.getNumNew(), ws.getNumDropin(), ws.getDailySalary()) > 0){
+					ws.getNumScheduled(), ws.getNumNoShow(), ws.getNumCancel(), ws.getNumNew(), ws.getNumDropin(), ws.getDailySalary(),
+					ws.getEnteredBy(), new Timestamp(new Date().getTime())) > 0){
 				return ws;
 			}else{
 				return null;
@@ -50,9 +53,11 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 			"w.county_face_min, w.county_other_min, " +
 			"w.ccc_face_min, w.ccc_other_min, " +
 			"w.hmo_face_min, w.other_face_min, " +
-			"w.num_scheduled, w.num_noshow, w.num_cancel, w.num_new, w.num_dropin, w.daily_salary " +
+			"w.num_scheduled, w.num_noshow, w.num_cancel, w.num_new, w.num_dropin, w.daily_salary, "+
+			"w.enteredBy, w.dateEntered " +
 			"from worksheet w, provider e " +
-			"where w.clinic = ? and w.date = ? and w.providerId = e.providerId";		
+			"where w.clinic = ? and w.date = ? and w.providerId = e.providerId "+
+			"order by e.name";		
 		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), clinic, date);
 	}
 	
@@ -63,7 +68,7 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 			"sum(hmo_seen), sum(other_seen), sum(county_face_min), sum(county_other_min), "+
 			"sum(ccc_face_min), sum(ccc_other_min), sum(hmo_face_min), sum(other_face_min), "+
 			"sum(num_scheduled), sum(num_noshow), sum(num_cancel), sum(num_new), sum(num_dropin), "+
-			"sum(daily_salary) "+
+			"sum(daily_salary), 'multiple', now() "+
 			"from worksheet "+
 			"where date >= ? and date <= ? and clinic = ? "+
 			"group by clinic, date "+
@@ -78,7 +83,7 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 			"sum(hmo_seen), sum(other_seen), sum(county_face_min), sum(county_other_min), "+
 			"sum(ccc_face_min), sum(ccc_other_min), sum(hmo_face_min), sum(other_face_min), "+
 			"sum(num_scheduled), sum(num_noshow), sum(num_cancel), sum(num_new), sum(num_dropin), "+
-			"sum(daily_salary) "+
+			"sum(daily_salary), 'multiple', now() "+
 			"from worksheet "+
 			"where date >= ? and date <= ? and providerId = ? "+
 			"group by providerId, date "+
@@ -89,11 +94,11 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 	public List<Worksheet> getWorksheetForClinicAndProviderAndDateRange(String clinic, int providerId, Date sd, Date ed){
 		String sql =
 			"select "+
-			"providerId, 'all', date, clinic, sum(hrs_worked), sum(county_seen), sum(ccc_seen), "+
+			"providerId, 'multiple', date, clinic, sum(hrs_worked), sum(county_seen), sum(ccc_seen), "+
 			"sum(hmo_seen), sum(other_seen), sum(county_face_min), sum(county_other_min), "+
 			"sum(ccc_face_min), sum(ccc_other_min), sum(hmo_face_min), sum(other_face_min), "+
 			"sum(num_scheduled), sum(num_noshow), sum(num_cancel), sum(num_new), sum(num_dropin), "+
-			"sum(daily_salary) "+
+			"sum(daily_salary), 'multiple', now() "+
 			"from worksheet "+
 			"where date >= ? and date <= ? and clinic = ? and providerId = ? "+
 			"group by providerId, clinic, date "+
@@ -153,6 +158,8 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 			e.setNumNew(rs.getInt(19));
 			e.setNumDropin(rs.getInt(20));			
 			e.setDailySalary(rs.getDouble(21));
+			e.setEnteredBy(rs.getString(22));
+			e.setDateEntered(rs.getDate(23));
 			return e;
 		}
 	}	

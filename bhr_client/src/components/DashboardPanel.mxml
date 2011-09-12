@@ -15,34 +15,33 @@
 			import mx.events.FlexEvent;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
-			import mx.rpc.remoting.mxml.RemoteObject;
-			
-			import valueObjects.Employee;				
+			import mx.rpc.remoting.mxml.RemoteObject;			
+			import valueObjects.Provider;				
 			
 			public var dataService:RemoteObject;
 			
 			[Bindable]
 			private var locations:ArrayCollection;
 			[Bindable]
-			private var employees:ArrayCollection;
+			private var providers:ArrayCollection;
 			[Bindable]
 			private var worksheets:ArrayCollection;
 
 			protected function panel1_creationCompleteHandler(event:FlexEvent):void
 			{
 				dataService.getWorksheetForClinicAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
-				dataService.getWorksheetForEmployeeAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
-				dataService.getWorksheetForClinicAndEmployeeAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
+				dataService.getWorksheetForProviderAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
+				dataService.getWorksheetForClinicAndProviderAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
 				
 				dataService.getWorksheetForClinicAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
-				dataService.getWorksheetForEmployeeAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
-				dataService.getWorksheetForClinicAndEmployeeAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
+				dataService.getWorksheetForProviderAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
+				dataService.getWorksheetForClinicAndProviderAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
 				
 				dataService.getLocation.addEventListener(ResultEvent.RESULT, dataService_getLocation_resultHandler);
-				dataService.getAllEmployees.addEventListener(ResultEvent.RESULT, dataService_getAllEmployee_resultHandler);
+				dataService.getAllProvider.addEventListener(ResultEvent.RESULT, dataService_getAllProvider_resultHandler);
 				
 				dataService.getLocation();
-				dataService.getAllEmployees();
+				dataService.getAllProvider();
 			}
 			
 			protected function dataService_getLocation_resultHandler(event:ResultEvent):void
@@ -50,9 +49,9 @@
 				locations = event.result as ArrayCollection;	
 			}
 			
-			protected function dataService_getAllEmployee_resultHandler(event:ResultEvent):void
+			protected function dataService_getAllProvider_resultHandler(event:ResultEvent):void
 			{
-				employees = event.result as ArrayCollection;
+				providers = event.result as ArrayCollection;
 			}			
 			
 			protected function dataService_getWorksheet_resultHandler(event:ResultEvent):void				
@@ -69,20 +68,20 @@
 						
 			protected function runReportB_clickHandler(event:MouseEvent):void
 			{
-				if (locationCB.selectedIndex == -1 && employeeCB.selectedIndex == -1){
-					Alert.show("Please select a location or employee to run the report!");
+				if (locationCB.selectedIndex == -1 && providerCB.selectedIndex == -1){
+					Alert.show("Please select a location or provider to run the report!");
 					locationCB.setFocus();
 				}else{
-					var emp:Employee = null;
+					var provider:Provider = null;
 					var loc:String = null;
-					emp = employeeCB.selectedItem;
+					provider = providerCB.selectedItem;
 					loc = locationCB.selectedItem;
-					if (emp != null && loc != null){
-						dataService.getWorksheetForClinicAndEmployeeAndDateRange(loc, emp.empId, startDateDF.selectedDate, endDateDF.selectedDate);
-					}else if (emp == null){
+					if (provider != null && loc != null){
+						dataService.getWorksheetForClinicAndProviderAndDateRange(loc, provider.providerId, startDateDF.selectedDate, endDateDF.selectedDate);
+					}else if (provider == null){
 						dataService.getWorksheetForClinicAndDateRange(loc, startDateDF.selectedDate, endDateDF.selectedDate);						
 					}else{
-						dataService.getWorksheetForEmployeeAndDateRange(emp.empId, startDateDF.selectedDate, endDateDF.selectedDate);						
+						dataService.getWorksheetForProviderAndDateRange(provider.providerId, startDateDF.selectedDate, endDateDF.selectedDate);						
 					}
 					runReportB.enabled = false;
 				}
@@ -105,7 +104,7 @@
 		<mx:HBox paddingBottom="10">
 			<s:Label text="Location:" paddingTop="6"/>
 			<s:ComboBox id="locationCB" dataProvider="{locations}"/>
-			<s:ComboBox id="employeeCB" dataProvider="{employees}" labelField="fullName"/>
+			<s:ComboBox id="providerCB" dataProvider="{providers}" labelField="name"/>
 			<s:Label text="From:" paddingLeft="30" paddingTop="6"/>
 			<mx:DateField id="startDateDF" selectedDate="{new Date()}"/>
 			<s:Label text="To:" paddingLeft="30" paddingTop="6"/>
