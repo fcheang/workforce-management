@@ -76,6 +76,7 @@
 			private var EMPLOYEE:String = "Employee";
 			private var ANALYTICS:String = "Analytics";
 			private var DAILY_CLINIC_REPORT:String = "Daily Clinic Report";
+			private var DAILY_CLINIC_REPORT_FOR_MANAGER:String = "Daily Clinic Report for Manager";
 			private var DAILY_CONTRIBUTION_REPORT:String = "Intake Staff Report";
 			private var DATA_COMPLIANCE_PERSONNEL_TASKS:String = "Data Staff Report";
 			private var UR_PERSONNEL_TASKS:String = "UR Staff Report";
@@ -152,11 +153,21 @@
 						case DAILY_CLINIC_REPORT:
 							var wsPanel:DailyClinicReportPanel = new DailyClinicReportPanel();
 							wsPanel.dataService = dataService;
+							wsPanel.user = loggedInUser;
 							wsPanel.percentWidth = 100;
-							wsPanel.percentHeight = 100;
+							wsPanel.percentHeight = 100;							
 							content.addElement(wsPanel);
 							content.label = DAILY_CLINIC_REPORT;
 							portalVS.addChild(content);							break;
+						case DAILY_CLINIC_REPORT_FOR_MANAGER:
+							var wsmPanel:DailyClinicReportForManagerPanel = new DailyClinicReportForManagerPanel();
+							wsmPanel.dataService = dataService;
+							wsmPanel.user = loggedInUser;
+							wsmPanel.percentWidth = 100;
+							wsmPanel.percentHeight = 100;							
+							content.addElement(wsmPanel);
+							content.label = DAILY_CLINIC_REPORT_FOR_MANAGER;
+							portalVS.addChild(content);							break;						
 						case DAILY_CONTRIBUTION_REPORT:
 							var dcrPanel:DailyContributionReportPanel = new DailyContributionReportPanel();
 							dcrPanel.dataService = dataService;

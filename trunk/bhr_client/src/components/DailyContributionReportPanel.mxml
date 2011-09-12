@@ -11,10 +11,8 @@
 			import mx.events.*;
 			import mx.events.CalendarLayoutChangeEvent;
 			import mx.rpc.events.*;
-			import mx.rpc.remoting.*;
-			
-			import spark.events.TextOperationEvent;
-			
+			import mx.rpc.remoting.*;			
+			import spark.events.TextOperationEvent;			
 			import valueObjects.*;
 						
 			public var dataService:RemoteObject;

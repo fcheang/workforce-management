@@ -31,6 +31,22 @@ public class Worksheet {
 	private int numDropin;
 	private double dailySalary;
 	
+	private String enteredBy;
+	private Date dateEntered;
+	
+	public String getEnteredBy() {
+		return enteredBy;
+	}
+	public void setEnteredBy(String modifyBy) {
+		this.enteredBy = modifyBy;
+	}
+	public Date getDateEntered() {
+		return dateEntered;
+	}
+	public void setDateEntered(Date dateEntered) {
+		this.dateEntered = dateEntered;
+	}
+
 	// calculated value
 	private int totalSeen;
 	private double totalFaceHours;

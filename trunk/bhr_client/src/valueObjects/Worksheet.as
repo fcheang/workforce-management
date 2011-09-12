@@ -26,6 +26,8 @@ package valueObjects
 		public var numNew:int;
 		public var numDropin:int;	
 		public var dailySalary:Number; 
+		public var enteredBy:String;
+		public var dateEntered:Date;
 
 		//calculated fields
 		public var totalSeen:int;

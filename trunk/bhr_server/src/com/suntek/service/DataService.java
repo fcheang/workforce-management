@@ -165,9 +165,9 @@ public class DataService {
 		}			
 	}		
 	
-	public List<Worksheet> getWorksheetForEmployeeAndDateRange(int empId, Date sd, Date ed){
+	public List<Worksheet> getWorksheetForProviderAndDateRange(int empId, Date sd, Date ed){
 		try{
-			logger.debug("getWorksheetForEmployeeAndDateRange("+empId+", "+sd+", "+ed+")");
+			logger.debug("getWorksheetForProviderAndDateRange("+empId+", "+sd+", "+ed+")");
 			return wsDAO.getWorksheetForProviderAndDateRange(empId, sd, ed);
 		}catch(Throwable t){
 			t.printStackTrace();
@@ -175,9 +175,9 @@ public class DataService {
 		}			
 	}		
 
-	public List<Worksheet> getWorksheetForClinicAndEmployeeAndDateRange(String clinic, int empId, Date sd, Date ed){
+	public List<Worksheet> getWorksheetForClinicAndProviderAndDateRange(String clinic, int empId, Date sd, Date ed){
 		try{
-			logger.debug("getWorksheetForClinicAndEmployeeAndDateRange("+clinic+", "+empId+", "+sd+", "+ed+")");
+			logger.debug("getWorksheetForClinicAndProviderAndDateRange("+clinic+", "+empId+", "+sd+", "+ed+")");
 			return wsDAO.getWorksheetForClinicAndProviderAndDateRange(clinic, empId, sd, ed);
 		}catch(Throwable t){
 			t.printStackTrace();
@@ -210,6 +210,25 @@ public class DataService {
 		}			
 	}
 
+	
+	// Worksheet for Manager
+	
+	public Worksheet createWorksheetForMgr(Worksheet ws){
+		return createWorksheet(ws);
+	}
+	
+	public List<Worksheet> getWorksheetForClinicAndDateForMgr(String clinic, Date date){
+		return getWorksheetForClinicAndDate(clinic, date);
+	}		
+
+	public Worksheet updateWorksheetForMgr(Worksheet ws){
+		return updateWorksheet(ws);
+	}
+	
+	public boolean deleteWorksheetForMgr(Worksheet ws){
+		return deleteWorksheet(ws);
+	}
+	
 	// Clinic	
 	public List<String> getLocation(){
 		try{
