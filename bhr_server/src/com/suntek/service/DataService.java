@@ -153,38 +153,7 @@ public class DataService {
 			t.printStackTrace();
 			return null;
 		}			
-	}		
-
-	public List<Worksheet> getWorksheetForClinicAndDateRange(String clinic, Date sd, Date ed){
-		try{
-			logger.debug("getWorksheetForClinicAndDateRange("+clinic+", "+sd+"," + ed+")");
-			return wsDAO.getWorksheetForClinicAndDateRange(clinic, sd, ed);
-		}catch(Throwable t){
-			t.printStackTrace();
-			return null;
-		}			
-	}		
-	
-	public List<Worksheet> getWorksheetForProviderAndDateRange(int empId, Date sd, Date ed){
-		try{
-			logger.debug("getWorksheetForProviderAndDateRange("+empId+", "+sd+", "+ed+")");
-			return wsDAO.getWorksheetForProviderAndDateRange(empId, sd, ed);
-		}catch(Throwable t){
-			t.printStackTrace();
-			return null;
-		}			
-	}		
-
-	public List<Worksheet> getWorksheetForClinicAndProviderAndDateRange(String clinic, int empId, Date sd, Date ed){
-		try{
-			logger.debug("getWorksheetForClinicAndProviderAndDateRange("+clinic+", "+empId+", "+sd+", "+ed+")");
-			return wsDAO.getWorksheetForClinicAndProviderAndDateRange(clinic, empId, sd, ed);
-		}catch(Throwable t){
-			t.printStackTrace();
-			return null;
-		}			
-	}		
-	
+	}			
 	
 	public Worksheet updateWorksheet(Worksheet ws){
 		try{
@@ -228,6 +197,121 @@ public class DataService {
 	public boolean deleteWorksheetForMgr(Worksheet ws){
 		return deleteWorksheet(ws);
 	}
+	
+	
+	// Analytics
+	public List<Worksheet> getWorksheetForClinicAndDateRange(String clinic, Date sd, Date ed, boolean sumTotal){
+		List<Worksheet> worksheets = null;
+		try{
+			logger.debug("getWorksheetForClinicAndDateRange("+clinic+", "+sd+"," + ed+")");
+			worksheets = wsDAO.getWorksheetForClinicAndDateRange(clinic, sd, ed);
+			if (sumTotal){
+				addSumOfAllDates(worksheets);
+			}
+		}catch(Throwable t){
+			t.printStackTrace();
+		}			
+		return worksheets;
+	}		
+	
+	public List<Worksheet> getWorksheetForProviderAndDateRange(int empId, Date sd, Date ed, boolean sumTotal){
+		List<Worksheet> worksheets = null;
+		try{
+			logger.debug("getWorksheetForProviderAndDateRange("+empId+", "+sd+", "+ed+")");
+			worksheets = wsDAO.getWorksheetForProviderAndDateRange(empId, sd, ed);
+			if (sumTotal){
+				addSumOfAllDates(worksheets);
+			}			
+		}catch(Throwable t){
+			t.printStackTrace();
+		}			
+		return worksheets;		
+	}		
+	
+	public List<Worksheet> getWorksheetForClinicAndProviderAndDateRange(String clinic, int empId, Date sd, Date ed, boolean sumTotal){
+		List<Worksheet> worksheets = null;
+		try{
+			logger.debug("getWorksheetForClinicAndProviderAndDateRange("+clinic+", "+empId+", "+sd+", "+ed+")");
+			worksheets = wsDAO.getWorksheetForClinicAndProviderAndDateRange(clinic, empId, sd, ed);
+			if (sumTotal){
+				addSumOfAllDates(worksheets);
+			}			
+		}catch(Throwable t){
+			t.printStackTrace();
+		}			
+		return worksheets;		
+	}		
+		
+	private void addSumOfAllDates(List<Worksheet> worksheets) {
+		if (worksheets.size() <= 1){
+			return;
+		}
+		
+		Worksheet sum = null;
+		double hrsWorked = 0;
+		int countySeen = 0;
+		int cccSeen = 0;
+		int hmoSeen = 0;
+		int otherSeen = 0;	
+		int countyFaceMin = 0;
+		int countyOtherMin = 0;
+		int cccFaceMin = 0;
+		int cccOtherMin = 0;
+		int hmoFaceMin = 0;
+		int otherFaceMin = 0;			
+		int numScheduled = 0;
+		int numNoShow = 0;
+		int numCancel = 0; 
+		int numNew = 0;
+		int numDropin = 0;
+		double dailySalary = 0; 		
+		for (Worksheet ws : worksheets){
+			if (sum == null){
+				sum = new Worksheet();
+				sum.setProviderId(ws.getProviderId());
+				sum.setProviderName(ws.getProviderName());
+				sum.setDate(new Date());
+				sum.setClinic(ws.getClinic());
+				sum.setIsAggregate(true);
+			}
+			hrsWorked += ws.getHrsWorked();
+			countySeen += ws.getCountySeen();
+			cccSeen += ws.getCccSeen();
+			hmoSeen += ws.getHmoSeen();
+			otherSeen += ws.getOtherSeen();		
+			countyFaceMin += ws.getCountyFaceMin();
+			countyOtherMin += ws.getCountyOtherMin();
+			cccFaceMin += ws.getCccFaceMin();
+			cccOtherMin += ws.getCccOtherMin();
+			hmoFaceMin += ws.getHmoFaceMin();
+			otherFaceMin += ws.getOtherFaceMin();			
+			numScheduled += ws.getNumScheduled();
+			numNoShow += ws.getNumNoShow();
+			numCancel += ws.getNumCancel(); 
+			numNew += ws.getNumNew();
+			numDropin += ws.getNumDropin();
+			dailySalary += ws.getDailySalary(); 		
+		}
+		sum.setHrsWorked(hrsWorked);
+		sum.setCountySeen(countySeen);
+		sum.setCccSeen(cccSeen);
+		sum.setHmoSeen(hmoSeen);
+		sum.setOtherSeen(otherSeen);
+		sum.setCountyFaceMin(countyFaceMin);
+		sum.setCountyOtherMin(countyOtherMin);
+		sum.setCccFaceMin(cccFaceMin);
+		sum.setCccOtherMin(cccOtherMin);
+		sum.setHmoFaceMin(hmoFaceMin);
+		sum.setOtherFaceMin(otherFaceMin);
+		sum.setNumScheduled(numScheduled);
+		sum.setNumNoShow(numNoShow);
+		sum.setNumCancel(numCancel);
+		sum.setNumNew(numNew);
+		sum.setNumDropin(numDropin);
+		sum.setDailySalary(dailySalary);
+		
+		worksheets.add(sum);
+	}	
 	
 	// Clinic	
 	public List<String> getLocation(){

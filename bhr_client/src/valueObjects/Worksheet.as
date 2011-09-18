@@ -28,6 +28,7 @@ package valueObjects
 		public var dailySalary:Number; 
 		public var enteredBy:String;
 		public var dateEntered:Date;
+		public var isAggregate:Boolean;
 
 		//calculated fields
 		public var totalSeen:int;

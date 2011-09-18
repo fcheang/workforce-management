@@ -15,8 +15,10 @@
 			import mx.events.FlexEvent;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
-			import mx.rpc.remoting.mxml.RemoteObject;			
-			import valueObjects.Provider;				
+			import mx.rpc.remoting.mxml.RemoteObject;
+			
+			import valueObjects.Provider;
+			import valueObjects.Worksheet;				
 			
 			public var dataService:RemoteObject;
 			
@@ -77,19 +79,34 @@
 					provider = providerCB.selectedItem;
 					loc = locationCB.selectedItem;
 					if (provider != null && loc != null){
-						dataService.getWorksheetForClinicAndProviderAndDateRange(loc, provider.providerId, startDateDF.selectedDate, endDateDF.selectedDate);
+						dataService.getWorksheetForClinicAndProviderAndDateRange(loc, provider.providerId, startDateDF.selectedDate, endDateDF.selectedDate, true);
 					}else if (provider == null){
-						dataService.getWorksheetForClinicAndDateRange(loc, startDateDF.selectedDate, endDateDF.selectedDate);						
+						dataService.getWorksheetForClinicAndDateRange(loc, startDateDF.selectedDate, endDateDF.selectedDate, true);						
 					}else{
-						dataService.getWorksheetForProviderAndDateRange(provider.providerId, startDateDF.selectedDate, endDateDF.selectedDate);						
+						dataService.getWorksheetForProviderAndDateRange(provider.providerId, startDateDF.selectedDate, endDateDF.selectedDate, true);						
 					}
 					runReportB.enabled = false;
 				}
 			}
 
-			private function categoryAxis_labelFunc(item:Object, prevValue:Object, axis:CategoryAxis, categoryItem:Object):String {
-				var tempDate:Date = item as Date;
-				return dateFormatter.format(tempDate).toUpperCase();
+			private function categoryAxis_labelFunc_Sum(item:Object, prevValue:Object, axis:CategoryAxis, categoryItem:Object):String {
+				var ws:Worksheet = categoryItem as Worksheet;
+				if (ws.isAggregate){
+					return "Sum";					
+				}else{
+					var tempDate:Date = item as Date;
+					return dateFormatter.format(tempDate).toUpperCase();
+				}
+			}
+
+			private function categoryAxis_labelFunc_Avg(item:Object, prevValue:Object, axis:CategoryAxis, categoryItem:Object):String {
+				var ws:Worksheet = categoryItem as Worksheet;
+				if (ws.isAggregate){
+					return "Average";					
+				}else{
+					var tempDate:Date = item as Date;
+					return dateFormatter.format(tempDate).toUpperCase();
+				}
 			}
 			
 		]]>
@@ -113,13 +130,14 @@
 		</mx:HBox>
 		
 		<mx:Tile width="100%" height="100%" >
+			
 			<s:Panel title="Reported Hours" width="100%" height="100%">
 				<s:layout>
 					<s:HorizontalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
 				</s:layout>
 				<mx:ColumnChart id="hoursCC" x="10" y="10" dataProvider="{worksheets}" showDataTips="true" width="100%" height="100%">
 					<mx:horizontalAxis>
-						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc"/>
+						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc_Sum"/>
 					</mx:horizontalAxis>
 					<mx:verticalAxis>
 						<mx:LinearAxis title="Hours"/>						
@@ -130,14 +148,15 @@
 					</mx:series>				
 				</mx:ColumnChart>		
 				<mx:Legend dataProvider="{hoursCC}"/>
-			</s:Panel>			
+			</s:Panel>
+			
 			<s:Panel title="Productivity" width="100%" height="100%">
 				<s:layout>
 					<s:HorizontalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
 				</s:layout>
 				<mx:ColumnChart id="prodCC" x="10" y="10" dataProvider="{worksheets}" showDataTips="true" width="100%" height="100%">
 					<mx:horizontalAxis>
-						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc"/>
+						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc_Avg"/>
 					</mx:horizontalAxis>
 					<mx:verticalAxis>
 						<mx:LinearAxis title="%" minimum="0" maximum="100"/>						
@@ -148,13 +167,14 @@
 				</mx:ColumnChart>		
 				<mx:Legend dataProvider="{prodCC}"/>
 			</s:Panel>			
+			
 			<s:Panel title="Daily Activity" width="100%" height="100%">
 				<s:layout>
 					<s:HorizontalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
 				</s:layout>
 				<mx:ColumnChart id="workDoneCC" x="10" y="10" dataProvider="{worksheets}" showDataTips="true" width="100%" height="100%">
 					<mx:horizontalAxis>
-						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc"/>
+						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc_Sum"/>
 					</mx:horizontalAxis>
 					<mx:verticalAxis>
 						<mx:LinearAxis title="Count"/>						
@@ -170,13 +190,14 @@
 				</mx:ColumnChart>		
 				<mx:Legend dataProvider="{workDoneCC}"/>
 			</s:Panel>			
+			
 			<s:Panel title="Income and Expense" width="100%" height="100%">
 				<s:layout>
 					<s:HorizontalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
 				</s:layout>
 				<mx:ColumnChart id="incomeCC" x="10" y="10" dataProvider="{worksheets}" showDataTips="true" width="100%" height="100%">
 					<mx:horizontalAxis>
-						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc"/>
+						<mx:CategoryAxis title="Date" categoryField="date" labelFunction="categoryAxis_labelFunc_Sum"/>
 					</mx:horizontalAxis>
 					<mx:verticalAxis>
 						<mx:LinearAxis title="$"/>						
@@ -188,7 +209,8 @@
 					</mx:series>				
 				</mx:ColumnChart>		
 				<mx:Legend dataProvider="{incomeCC}"/>
-			</s:Panel>						
+			</s:Panel>				
+			
 		</mx:Tile>	
 		
 	</mx:VBox>
