@@ -34,6 +34,16 @@ public class Worksheet {
 	private String enteredBy;
 	private Date dateEntered;
 	
+	private boolean isAggregate = false;
+	
+	public boolean getIsAggregate() {
+		return isAggregate;
+	}
+	
+	public void setIsAggregate(boolean isAggregate) {
+		this.isAggregate = isAggregate;
+	}
+	
 	public String getEnteredBy() {
 		return enteredBy;
 	}

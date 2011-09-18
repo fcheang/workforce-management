@@ -15,9 +15,17 @@ Todo:
 - print report
 - MHS staff report
 - QA staff report
-- Daily CLinic Report
-  - remove County(other)$, CCC$, daily salary, revenue, balance, 
-  - add modifyBy, modificationDate
-  - add DailyClinicReportForManager
-  - use provider list
-  - support hours worked in decimal
+//- Daily CLinic Report
+  //- remove County(other)$, CCC$, daily salary, revenue, balance, 
+  //- add modifyBy
+  //- add DailyClinicReportForManager
+  //- use provider list
+  //- support hours worked in decimal
+- Daily Contribution report: pull data from scheduler 
+- Daily clinic report: pull data from scheduler
+  
+9/17
+//- aggregate on analytics  
+
+
+  
