@@ -64,6 +64,48 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 	public List<Worksheet> getWorksheetForClinicAndDateRange(String clinic, Date sd, Date ed){
 		String sql =
 			"select "+
+			"w.providerId, p.name, w.date, w.clinic, w.hrs_worked, w.county_seen, w.ccc_seen, "+
+			"w.hmo_seen, w.other_seen, w.county_face_min, w.county_other_min, "+
+			"w.ccc_face_min, w.ccc_other_min, w.hmo_face_min, w.other_face_min, "+
+			"w.num_scheduled, w.num_noshow, w.num_cancel, w.num_new, w.num_dropin, "+
+			"w.daily_salary, w.enteredBy, w.dateEntered "+
+			"from worksheet w, provider p "+
+			"where w.providerId = p.providerId and w.date >= ? and w.date <= ? and w.clinic = ? "+
+			"order by w.date, w.clinic";
+		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), sd, ed, clinic);			
+	}
+
+	public List<Worksheet> getWorksheetForProviderAndDateRange(int providerId, Date sd, Date ed){
+		String sql =
+			"select "+
+			"w.providerId, p.name, w.date, w.clinic, w.hrs_worked, w.county_seen, w.ccc_seen, "+
+			"w.hmo_seen, w.other_seen, w.county_face_min, w.county_other_min, "+
+			"w.ccc_face_min, w.ccc_other_min, w.hmo_face_min, w.other_face_min, "+
+			"w.num_scheduled, w.num_noshow, w.num_cancel, w.num_new, w.num_dropin, "+
+			"w.daily_salary, w.enteredBy, w.dateEntered "+
+			"from worksheet w, provider p "+
+			"where w.providerId = p.providerId and w.date >= ? and w.date <= ? and w.providerId = ? "+
+			"order by w.date, p.name";
+		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), sd, ed, providerId);			
+	}
+
+	public List<Worksheet> getWorksheetForClinicAndProviderAndDateRange(String clinic, int providerId, Date sd, Date ed){
+		String sql =
+			"select "+
+			"w.providerId, p.name, w.date, w.clinic, w.hrs_worked, w.county_seen, w.ccc_seen, "+
+			"w.hmo_seen, w.other_seen, w.county_face_min, w.county_other_min, "+
+			"w.ccc_face_min, w.ccc_other_min, w.hmo_face_min, w.other_face_min, "+
+			"w.num_scheduled, w.num_noshow, w.num_cancel, w.num_new, w.num_dropin, "+
+			"w.daily_salary, w.enteredBy, w.dateEntered "+
+			"from worksheet w, provider p"+
+			"where w.providerId = p.providerId and w.date >= ? and w.date <= ? and w.clinic = ? and w.providerId = ? "+
+			"order by w.date, w.clinic, p.name";
+		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), sd, ed, clinic, providerId);			
+	}
+
+	public List<Worksheet> getWorksheetForClinicAndDateRangeGroupByDate(String clinic, Date sd, Date ed){
+		String sql =
+			"select "+
 			"0, 'multiple', date, clinic, sum(hrs_worked), sum(county_seen), sum(ccc_seen), "+
 			"sum(hmo_seen), sum(other_seen), sum(county_face_min), sum(county_other_min), "+
 			"sum(ccc_face_min), sum(ccc_other_min), sum(hmo_face_min), sum(other_face_min), "+
@@ -76,7 +118,7 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), sd, ed, clinic);			
 	}
 
-	public List<Worksheet> getWorksheetForProviderAndDateRange(int providerId, Date sd, Date ed){
+	public List<Worksheet> getWorksheetForProviderAndDateRangeGroupByDate(int providerId, Date sd, Date ed){
 		String sql =
 			"select "+
 			"providerId, 'multiple', date, 'all', sum(hrs_worked), sum(county_seen), sum(ccc_seen), "+
@@ -91,7 +133,7 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), sd, ed, providerId);			
 	}
 
-	public List<Worksheet> getWorksheetForClinicAndProviderAndDateRange(String clinic, int providerId, Date sd, Date ed){
+	public List<Worksheet> getWorksheetForClinicAndProviderAndDateRangeGroupByDate(String clinic, int providerId, Date sd, Date ed){
 		String sql =
 			"select "+
 			"providerId, 'multiple', date, clinic, sum(hrs_worked), sum(county_seen), sum(ccc_seen), "+
@@ -104,7 +146,7 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 			"group by providerId, clinic, date "+
 			"order by date asc";
 		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), sd, ed, clinic, providerId);			
-	}
+	}	
 	
 	public boolean deleteWorksheet(int providerId, String clinic, Date date){
 		String sql = "delete from worksheet where providerId = ? and clinic = ? and date = ?";

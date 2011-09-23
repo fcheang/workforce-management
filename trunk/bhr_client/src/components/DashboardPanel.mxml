@@ -31,13 +31,13 @@
 
 			protected function panel1_creationCompleteHandler(event:FlexEvent):void
 			{
-				dataService.getWorksheetForClinicAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
-				dataService.getWorksheetForProviderAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
-				dataService.getWorksheetForClinicAndProviderAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
+				dataService.getWorksheetForClinicAndDateRangeGroupByDate.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
+				dataService.getWorksheetForProviderAndDateRangeGroupByDate.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
+				dataService.getWorksheetForClinicAndProviderAndDateRangeGroupByDate.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
 				
-				dataService.getWorksheetForClinicAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
-				dataService.getWorksheetForProviderAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
-				dataService.getWorksheetForClinicAndProviderAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
+				dataService.getWorksheetForClinicAndDateRangeGroupByDate.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
+				dataService.getWorksheetForProviderAndDateRangeGroupByDate.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
+				dataService.getWorksheetForClinicAndProviderAndDateRangeGroupByDate.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
 				
 				dataService.getLocation.addEventListener(ResultEvent.RESULT, dataService_getLocation_resultHandler);
 				dataService.getAllProvider.addEventListener(ResultEvent.RESULT, dataService_getAllProvider_resultHandler);
@@ -59,19 +59,22 @@
 			protected function dataService_getWorksheet_resultHandler(event:ResultEvent):void				
 			{	
 				worksheets = event.result as ArrayCollection; 
-				runReportB.enabled = true;
+				//runReportB.enabled = true;
+				if (worksheets.length == 0){
+					Alert.show("No records found!");
+				}
 			}
 			
 			protected function dataService_getWorksheet_faultHandler(event:FaultEvent):void
 			{
 				Alert.show(event.fault.faultString, "Error Message");
-				runReportB.enabled = true;
+				//runReportB.enabled = true;
 			}			
 						
 			protected function runReportB_clickHandler(event:MouseEvent):void
 			{
 				if (locationCB.selectedIndex == -1 && providerCB.selectedIndex == -1){
-					Alert.show("Please select a location or provider to run the report!");
+					Alert.show("Please select a Clinic or Provider to run the report!");
 					locationCB.setFocus();
 				}else{
 					var provider:Provider = null;
@@ -79,13 +82,13 @@
 					provider = providerCB.selectedItem;
 					loc = locationCB.selectedItem;
 					if (provider != null && loc != null){
-						dataService.getWorksheetForClinicAndProviderAndDateRange(loc, provider.providerId, startDateDF.selectedDate, endDateDF.selectedDate, true);
+						dataService.getWorksheetForClinicAndProviderAndDateRangeGroupByDate(loc, provider.providerId, startDateDF.selectedDate, endDateDF.selectedDate);
 					}else if (provider == null){
-						dataService.getWorksheetForClinicAndDateRange(loc, startDateDF.selectedDate, endDateDF.selectedDate, true);						
+						dataService.getWorksheetForClinicAndDateRangeGroupByDate(loc, startDateDF.selectedDate, endDateDF.selectedDate);						
 					}else{
-						dataService.getWorksheetForProviderAndDateRange(provider.providerId, startDateDF.selectedDate, endDateDF.selectedDate, true);						
+						dataService.getWorksheetForProviderAndDateRangeGroupByDate(provider.providerId, startDateDF.selectedDate, endDateDF.selectedDate);						
 					}
-					runReportB.enabled = false;
+					//runReportB.enabled = false;
 				}
 			}
 
@@ -119,8 +122,9 @@
 	<mx:VBox paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" width="100%" height="100%">
 		
 		<mx:HBox paddingBottom="10">
-			<s:Label text="Location:" paddingTop="6"/>
+			<s:Label text="Clinic:" paddingTop="6"/>
 			<s:ComboBox id="locationCB" dataProvider="{locations}"/>
+			<s:Label text="Provider:" paddingTop="6"/>
 			<s:ComboBox id="providerCB" dataProvider="{providers}" labelField="name"/>
 			<s:Label text="From:" paddingLeft="30" paddingTop="6"/>
 			<mx:DateField id="startDateDF" selectedDate="{new Date()}"/>

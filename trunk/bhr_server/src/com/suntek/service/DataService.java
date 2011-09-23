@@ -183,65 +183,92 @@ public class DataService {
 	// Worksheet for Manager
 	
 	public Worksheet createWorksheetForMgr(Worksheet ws){
+		logger.debug("createWorksheetForMgr("+ws+")");
 		return createWorksheet(ws);
 	}
 	
-	public List<Worksheet> getWorksheetForClinicAndDateForMgr(String clinic, Date date){
-		return getWorksheetForClinicAndDate(clinic, date);
-	}		
-
 	public Worksheet updateWorksheetForMgr(Worksheet ws){
+		logger.debug("updateWorksheetForMgr("+ws+")");
 		return updateWorksheet(ws);
 	}
 	
 	public boolean deleteWorksheetForMgr(Worksheet ws){
+		logger.debug("deleteWorksheetForMgr("+ws+")");
 		return deleteWorksheet(ws);
 	}
 	
-	
-	// Analytics
-	public List<Worksheet> getWorksheetForClinicAndDateRange(String clinic, Date sd, Date ed, boolean sumTotal){
+	public List<Worksheet> getWorksheetForClinicAndDateRange(String clinic, Date sd, Date ed){
 		List<Worksheet> worksheets = null;
 		try{
 			logger.debug("getWorksheetForClinicAndDateRange("+clinic+", "+sd+"," + ed+")");
 			worksheets = wsDAO.getWorksheetForClinicAndDateRange(clinic, sd, ed);
-			if (sumTotal){
-				addSumOfAllDates(worksheets);
-			}
 		}catch(Throwable t){
 			t.printStackTrace();
 		}			
 		return worksheets;
 	}		
 	
-	public List<Worksheet> getWorksheetForProviderAndDateRange(int empId, Date sd, Date ed, boolean sumTotal){
+	public List<Worksheet> getWorksheetForProviderAndDateRange(int empId, Date sd, Date ed){
 		List<Worksheet> worksheets = null;
 		try{
 			logger.debug("getWorksheetForProviderAndDateRange("+empId+", "+sd+", "+ed+")");
 			worksheets = wsDAO.getWorksheetForProviderAndDateRange(empId, sd, ed);
-			if (sumTotal){
-				addSumOfAllDates(worksheets);
-			}			
 		}catch(Throwable t){
 			t.printStackTrace();
 		}			
 		return worksheets;		
 	}		
 	
-	public List<Worksheet> getWorksheetForClinicAndProviderAndDateRange(String clinic, int empId, Date sd, Date ed, boolean sumTotal){
+	public List<Worksheet> getWorksheetForClinicAndProviderAndDateRange(String clinic, int empId, Date sd, Date ed){
 		List<Worksheet> worksheets = null;
 		try{
 			logger.debug("getWorksheetForClinicAndProviderAndDateRange("+clinic+", "+empId+", "+sd+", "+ed+")");
 			worksheets = wsDAO.getWorksheetForClinicAndProviderAndDateRange(clinic, empId, sd, ed);
-			if (sumTotal){
-				addSumOfAllDates(worksheets);
-			}			
 		}catch(Throwable t){
 			t.printStackTrace();
 		}			
 		return worksheets;		
 	}		
 		
+
+	// Analytics
+	public List<Worksheet> getWorksheetForClinicAndDateRangeGroupByDate(String clinic, Date sd, Date ed){
+		List<Worksheet> worksheets = null;
+		try{
+			logger.debug("getWorksheetForClinicAndDateRangeGroupByDate("+clinic+", "+sd+"," + ed+")");
+			worksheets = wsDAO.getWorksheetForClinicAndDateRangeGroupByDate(clinic, sd, ed);
+			addSumOfAllDates(worksheets);
+		}catch(Throwable t){
+			t.printStackTrace();
+		}			
+		return worksheets;
+	}		
+	
+	public List<Worksheet> getWorksheetForProviderAndDateRangeGroupByDate(int empId, Date sd, Date ed){
+		List<Worksheet> worksheets = null;
+		try{
+			logger.debug("getWorksheetForProviderAndDateRangeGroupByDate("+empId+", "+sd+", "+ed+")");
+			worksheets = wsDAO.getWorksheetForProviderAndDateRangeGroupByDate(empId, sd, ed);
+			addSumOfAllDates(worksheets);
+		}catch(Throwable t){
+			t.printStackTrace();
+		}			
+		return worksheets;		
+	}		
+	
+	public List<Worksheet> getWorksheetForClinicAndProviderAndDateRangeGroupByDate(String clinic, int empId, Date sd, Date ed){
+		List<Worksheet> worksheets = null;
+		try{
+			logger.debug("getWorksheetForClinicAndProviderAndDateRangeGroupByDate("+clinic+", "+empId+", "+sd+", "+ed+")");
+			worksheets = wsDAO.getWorksheetForClinicAndProviderAndDateRangeGroupByDate(clinic, empId, sd, ed);
+			addSumOfAllDates(worksheets);
+		}catch(Throwable t){
+			t.printStackTrace();
+		}			
+		return worksheets;		
+	}		
+	
+	
 	private void addSumOfAllDates(List<Worksheet> worksheets) {
 		if (worksheets.size() <= 1){
 			return;
