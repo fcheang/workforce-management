@@ -22,10 +22,14 @@ Todo:
   //- use provider list
   //- support hours worked in decimal
 - Daily Contribution report: pull data from scheduler 
-- Daily clinic report: pull data from scheduler
   
 9/17
 //- aggregate on analytics  
 
-
-  
+9/18
+- Daily clinic report
+  - pull data from scheduler: hrs worked, county seen (alameda county), ccc seen, hmo seen, total scheduled, total noshow, total cancel, # news, # dropins
+  - add Expense % field
+- Daily clinic report for manager
+  - Find by clinic, provider, date range
+  - add print datagrid
