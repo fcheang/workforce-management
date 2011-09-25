@@ -97,7 +97,7 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 			"w.ccc_face_min, w.ccc_other_min, w.hmo_face_min, w.other_face_min, "+
 			"w.num_scheduled, w.num_noshow, w.num_cancel, w.num_new, w.num_dropin, "+
 			"w.daily_salary, w.enteredBy, w.dateEntered "+
-			"from worksheet w, provider p"+
+			"from worksheet w, provider p "+
 			"where w.providerId = p.providerId and w.date >= ? and w.date <= ? and w.clinic = ? and w.providerId = ? "+
 			"order by w.date, w.clinic, p.name";
 		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), sd, ed, clinic, providerId);			
