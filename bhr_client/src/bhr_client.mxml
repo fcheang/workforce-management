@@ -6,7 +6,6 @@
 			   xmlns:components="components.*" xmlns:services="services.*"  
 			   width.portalState="100%" height.portalState="100%" applicationComplete="init()">
 	
-	
 	<!-- Properties of the parent ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	
 	<s:layout>

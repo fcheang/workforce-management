@@ -30,6 +30,10 @@ Todo:
 - Daily clinic report
   - pull data from scheduler: hrs worked, county seen (alameda county), ccc seen, hmo seen, total scheduled, total noshow, total cancel, # news, # dropins
   - add Expense % field
-- Daily clinic report for manager
-  - Find by clinic, provider, date range
-  - add print datagrid
+//- Daily clinic report for manager
+//  - Find by clinic, provider, date range
+//  - add print datagrid
+
+9/24
+- DCRForMgr: allow search by any provider and clinic
+ 

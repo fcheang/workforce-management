@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="500"
+			   title="Print Dialog"
+			   creationComplete="init()">
+	<s:layout>
+		<s:VerticalLayout gap="10" horizontalAlign="center"/>
+	</s:layout>
+	<fx:Declarations>
+		<mx:NumberFormatter id="nf" precision="2" rounding="up"/>
+		<mx:DateFormatter id="df" formatString="MM/DD/YYYY"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Button;
+			import mx.controls.CheckBox;
+			import mx.controls.Label;
+			import mx.core.FlexGlobals;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.printing.FlexPrintJob;
+			import mx.printing.PrintDataGrid;			
+			import spark.layouts.TileLayout;			
+			import valueObjects.Worksheet;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			
+			public var worksheets:ArrayCollection = new ArrayCollection();
+			
+			private function init():void {
+				this.addEventListener(CloseEvent.CLOSE, titleWindow_close);		
+			}
+						
+			protected function printB_clickHandler(event:MouseEvent):void
+			{
+				var printJob:FlexPrintJob = new FlexPrintJob();
+				if (printJob.start()) {
+					var printData:PrintDataGrid = new PrintDataGrid();
+					FlexGlobals.topLevelApplication.addElement(printData);
+					
+					printData.dataProvider = getDataProvider();
+					printData.width = printJob.pageWidth;
+					printData.height = printJob.pageHeight;
+					printData.setStyle("fontSize", 8);
+					
+					// column names in the PrintDataGrid match the properties of the
+					// object in the data proivider array;
+					// change column names to custom ones:
+					for (var i:int = 0; i < printData.columns.length; i++) {
+						var col:DataGridColumn = printData.columns[i];
+						col.headerWordWrap = true;
+						col.wordWrap = true;	
+						switch (col.headerText) {
+							case "date":
+								col.headerText = dateCB.label;
+								break;
+							case "clinic":
+								col.headerText = clinicCB.label;
+								break;
+							case "provider":
+								col.headerText = providerNameCB.label;
+								break;
+							case "hrsWorked":
+								col.headerText = hrsWorkedCB.label;
+								break;
+							case "countySeen":
+								col.headerText = countySeenCB.label;
+								break;
+							case "cccSeen":
+								col.headerText = cccSeenCB.label;
+								break;							
+							case "hmoSeen":
+								col.headerText = hmoSeenCB.label;
+								break;
+							case "otherSeen":
+								col.headerText = otherSeenCB.label;
+								break;							
+							case "countyFaceMin":
+								col.headerText = countyFaceMinCB.label;
+								break;
+							case "countyOtherMin":
+								col.headerText = countyOtherMinCB.label;
+								break;
+							case "cccFaceMin":
+								col.headerText = cccFaceMinCB.label;
+								break;							
+							case "cccOtherMin":
+								col.headerText = cccOtherMinCB.label;
+								break;
+							case "otherSeen":
+								col.headerText = otherSeenCB.label;
+								break;
+							case "otherSeen":
+								col.headerText = otherSeenCB.label;
+								break;
+							case "otherSeen":
+								col.headerText = otherSeenCB.label;
+								break;
+							case "otherSeen":
+								col.headerText = otherSeenCB.label;
+								break;
+							case "otherSeen":
+								col.headerText = otherSeenCB.label;
+								break;
+							case "otherSeen":
+								col.headerText = otherSeenCB.label;
+								break;
+							case "countyFaceMin":
+								col.headerText = countyFaceMinCB.label;
+								break;
+							case "countyOtherMin":
+								col.headerText = countyOtherMinCB.label;
+								break;
+							case "cccFaceMin":
+								col.headerText = cccFaceMinCB.label;
+								break;
+							case "cccOtherMin":
+								col.headerText = cccOtherMinCB.label;
+								break;
+							case "hmoFaceMin":
+								col.headerText = hmoFaceMinCB.label;
+								break;
+							case "otherFaceMin":
+								col.headerText = otherFaceMinCB.label;
+								break;
+							case "numScheduled":
+								col.headerText = numScheduledCB.label;
+								break;
+							case "numNoShow":
+								col.headerText = numNoShowCB.label;
+								break;
+							case "numCancel":
+								col.headerText = numCancelCB.label;
+								break;
+							case "numNew":
+								col.headerText = numNewCB.label;
+								break;
+							case "numDropin":
+								col.headerText = numDropinCB.label;
+								break;
+							case "dailySalary":
+								col.headerText = dailySalaryCB.label;
+								break;
+							case "totalSeen":
+								col.headerText = totalSeenCB.label;
+								break;
+							case "totalFaceHours":
+								col.headerText = totalFaceHoursCB.label;
+								break;
+							case "totalOtherHours":
+								col.headerText = totalOtherHoursCB.label;
+								break;
+							case "productivity":
+								col.headerText = productivityCB.label;
+								break;
+							case "countyFaceRevenue":
+								col.headerText = countyFaceRevenueCB.label;
+								break;
+							case "countyOtherRevenue":
+								col.headerText = countyOtherRevenueCB.label;
+								break;
+							case "cccFaceRevenue":
+								col.headerText = cccFaceRevenueCB.label;
+								break;
+							case "totalRevenue":
+								col.headerText = totalRevenueCB.label;
+								break;
+							case "balance":
+								col.headerText = balanceCB.label;
+								break;
+						}
+					}
+					printData.validateNow();
+										
+					
+					printJob.addObject(printData);
+					while (printData.validNextPage) {
+						printData.nextPage();
+						printJob.addObject(printData);
+					}				
+					FlexGlobals.topLevelApplication.removeElement(printData);
+					
+					printJob.send();
+				}				
+				
+				
+				PopUpManager.removePopUp(this);				
+			}
+			
+			private function getDataProvider():ArrayCollection{
+				var arr:ArrayCollection = new ArrayCollection();
+				for (var i:int=0; i<worksheets.length; i++){
+					var ws:Worksheet = worksheets[i] as Worksheet;
+					var obj:Object = new Object();
+					if (dateCB.selected){
+						obj.date = df.format(ws.date);
+					}		
+					if (clinicCB.selected){
+						obj.clinic = ws.clinic;
+					}
+					if (providerNameCB.selected){
+						obj.provider = ws.providerName;
+					}
+					if (hrsWorkedCB.selected){
+						obj.hoursWorked = nf.format(ws.hrsWorked);
+					}
+					if (countySeenCB.selected){
+						obj.countySeen = ws.countySeen;
+					}
+					if (cccSeenCB.selected){
+						obj.cccSeen = ws.cccSeen;
+					}
+					if (hmoSeenCB.selected){
+						obj.hmoSeen = ws.hmoSeen;
+					}
+					if (otherSeenCB.selected){
+						obj.otherSeen = ws.otherSeen;
+					}
+					if (countyFaceMinCB.selected){
+						obj.countyFaceMin = ws.countyFaceMin;
+					}
+					if (countyOtherMinCB.selected){
+						obj.countyOtherMin = ws.countyOtherMin;
+					}					
+					if (cccFaceMinCB.selected){
+						obj.cccFaceMin = ws.cccFaceMin;
+					}					
+					if (cccOtherMinCB.selected){
+						obj.cccOtherMin = ws.cccOtherMin;
+					}					
+					if (hmoFaceMinCB.selected){
+						obj.hmoFaceMin = ws.hmoFaceMin;
+					}
+					if (otherFaceMinCB.selected){
+						obj.otherFaceMin = ws.otherFaceMin;
+					}
+					if (numScheduledCB.selected){
+						obj.numScheduled = ws.numScheduled;
+					}
+					if (numNoShowCB.selected){
+						obj.numNoShow = ws.numNoShow;
+					}
+					if (numCancelCB.selected){
+						obj.numCancel = ws.numCancel;
+					}
+					if (numNewCB.selected){
+						obj.numNew = ws.numNew;
+					}
+					if (numDropinCB.selected){
+						obj.numDropin = ws.numDropin;
+					}
+					if (dailySalaryCB.selected){
+						obj.dailySalary = nf.format(ws.dailySalary);
+					}
+					if (totalSeenCB.selected){
+						obj.totalSeen = ws.totalSeen;
+					}
+					if (totalFaceHoursCB.selected){
+						obj.totalFaceHours = nf.format(ws.totalFaceHours);
+					}
+					if (totalOtherHoursCB.selected){
+						obj.totalOtherHours = nf.format(ws.totalOtherHours);
+					}
+					if (productivityCB.selected){
+						obj.productivity = nf.format(ws.productivity);
+					}
+					if (countyFaceRevenueCB.selected){
+						obj.countyFaceRevenue = nf.format(ws.countyFaceRevenue);
+					}
+					if (countyOtherRevenueCB.selected){
+						obj.countyOtherRevenue = nf.format(ws.countyOtherRevenue);
+					}
+					if (cccFaceRevenueCB.selected){
+						obj.cccFaceRevenue = nf.format(ws.cccFaceRevenue);
+					}
+					if (totalRevenueCB.selected){
+						obj.totalRevenue = nf.format(ws.totalRevenue);
+					}
+					if (balanceCB.selected){
+						obj.balance = nf.format(ws.balance);
+					}
+
+					arr.addItem(obj);					
+				}
+				return arr;
+			}
+			
+			private function titleWindow_close(evt:CloseEvent):void {
+				PopUpManager.removePopUp(this);
+			}			
+						
+		]]>
+	</fx:Script>
+	<s:Label text="Please select the columns to print:" paddingTop="10" paddingLeft="5"/>
+	<s:TileGroup width="100%" height="80%">
+		<s:CheckBox id="dateCB" label="Date" selected="true"/>
+		<s:CheckBox id="clinicCB" label="Clinic" selected="true"/>
+		<s:CheckBox id="providerNameCB" label="Provider" selected="true"/>
+		<s:CheckBox id="hrsWorkedCB" label="Hours Worked"/>
+		<s:CheckBox id="countySeenCB" label="County Seen"/>
+		<s:CheckBox id="cccSeenCB" label="CCC Seen"/>		
+		<s:CheckBox id="hmoSeenCB" label="HMO Seen"/>
+		<s:CheckBox id="otherSeenCB" label="Other Seen"/>
+		<s:CheckBox id="countyFaceMinCB" label="County Face Min"/>
+		<s:CheckBox id="countyOtherMinCB" label="County Other Min"/>
+		<s:CheckBox id="cccFaceMinCB" label="CCC Face Min"/>
+		<s:CheckBox id="cccOtherMinCB" label="CCC Other Min"/>
+		<s:CheckBox id="hmoFaceMinCB" label="HMO Face Min"/>
+		<s:CheckBox id="otherFaceMinCB" label="Other Face Min"/>
+		<s:CheckBox id="numScheduledCB" label="Num Scheduled"/>
+		<s:CheckBox id="numNoShowCB" label="Num NoShow"/>
+		<s:CheckBox id="numCancelCB" label="Num Cancel"/>
+		<s:CheckBox id="numNewCB" label="Num New"/>
+		<s:CheckBox id="numDropinCB" label="Num DropIn"/>
+		<s:CheckBox id="dailySalaryCB" label="Daily Salary"/>
+		<s:CheckBox id="totalSeenCB" label="Total Seen"/>
+		<s:CheckBox id="totalFaceHoursCB" label="Total Face Hours"/>
+		<s:CheckBox id="totalOtherHoursCB" label="Total Other Hours"/>
+		<s:CheckBox id="productivityCB" label="Productivity"/>
+		<s:CheckBox id="countyFaceRevenueCB" label="County Face Revenue"/>
+		<s:CheckBox id="countyOtherRevenueCB" label="County Other Revenue"/>
+		<s:CheckBox id="cccFaceRevenueCB" label="CCC Face Revenue"/>
+		<s:CheckBox id="totalRevenueCB" label="Total Revenue"/>
+		<s:CheckBox id="balanceCB" label="Balance"/>
+	</s:TileGroup>
+	<s:Button id="printB" label="Print" click="printB_clickHandler(event)"/>
+</s:TitleWindow>

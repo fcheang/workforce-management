@@ -39,11 +39,9 @@
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.remoting.mxml.RemoteObject;
 			import mx.validators.ValidationResult;
-			import mx.validators.Validator;
-			import mx.printing.PrintDataGrid;
-			import mx.printing.FlexPrintJob;			
+			import mx.validators.Validator;		
 			import spark.events.IndexChangeEvent;
-			import mx.core.FlexGlobals;
+			import mx.managers.PopUpManager;
 			import valueObjects.*;
 			
 			
@@ -160,7 +158,7 @@
 			{	
 				worksheets = event.result as ArrayCollection;
 				//findB.enabled = true;
-				if (worksheets.length == 0){
+				if (worksheets == null || worksheets.length == 0){
 					Alert.show("No records found!");
 				}				
 			}
@@ -313,24 +311,10 @@
 					return;
 				}
 				
-				var printJob:FlexPrintJob = new FlexPrintJob();
-				if (printJob.start()) {
-					var printData:PrintDataGrid = new PrintDataGrid();
-					FlexGlobals.topLevelApplication.addElement(printData);
-					
-					printData.dataProvider = worksheetDG.dataProvider;
-					printData.width = printJob.pageWidth;
-					printData.height = printJob.pageHeight;
-					
-					printJob.addObject(printData);
-					while (printData.validNextPage) {
-						printData.nextPage();
-						printJob.addObject(printData);
-					}				
-					FlexGlobals.topLevelApplication.removeElement(printData);
-					
-					printJob.send();
-				}				
+				var printDialog:WorksheetPrintDialog = new WorksheetPrintDialog();
+				printDialog.worksheets = worksheets;
+				PopUpManager.addPopUp(printDialog, this, true);
+				PopUpManager.centerPopUp(printDialog);															
 			}			
 			
 			protected function worksheetDG_itemClickHandler(event:ListEvent):void
