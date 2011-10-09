@@ -35,13 +35,15 @@
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
+			import mx.managers.PopUpManager;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.remoting.mxml.RemoteObject;
 			import mx.validators.ValidationResult;
-			import mx.validators.Validator;		
+			import mx.validators.Validator;
+			
 			import spark.events.IndexChangeEvent;
-			import mx.managers.PopUpManager;
+			
 			import valueObjects.*;
 			
 			
@@ -311,6 +313,8 @@
 					return;
 				}
 				
+				//var printDialog:PrintDialog = new PrintDialog();
+				//printDialog.setDataGrid(worksheetDG);
 				var printDialog:WorksheetPrintDialog = new WorksheetPrintDialog();
 				printDialog.worksheets = worksheets;
 				PopUpManager.addPopUp(printDialog, this, true);
@@ -353,70 +357,25 @@
 			// Label Function //
 			////////////////////			
 			
-			protected function calcTotalFaceHrs(item:Object,  column:DataGridColumn):String
+			protected function formatNumber(item:Object,  column:DataGridColumn):String
 			{
-				var n:Number = item.totalFaceHours;
-				return nf.format(n);
+				return nf.format(item[column.dataField]);
 			}
-			
-			protected function calcTotalOtherHrs(item:Object,  column:DataGridColumn):String
-			{
-				var n:Number = item.totalOtherHours;
-				return nf.format(n);
-			}
-			
-			protected function calcTotalSeen(item:Object,  column:DataGridColumn):String
-			{
-				return item.totalSeen;
-			}
-			
-			protected function calcProductivity(item:Object,  column:DataGridColumn):String
-			{
-				var n:Number = item.productivity;
-				return nf.format(n)+"%";					
-			}
-			
-			protected function calcCountyFaceRev(item:Object,  column:DataGridColumn):String
-			{
-				var n:Number = item.countyFaceRevenue;
-				return "$"+nf.format(n);
-			}			
-			
-			protected function calcCountyOtherRev(item:Object,  column:DataGridColumn):String
-			{
-				var n:Number = item.countyOtherRevenue;
-				return "$"+nf.format(n);
-			}
-			
-			protected function calcCCCRev(item:Object,  column:DataGridColumn):String
-			{
-				var n:Number = item.cccFaceRevenue;
-				return "$"+nf.format(n);				
-			}
-			
-			protected function calcRevenue(item:Object,  column:DataGridColumn):String
-			{
-				var n:Number = item.totalRevenue;
-				return "$"+nf.format(n);
-			}			 
-			
-			protected function calcBalance(item:Object,  column:DataGridColumn):String
-			{
-				var n:Number = item.balance;
-				return "$"+nf.format(n);
-			}		
-			
-			protected function getDailySalary(item:Object,  column:DataGridColumn):String
-			{
-				var n:Number = item.dailySalary;
-				return "$"+nf.format(n);
-			}
-			
+				
 			protected function formatDate(item:Object, column:DataGridColumn):String
 			{
-				var d:Date = item.date;
-				return df.format(d);
+				return df.format(item[column.dataField]);
 			}				
+			
+			protected function formatCurrency(item:Object, column:DataGridColumn):String
+			{
+				return "$"+nf.format(item[column.dataField]);
+			}
+			
+			protected function formatPercent(item:Object, column:DataGridColumn):String
+			{
+				return nf.format(item[column.dataField])+"%";
+			}
 						
 		]]>
 	</fx:Script>
@@ -466,16 +425,16 @@
 					<mx:DataGridColumn headerText="{TOTAL_CANCEL}" dataField="numCancel" width="120"/>
 					<mx:DataGridColumn headerText="{NUM_NEW}" dataField="numNew" width="120"/>
 					<mx:DataGridColumn headerText="{NUM_DROPIN}" dataField="numDropin" width="120"/>
-					<mx:DataGridColumn headerText="{DAILY_SALARY}" labelFunction="getDailySalary" width="120"/>
-					<mx:DataGridColumn headerText="{TOTAL_FACE_HRS}" labelFunction="calcTotalFaceHrs" width="120"/>
-					<mx:DataGridColumn headerText="{TOTAL_OTHER_HRS}" labelFunction="calcTotalOtherHrs" width="120"/>
-					<mx:DataGridColumn headerText="{TOTAL_SEEN}" labelFunction="calcTotalSeen" width="120"/>
-					<mx:DataGridColumn headerText="{PRODUCTIVITY}" labelFunction="calcProductivity" width="120"/>
-					<mx:DataGridColumn headerText="{COUNTY_FACE_REV}" labelFunction="calcCountyFaceRev" width="120"/>
-					<mx:DataGridColumn headerText="{COUNTY_OTHER_REV}" labelFunction="calcCountyOtherRev" width="120"/>
-					<mx:DataGridColumn headerText="{CCC_REV}" labelFunction="calcCCCRev" width="120"/>
-					<mx:DataGridColumn headerText="{REVENUE}" labelFunction="calcRevenue" width="120"/>
-					<mx:DataGridColumn headerText="{BALANCE}" labelFunction="calcBalance" width="180"/>			
+					<mx:DataGridColumn headerText="{DAILY_SALARY}" dataField="dailySalary" labelFunction="formatCurrency" width="120"/>
+					<mx:DataGridColumn headerText="{TOTAL_FACE_HRS}" dataField="totalFaceHours" labelFunction="formatNumber" width="120"/>
+					<mx:DataGridColumn headerText="{TOTAL_OTHER_HRS}" dataField="totalOtherHours" labelFunction="formatNumber" width="120"/>
+					<mx:DataGridColumn headerText="{TOTAL_SEEN}" dataField="totalSeen" width="120"/>
+					<mx:DataGridColumn headerText="{PRODUCTIVITY}" dataField="productivity" labelFunction="formatPercent" width="120"/>
+					<mx:DataGridColumn headerText="{COUNTY_FACE_REV}" dataField="countyFaceRevenue" labelFunction="formatCurrency" width="120"/>
+					<mx:DataGridColumn headerText="{COUNTY_OTHER_REV}" dataField="countyOtherRevenue" labelFunction="formatCurrency" width="120"/>
+					<mx:DataGridColumn headerText="{CCC_REV}" dataField="cccFaceRevenue" labelFunction="formatCurrency" width="120"/>
+					<mx:DataGridColumn headerText="{REVENUE}" dataField="totalRevenue" labelFunction="formatCurrency" width="120"/>
+					<mx:DataGridColumn headerText="{BALANCE}" dataField="balance" labelFunction="formatCurrency" width="180"/>			
 					<mx:DataGridColumn headerText="{ENTERED_BY}" dataField="enteredBy" width="120"/>
 				</mx:columns>
 			</mx:DataGrid>
