@@ -61,6 +61,20 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), clinic, date);
 	}
 	
+	public List<Worksheet> getWorksheetForDateRange(Date sd, Date ed) {
+		String sql =
+			"select "+
+			"w.providerId, p.name, w.date, w.clinic, w.hrs_worked, w.county_seen, w.ccc_seen, "+
+			"w.hmo_seen, w.other_seen, w.county_face_min, w.county_other_min, "+
+			"w.ccc_face_min, w.ccc_other_min, w.hmo_face_min, w.other_face_min, "+
+			"w.num_scheduled, w.num_noshow, w.num_cancel, w.num_new, w.num_dropin, "+
+			"w.daily_salary, w.enteredBy, w.dateEntered "+
+			"from worksheet w, provider p "+
+			"where w.providerId = p.providerId and w.date >= ? and w.date <= ? "+
+			"order by w.date, w.clinic";
+		return getSimpleJdbcTemplate().query(sql, new WorksheetRowMapper(), sd, ed);			
+	}	
+	
 	public List<Worksheet> getWorksheetForClinicAndDateRange(String clinic, Date sd, Date ed){
 		String sql =
 			"select "+
@@ -204,6 +218,6 @@ public class WorksheetDAOImpl extends SimpleJdbcDaoSupport {
 			e.setDateEntered(rs.getDate(23));
 			return e;
 		}
-	}	
+	}
 	
 }

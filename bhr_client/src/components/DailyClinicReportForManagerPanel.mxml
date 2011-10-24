@@ -137,10 +137,12 @@
 				
 				dataService.getAllProvider.addEventListener(ResultEvent.RESULT, dataService_getAllProvider_resultHandler);
 				
+				dataService.getWorksheetForDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);				
 				dataService.getWorksheetForClinicAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
 				dataService.getWorksheetForProviderAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
 				dataService.getWorksheetForClinicAndProviderAndDateRange.addEventListener(ResultEvent.RESULT, dataService_getWorksheet_resultHandler);
 				
+				dataService.getWorksheetForDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
 				dataService.getWorksheetForClinicAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
 				dataService.getWorksheetForProviderAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
 				dataService.getWorksheetForClinicAndProviderAndDateRange.addEventListener(FaultEvent.FAULT, dataService_getWorksheet_faultHandler);
@@ -315,8 +317,10 @@
 				
 				//var printDialog:PrintDialog = new PrintDialog();
 				//printDialog.setDataGrid(worksheetDG);
+				
 				var printDialog:WorksheetPrintDialog = new WorksheetPrintDialog();
 				printDialog.worksheets = worksheets;
+				
 				PopUpManager.addPopUp(printDialog, this, true);
 				PopUpManager.centerPopUp(printDialog);															
 			}			
@@ -333,8 +337,7 @@
 			protected function findB_clickHandler(event:MouseEvent):void
 			{
 				if (selectLocationCB.selectedIndex == -1 && selectProviderCB.selectedIndex == -1){
-					Alert.show("Please select a Clinic or Provider!");
-					selectLocationCB.setFocus();
+					dataService.getWorksheetForDateRange(startDateDF.selectedDate, endDateDF.selectedDate);
 					//findB.enabled = true;
 				}else{
 					var provider:Provider = null;
