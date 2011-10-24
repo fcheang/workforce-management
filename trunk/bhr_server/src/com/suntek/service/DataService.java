@@ -197,6 +197,17 @@ public class DataService {
 		return deleteWorksheet(ws);
 	}
 	
+	public List<Worksheet> getWorksheetForDateRange(Date sd, Date ed){
+		List<Worksheet> worksheets = null;
+		try{
+			logger.debug("getWorksheetForDateRange("+sd+"," + ed+")");
+			worksheets = wsDAO.getWorksheetForDateRange(sd, ed);
+		}catch(Throwable t){
+			t.printStackTrace();
+		}			
+		return worksheets;		
+	}
+	
 	public List<Worksheet> getWorksheetForClinicAndDateRange(String clinic, Date sd, Date ed){
 		List<Worksheet> worksheets = null;
 		try{

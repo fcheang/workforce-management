@@ -8,7 +8,8 @@ To build the project:
 3. from the bhr_client project run Project->Export Release Build...
 4. from the bhr_server project run Poject->Build Automatically
 4. run ant from the current directory to create the bhr2.war file
-5. you can deploy the bhr2.war file to Tomcat
+5. run deploy or manually copy the bhr2.war file to tomcat
+6. run debug or manually start the tomcat server
 
 Todo:
 9/10
