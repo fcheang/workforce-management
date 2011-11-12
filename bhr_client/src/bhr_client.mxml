@@ -81,6 +81,7 @@
 			private var UR_PERSONNEL_TASKS:String = "UR Staff Report";
 			private var BILLING_DEPT_TASKS:String = "Billing Staff Report";
 			private var PROJECT_LIST:String = "Administrative Staff Report";
+			private var ACCOUNTING_REPORT:String = "Accounting Report";
 			
 			private var loggedInUser:User;
 			
@@ -211,7 +212,16 @@
 							plPanel.percentHeight = 100;
 							content.addElement(plPanel);
 							content.label = PROJECT_LIST;
-							portalVS.addChild(content);							break;									
+							portalVS.addChild(content);							break;
+						case ACCOUNTING_REPORT:
+							var arPanel:AccountingReportPanel = new AccountingReportPanel();
+							arPanel.dataService = dataService;
+							arPanel.user = loggedInUser;
+							arPanel.percentWidth = 100;
+							arPanel.percentHeight = 100;
+							content.addElement(arPanel);
+							content.label = ACCOUNTING_REPORT;
+							portalVS.addChild(content);							break;							
 					};
 				} 
 			}

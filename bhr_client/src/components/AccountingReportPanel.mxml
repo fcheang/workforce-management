@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   creationComplete="panel1_creationCompleteHandler(event)"
+				   dropShadowVisible="true" borderWeight="1" backgroundColor="white">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.*;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.rpc.events.*;
+			import mx.rpc.remoting.*;
+			
+			import spark.events.TextOperationEvent;
+			
+			import valueObjects.*;
+			
+			public var dataService:RemoteObject;
+			public var user:User;
+			
+			[Bindable]
+			private var accountingReports:ArrayCollection = new ArrayCollection();
+			
+			private var oneDayMillis:int = 24 * 60 * 60 * 1000;
+			
+			protected function panel1_creationCompleteHandler(event:FlexEvent):void
+			{				
+				// setup handler
+				dataService.getAccountingReport.addEventListener(ResultEvent.RESULT, dataService_getAccountingReport_resultHandler);
+				dataService.updateAccountingReport.addEventListener(ResultEvent.RESULT, dataService_updateAccountingReport_resultHandler);			 
+				
+				setNameLabel();
+				
+				// retrieve data
+				dataService.getAccountingReport(getFirstDateOfWeek(dateDF.selectedDate));	
+			}
+			
+			protected function dataService_getAccountingReport_resultHandler(event:ResultEvent):void
+			{
+				accountingReports.removeAll();
+				var objects:ArrayCollection = event.result as ArrayCollection;
+				for each (var obj:Object in objects)
+				{
+					var ar:AccountingReport = new AccountingReport();
+					ar.dateOfWeek = obj.dateOfWeek;
+					ar.accountId = obj.accountId;
+					ar.accountName = obj.accountName;
+					ar.numBills = obj.numBills;
+					ar.amtPaid = obj.amtPaid;
+					ar.numChecks = obj.numChecks;
+					ar.amtChecks = obj.amtChecks;
+					ar.amtCashCollected = obj.amtCashCollected;
+					ar.numCheckDeposited = obj.numCheckDeposited;
+					ar.amtDeposited = obj.amtDeposited;
+					accountingReports.addItem(ar);
+				}
+			}			
+						
+			protected function dataService_updateAccountingReport_resultHandler(event:ResultEvent):void
+			{
+				var updated:Boolean = event.result as Boolean;
+				if (updated){
+					Alert.show("Accounting report was submitted successfully!");
+				}else{
+					Alert.show("Problem submitting Accounting report!");
+					dataService.getAccountingReport(getFirstDateOfWeek(dateDF.selectedDate));
+				}
+			}			
+			
+			protected function setNameLabel():void{
+				if (dateDF.selectedDate != null){
+					var firstDate:Date = getFirstDateOfWeek(dateDF.selectedDate);
+					var lastDate:Date = getLastDateOfWeek(dateDF.selectedDate);
+					nameL.text = "Week of: "+dateFormatter.format(firstDate)+" through "+dateFormatter.format(lastDate);					
+				}
+			}
+			
+			protected function dateDF_changeHandler(event:CalendarLayoutChangeEvent):void
+			{				
+				if (dateDF.selectedDate != null){
+					setNameLabel();
+					var firstDate:Date = getFirstDateOfWeek(dateDF.selectedDate);					
+					dataService.getAccountingReport(firstDate);
+				}
+			}			
+			
+			protected function getFirstDateOfWeek(aDate:Date):Date
+			{
+				return new Date(aDate.time - aDate.day * oneDayMillis);
+			}
+			
+			protected function getLastDateOfWeek(aDate:Date):Date
+			{
+				return new Date(aDate.time + (6 - aDate.day) * oneDayMillis);
+			}
+
+			
+			protected function submitB_clickHandler(event:MouseEvent):void
+			{
+				submitB.enabled = false;
+				dataService.updateAccountingReport(accountingReports);
+			}
+			
+			protected function enableSubmitBtn():void
+			{
+				submitB.enabled = true;
+			}			
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->		
+		<mx:DateFormatter id="dateFormatter" formatString="MM/DD/YYYY"/>
+	</fx:Declarations>
+	
+	<mx:VBox 
+		width="100%" 
+		height="100%" 
+		paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10">
+		
+		<mx:HBox paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" width="100%">
+			<s:Label text="Date:" paddingLeft="30" paddingTop="6"/>
+			<mx:DateField id="dateDF" selectedDate="{new Date()}" change="dateDF_changeHandler(event)"/>
+			<s:Label id="nameL" paddingLeft="30" paddingTop="6"/>
+		</mx:HBox>
+		
+		<mx:DataGrid  
+			lockedColumnCount="1" 
+			horizontalScrollPolicy="auto" 
+			verticalScrollPolicy="auto" 
+			resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" id="accountingReportDG"
+			dataProvider="{accountingReports}" editable="true" variableRowHeight="true" wordWrap="true" itemEditEnd="enableSubmitBtn()" sortableColumns="false">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Account name" dataField="accountName" editable="false"/>
+				<mx:DataGridColumn headerText="# of bills paid this week?" dataField="numBills"/>
+				<mx:DataGridColumn headerText="Total amount paid out in bills this week?" dataField="amtPaid"/>
+				<mx:DataGridColumn headerText="# of incoming checks received this week?" dataField="numChecks"/>
+				<mx:DataGridColumn headerText="Total dollar amount of incoming checks this week?" dataField="amtChecks"/>
+				<mx:DataGridColumn headerText="Total dollar amount in cash collections this week?" dataField="amtCashCollected"/>
+				<mx:DataGridColumn headerText="# of checks deposited into bank accounts this week?" dataField="numCheckDeposited"/>
+				<mx:DataGridColumn headerText="Total dollar amount in actual deposits for this week?" dataField="amtDeposited"/>
+			</mx:columns>
+		</mx:DataGrid>
+		
+		<s:Button label="Submit" id="submitB" click="submitB_clickHandler(event)" enabled="false"/>
+		
+	</mx:VBox>
+	
+</s:BorderContainer>
