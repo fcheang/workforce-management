@@ -24,6 +24,7 @@ public class DataService {
 	private URPersonnelTaskDAOImpl urDAO;
 	private BillingTaskDAOImpl btDAO;
 	private ProjectListDAOImpl plDAO;
+	private AccountingReportDAOImpl arDAO;
 	
 	public DataService(){		
 	}
@@ -68,6 +69,10 @@ public class DataService {
 		this.plDAO = plDAO;
 	}
 
+	public void setArDAO(AccountingReportDAOImpl arDAO){
+		this.arDAO = arDAO;
+	}
+	
 	// Common 
 	
 	public User login(User u) {
@@ -278,8 +283,7 @@ public class DataService {
 		}			
 		return worksheets;		
 	}		
-	
-	
+		
 	private void addSumOfAllDates(List<Worksheet> worksheets) {
 		if (worksheets.size() <= 1){
 			return;
@@ -596,5 +600,40 @@ public class DataService {
 			return false;
 		}		
 	}
+
+	// Accounting Report
+	public List<AccountingReport> getAccountingReport(Date dateOfWeek){
+		List<AccountingReport> rpts = new ArrayList<AccountingReport>();
+		try{
+			logger.debug("getAccountingReport("+dateOfWeek+")");
+			List<Account> acList = arDAO.getAllAccount();
+			for (Account ac : acList){
+				AccountingReport ar = arDAO.getAccountingReport(dateOfWeek, ac.getId());
+				if (ar == null){
+					ar = new AccountingReport();
+					ar.setDateOfWeek(dateOfWeek);
+					ar.setAccountId(ac.getId());
+					ar.setAccountName(ac.getName());
+				}
+				rpts.add(ar);
+			}
+		}catch(Throwable t){
+			t.printStackTrace();
+		}			
+		return rpts;				
+	}
+	
+	public boolean updateAccountingReport(List<AccountingReport> rpts){
+		try{
+			logger.debug("updateAccountingReport("+rpts+")");
+			arDAO.updateAccountingReport(rpts);
+			return true;
+		}catch(Throwable t){
+			t.printStackTrace();
+			return false;
+		}		
+	}
+	
+	
 	
 }

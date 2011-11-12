@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="500" height="500"
+			   title="Print Dialog"
+			   creationComplete="init()">
+	<s:layout>
+		<s:VerticalLayout gap="10" horizontalAlign="center"/>
+	</s:layout>
+	
+	<fx:Declarations>
+		<mx:NumberFormatter id="nf" precision="2" rounding="up"/>
+		<mx:DateFormatter id="df" formatString="MM/DD/YYYY"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.CheckBox;
+			import mx.controls.DataGrid;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.core.FlexGlobals;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.printing.FlexPrintJob;
+			import mx.printing.PrintDataGrid;
+			
+			import spark.components.Button;
+			import spark.components.Label;
+			import spark.components.TileGroup;
+			import spark.layouts.TileLayout;
+			
+			import valueObjects.Worksheet;
+			
+			public var dg:DataGrid; 
+			private var cbList:ArrayCollection = new ArrayCollection();			
+			
+			private function init():void {
+				this.addEventListener(CloseEvent.CLOSE, titleWindow_close);		
+			}
+
+			public function setDataGrid(dg:DataGrid):void
+			{
+				var label:Label = new Label();
+				label.text = "Please select the columns to print:";
+				var cbGroup:TileGroup = new TileGroup();
+				cbGroup.percentWidth = 100;
+				cbGroup.percentHeight = 80;
+				
+				this.dg = dg;
+				for (var i:int=0; i<dg.columns.length; i++){
+					var dgc:DataGridColumn = dg.columns[i];
+					var cb:CheckBox = new CheckBox();
+					if (i < 3){
+						cb.selected = true;
+					}
+					cb.label = dgc.headerText;
+					cbGroup.addElement(cb);					
+					cbList.addItem(cb);
+				}
+				
+				var printB:Button = new Button();
+				printB.label = "Print";
+				printB.addEventListener(MouseEvent.CLICK, printB_clickHandler);
+				
+				this.addElement(label);
+				this.addElement(cbGroup);
+				this.addElement(printB);
+			}
+			
+			protected function printB_clickHandler(event:MouseEvent):void
+			{
+				var printJob:FlexPrintJob = new FlexPrintJob();
+				if (printJob.start()) {
+					var printData:PrintDataGrid = new PrintDataGrid();
+					FlexGlobals.topLevelApplication.addElement(printData);
+					
+					printData.dataProvider = dg.dataProvider;
+					
+					printData.columns = getPrintColumns();
+					printData.validateNow();
+					
+					printData.width = printJob.pageWidth;
+					printData.height = printJob.pageHeight;
+					printData.setStyle("fontSize", 8);					
+					
+					printJob.addObject(printData);
+					while (printData.validNextPage) {
+						printData.nextPage();
+						printJob.addObject(printData);
+					}				
+					FlexGlobals.topLevelApplication.removeElement(printData);
+					
+					printJob.send();
+				}				
+				
+				
+				PopUpManager.removePopUp(this);				
+			}
+						
+			private function titleWindow_close(evt:CloseEvent):void {
+				PopUpManager.removePopUp(this);
+			}			
+			
+			private function getPrintColumns():Array
+			{
+				var cols:Array = new Array();
+				var colIndex:int = 0;
+				
+				for (var i:int=0; i<cbList.length; i++){
+					var cb:CheckBox = cbList[i];
+					if (cb.selected){
+						for (var j:int=0; j<dg.columns.length; j++){
+							var dgc:DataGridColumn = dg.columns[j];
+							if (cb.label == dgc.headerText){
+								//dgc.headerWordWrap = true;
+								//dgc.wordWrap = true;
+								cols[colIndex] = dgc;
+								colIndex = colIndex + 1;
+								break;
+							}
+						}
+					}
+				}
+				return cols;
+			}
+			
+		]]>
+	</fx:Script>
+</s:TitleWindow>

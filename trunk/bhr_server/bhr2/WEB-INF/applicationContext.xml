@@ -56,6 +56,10 @@
 	<bean id="plDAO" class="com.suntek.dao.ProjectListDAOImpl">
 		<property name="dataSource" ref="dataSource"/>
 	</bean> 		 	
+
+	<bean id="arDAO" class="com.suntek.dao.AccountingReportDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean> 		 	
 	 	
 	<bean id="dataService" class="com.suntek.service.DataService">
 		<flex:remoting-destination />
@@ -69,6 +73,7 @@
 		<property name="urDAO" ref="urDAO"/>
 		<property name="btDAO" ref="btDAO"/>
 		<property name="plDAO" ref="plDAO"/>
+		<property name="arDAO" ref="arDAO"/>
 	</bean>	
 
 </beans> 
