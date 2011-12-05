@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   creationComplete="panel1_creationCompleteHandler(event)"
+				   dropShadowVisible="true" borderWeight="1" backgroundColor="white">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.*;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.rpc.events.*;
+			import mx.rpc.remoting.*;
+			
+			import spark.events.TextOperationEvent;
+			
+			import valueObjects.*;
+			
+			public var dataService:RemoteObject;
+			public var user:User;
+			
+			[Bindable]
+			private var cmReports:ArrayCollection;
+			
+			[Bindable]
+			private var cmNote:CaseManagerNote;
+			
+			protected function panel1_creationCompleteHandler(event:FlexEvent):void
+			{				
+				dataService.getCaseManagerReportForWeek.addEventListener(ResultEvent.RESULT, dataService_getCaseManagerReportForWeek_resultHandler);
+				dataService.getCaseManagerNote.addEventListener(ResultEvent.RESULT, dataService_getCaseManagerNote_resultHandler);
+				dataService.updateCaseManagerReport.addEventListener(ResultEvent.RESULT, dataService_updateCaseManagerReport_resultHandler);
+				
+				dataService.getCaseManagerReportForWeek(dateDF.selectedDate, user);	
+				dataService.getCaseManagerNote(dateDF.selectedDate, user);				
+			}
+			
+			protected function dataService_getCaseManagerReportForWeek_resultHandler(event:ResultEvent):void
+			{
+				cmReports = new ArrayCollection();
+				
+				var objects:ArrayCollection = event.result as ArrayCollection;
+				for each (var obj:Object in objects)
+				{
+					var report:CaseManagerReport= new CaseManagerReport();
+					report.date = obj.date;
+					report.dateStr = obj.dateStr;					
+					report.numConsumer = obj.numConsumer;
+					report.numVisits = obj.numVisits;
+					report.numL2Ref = obj.numL2Ref;
+					report.numL3Ref = obj.numL3Ref;
+					report.numL2Seen = obj.numL2Seen;					
+					report.numL3Seen = obj.numL3Seen;
+					report.numPCPReachedOut = obj.numPCPReachedOut;
+					report.numPCPAppts = obj.numPCPAppts;
+					report.numCM = obj.numCM;					
+					report.numEpisodeOpened = obj.numEpisodeOpened;
+					report.numEpisodeClosed = obj.numEpisodeClosed;
+					report.numHPOnCaseloadDueToExpire = obj.numHPOnCaseloadDueToExpire;
+					report.numOutsideMeeting = obj.numOutsideMeeting;
+					report.numVisitNextWeek = obj.numVisitNextWeek;
+					report.numNonCompliantChart = obj.numNonCompliantChart;
+					cmReports.addItem(report);
+				}
+			}			
+			
+			protected function dataService_getCaseManagerNote_resultHandler(event:ResultEvent):void
+			{
+				cmNote = event.result as CaseManagerNote;
+			}			
+			
+			protected function dataService_updateCaseManagerReport_resultHandler(event:ResultEvent):void
+			{
+				var updated:Boolean = event.result as Boolean;
+				if (updated){
+					Alert.show("Report was submitted successfully!");
+				}else{
+					Alert.show("Problem submitting Report!");
+				}
+				dataService.getCaseManagerReportForWeek(dateDF.selectedDate, user);	
+				dataService.getCaseManagerNote(dateDF.selectedDate, user);								
+			}			
+			
+			protected function dateDF_changeHandler(event:CalendarLayoutChangeEvent):void
+			{
+				if (dateDF.selectedDate != null){
+					dataService.getCaseManagerReportForWeek(dateDF.selectedDate, user);
+					dataService.getCaseManagerNote(dateDF.selectedDate, user);
+				}
+			}			
+			
+			protected function submitB_clickHandler(event:MouseEvent):void
+			{
+				submitB.enabled = false;
+				dataService.updateCaseManagerReport(cmReports, cmNote, user);
+			}
+			
+			protected function enableSubmitBtn():void
+			{
+				submitB.enabled = true;
+			}			
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<mx:VBox 
+		width="100%" 
+		height="100%" 
+		paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10">
+		
+		<mx:HBox paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" width="100%">
+			<s:Label text="Date:" paddingLeft="30" paddingTop="6"/>
+			<mx:DateField id="dateDF" selectedDate="{new Date()}" change="dateDF_changeHandler(event)"/>
+			<s:Label id="nameL" paddingLeft="30" paddingTop="6"/>
+		</mx:HBox>
+		
+		<mx:DataGrid  
+			lockedColumnCount="1" 
+			horizontalScrollPolicy="auto" 
+			verticalScrollPolicy="auto" 
+			resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" id="dataComplianceTaskDG"
+			dataProvider="{cmReports}" editable="true" variableRowHeight="true" wordWrap="true" itemEditEnd="enableSubmitBtn()" sortableColumns="false">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Date" dataField="dateStr" editable="false"/>
+				<mx:DataGridColumn headerText="# Consumers on caseload" dataField="numConsumer"/>
+				<mx:DataGridColumn headerText="# Face to Face Visits" dataField="numVisits"/>
+				<mx:DataGridColumn headerText="# New Level 2 Referrals" dataField="numL2Ref"/>
+				<mx:DataGridColumn headerText="# New Level 3 Referrals" dataField="numL3Ref"/>
+				<mx:DataGridColumn headerText="# New Level 2 Seen" dataField="numL2Seen"/>
+				<mx:DataGridColumn headerText="# New Level 3 Seen" dataField="numL3Seen"/>
+				<mx:DataGridColumn headerText="# PCPs Reached Out To" dataField="numPCPReachedOut"/>
+				<mx:DataGridColumn headerText="# PCP Appts Scheduled/Confirmed" dataField="numPCPAppts"/>
+				<mx:DataGridColumn headerText="# CM Assessments Completed" dataField="numCM"/>
+				<mx:DataGridColumn headerText="# New Episodes Opened" dataField="numEpisodeOpened"/>
+				<mx:DataGridColumn headerText="# Episodes Closed" dataField="numEpisodeClosed"/>
+				<mx:DataGridColumn headerText="# HP on Caseload Due to Expire in 4 Weeks or Less" dataField="numHPOnCaseloadDueToExpire"/>
+				<mx:DataGridColumn headerText="# Outside Meetings" dataField="numOutsideMeeting"/>
+				<mx:DataGridColumn headerText="# Face to Face Visits Next Week" dataField="numVisitNextWeek"/>
+				<mx:DataGridColumn headerText="# Non-compliant Charts" dataField="numNonCompliantChart"/>
+			</mx:columns>
+		</mx:DataGrid>
+		
+		<mx:Form width="100%">
+			<mx:FormHeading label="PLANNING:"/>			
+			<mx:FormItem label="PLAN:">
+				<s:TextInput id="planTA" width="500" text="@{cmNote.plan}" change="enableSubmitBtn()"/>
+			</mx:FormItem>
+			<mx:FormItem label="ACTION:">
+				<s:TextInput id="actionTA" width="500" text="@{cmNote.action}" change="enableSubmitBtn()"/>
+			</mx:FormItem>
+			<mx:FormItem label="ASSISTANCE NEEDED:">
+				<s:TextInput id="anTA" width="500" text="@{cmNote.assistanceNeeded}" change="enableSubmitBtn()"/>
+			</mx:FormItem>
+			<mx:FormItem label="PLANS FOR NEXT WEEK:">
+				<s:TextInput id="pfnwTA" width="500" text="@{cmNote.plansForNextWeek}" change="enableSubmitBtn()"/>
+			</mx:FormItem>
+			<mx:FormItem label="OTHER:">
+				<s:TextInput id="otherTA" width="500" text="@{cmNote.other}" change="enableSubmitBtn()"/>
+			</mx:FormItem>
+		</mx:Form>	
+		
+		<!--
+		<s:Label text=""/>
+		<s:Label text="PLAN: To obtain appointment with PCP’s for consumers on your caseload (list all consumer who do not have appointments as of today)" />
+		<s:TextArea id="planTA" width="500" text="@{cmNote.plan}" change="enableSubmitBtn()"/>
+		<s:Label text=""/>
+		<s:Label text="ACTION:To bring all charts into compliance " />
+		<s:TextArea id="actionTA" width="800" text="@{cmNote.action}" change="enableSubmitBtn()"/>
+		<s:Label text=""/>
+		<s:Label text="ASSISTANCE NEEDED:" />
+		<s:TextArea id="anTA" width="800" text="@{cmNote.assistanceNeeded}" change="enableSubmitBtn()"/>
+		<s:Label text=""/>
+		<s:Label text="PLANS FOR NEXT WEEK:" />
+		<s:TextArea id="pfnwTA" width="800" text="@{cmNote.plansForNextWeek}" change="enableSubmitBtn()"/>
+		<s:Label text=""/>
+		<s:Label text="OTHER:" />
+		<s:TextArea id="otherTA" width="800" text="@{cmNote.other}" change="enableSubmitBtn()"/>
+		<s:Label text=""/>
+		-->
+		
+		<s:Button label="Submit" id="submitB" click="submitB_clickHandler(event)" enabled="false"/>
+		
+	</mx:VBox>
+	
+</s:BorderContainer>

@@ -1,5 +1,7 @@
 package com.suntek.service;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,6 +27,7 @@ public class DataService {
 	private BillingTaskDAOImpl btDAO;
 	private ProjectListDAOImpl plDAO;
 	private AccountingReportDAOImpl arDAO;
+	private CaseManagerReportDAOImpl cmDAO;
 	
 	public DataService(){		
 	}
@@ -71,6 +74,10 @@ public class DataService {
 
 	public void setArDAO(AccountingReportDAOImpl arDAO){
 		this.arDAO = arDAO;
+	}
+
+	public void setCmDAO(CaseManagerReportDAOImpl cmDAO){
+		this.cmDAO = cmDAO;
 	}
 	
 	// Common 
@@ -634,6 +641,149 @@ public class DataService {
 		}		
 	}
 	
+	// CaseManager Report
+	public List<CaseManagerReport> getCaseManagerReportForWeek(Date date, User user){
+		List<CaseManagerReport> rptList = new ArrayList<CaseManagerReport>();		
+		try{
+			logger.debug("getCaseManagerReportForWeek("+date+", "+user+")");		
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(date);
+			int offsetToSunday = 1 - cal.get(Calendar.DAY_OF_WEEK);
+			cal.add(Calendar.DATE, offsetToSunday);
+			int numDays = 6;
+			for (int i=0; i<numDays; i++){
+				cal.add(Calendar.DATE, 1);
+				CaseManagerReport rpt = cmDAO.getCaseManagerReport(cal.getTime());
+				if (rpt == null){
+					rpt = new CaseManagerReport();
+					rpt.setDate(cal.getTime());
+					rpt.setUserId(user.getUsername());
+				}
+				rptList.add(rpt);			
+			}	
+			CaseManagerReport sum = getSumValue(rptList);
+			CaseManagerReport avg = getAvgValue(sum, numDays);
+			rptList.add(sum);
+			rptList.add(avg);
+		}catch(Throwable t){
+			t.printStackTrace();
+		}
+		return rptList;
+	}
+	
+	private CaseManagerReport getSumValue(List<CaseManagerReport> rptList) {
+		CaseManagerReport sum = new CaseManagerReport();
+		sum.setDate(null);
+		sum.setDateStr(CaseManagerReport.TOTAL);
+
+		int numConsumer = 0;
+		int numVisits = 0;
+		int numL2Ref = 0;
+		int numL3Ref = 0;
+		int numL2Seen = 0;
+		int numL3Seen = 0;
+		int numPCPReachedOut = 0;
+		int numPCPAppts = 0;
+		int numCM = 0;
+		int numEpisodeOpened = 0;
+		int numEpisodeClosed = 0;
+		int numHPOnCaseloadDueToExpire = 0;
+		int numOutsideMeeting = 0;
+		int numVisitNextWeek = 0;
+		int numNonCompliantChart = 0;
+				
+		for (CaseManagerReport rpt : rptList){
+			numConsumer += rpt.getNumConsumer();
+			numVisits += rpt.getNumVisits();
+			numL2Ref += rpt.getNumL2Ref();
+			numL3Ref += rpt.getNumL3Ref();
+			numL2Seen += rpt.getNumL2Seen();
+			numL3Seen += rpt.getNumL3Seen();
+			numPCPReachedOut += rpt.getNumPCPReachedOut();
+			numPCPAppts += rpt.getNumPCPAppts();
+			numCM += rpt.getNumCM();		
+			numEpisodeOpened += rpt.getNumEpisodeOpened();
+			numEpisodeClosed += rpt.getNumEpisodeClosed();
+			numHPOnCaseloadDueToExpire += rpt.getNumHPOnCaseloadDueToExpire();
+			numOutsideMeeting += rpt.getNumOutsideMeeting();
+			numVisitNextWeek += rpt.getNumVisitNextWeek();
+			numNonCompliantChart += rpt.getNumNonCompliantChart();			
+		}
+		sum.setNumConsumer(numConsumer);
+		sum.setNumVisits(numVisits);
+		sum.setNumL2Ref(numL2Ref);
+		sum.setNumL3Ref(numL3Ref);
+		sum.setNumL2Seen(numL2Seen);
+		sum.setNumL3Seen(numL3Seen);
+		sum.setNumPCPReachedOut(numPCPReachedOut);
+		sum.setNumPCPAppts(numPCPAppts);
+		sum.setNumCM(numCM);
+		sum.setNumEpisodeOpened(numEpisodeOpened);
+		sum.setNumEpisodeClosed(numEpisodeClosed);
+		sum.setNumHPOnCaseloadDueToExpire(numHPOnCaseloadDueToExpire);
+		sum.setNumOutsideMeeting(numOutsideMeeting);
+		sum.setNumVisitNextWeek(numVisitNextWeek);
+		sum.setNumNonCompliantChart(numNonCompliantChart);
+		return sum;
+	}
+	
+	private CaseManagerReport getAvgValue(CaseManagerReport sum, int count) {
+		CaseManagerReport avg = new CaseManagerReport();
+		avg.setDate(null);
+		avg.setDateStr(CaseManagerReport.AVG);
+		avg.setNumConsumer(sum.getNumConsumer()/count);
+		avg.setNumVisits(sum.getNumVisits()/count);
+		avg.setNumL2Ref(sum.getNumL2Ref()/count);		
+		avg.setNumL3Ref(sum.getNumL3Ref()/count);
+		avg.setNumL2Seen(sum.getNumL2Seen()/count);
+		avg.setNumL3Seen(sum.getNumL3Seen()/count);
+		avg.setNumPCPReachedOut(sum.getNumPCPReachedOut()/count);
+		avg.setNumPCPAppts(sum.getNumPCPAppts()/count);
+		avg.setNumCM(sum.getNumCM()/count);
+		avg.setNumEpisodeOpened(sum.getNumEpisodeOpened()/count);
+		avg.setNumEpisodeClosed(sum.getNumEpisodeClosed()/count);
+		avg.setNumHPOnCaseloadDueToExpire(sum.getNumHPOnCaseloadDueToExpire()/count);
+		avg.setNumOutsideMeeting(sum.getNumOutsideMeeting()/count);
+		avg.setNumVisitNextWeek(sum.getNumVisitNextWeek()/count);
+		avg.setNumNonCompliantChart(sum.getNumNonCompliantChart()/count);				
+		return avg;
+	}
+
+	public CaseManagerNote getCaseManagerNote(Date date, User user){
+		CaseManagerNote note = null;
+		try{
+			logger.debug("getCaseManagerNote("+date+", "+user+")");		
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(date);
+			int offsetToSunday = 1 - cal.get(Calendar.DAY_OF_WEEK);
+			cal.add(Calendar.DATE, offsetToSunday);
+			note = cmDAO.getCaseManagerNote(cal.getTime());
+			if (note == null){
+				note = new CaseManagerNote();
+				note.setDateOfWeek(cal.getTime());
+				note.setUserId(user.getUsername());
+			}
+		}catch(Throwable t){
+			t.printStackTrace();
+		}
+		return note;
+	}
+	
+	public boolean updateCaseManagerReport(List<CaseManagerReport> rpts, CaseManagerNote note, User user){
+		try{
+			logger.debug("updateCaseManagerReport("+rpts+", "+note+", "+user+")");
+			for (CaseManagerReport r : rpts){
+				if (r.getDate() != null){
+					cmDAO.updateCaseManagerReport(r, user.getUsername());					
+				}
+			}
+			cmDAO.updateCaseManagerNote(note);
+			return true;
+		}catch(Throwable t){
+			t.printStackTrace();
+			return false;
+		}		
+	}
 	
 	
 }
