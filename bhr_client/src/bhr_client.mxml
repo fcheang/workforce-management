@@ -82,6 +82,7 @@
 			private var BILLING_DEPT_TASKS:String = "Billing Staff Report";
 			private var PROJECT_LIST:String = "Administrative Staff Report";
 			private var ACCOUNTING_REPORT:String = "Accounting Report";
+			private var CASE_MANAGER_REPORT:String = "Case Manager Report";
 			
 			private var loggedInUser:User;
 			
@@ -221,7 +222,16 @@
 							arPanel.percentHeight = 100;
 							content.addElement(arPanel);
 							content.label = ACCOUNTING_REPORT;
-							portalVS.addChild(content);							break;							
+							portalVS.addChild(content);							break;
+						case CASE_MANAGER_REPORT:
+							var cmPanel:CaseManagerReportPanel = new CaseManagerReportPanel();
+							cmPanel.dataService = dataService;
+							cmPanel.user = loggedInUser;
+							cmPanel.percentWidth = 100;
+							cmPanel.percentHeight = 100;
+							content.addElement(cmPanel);
+							content.label = CASE_MANAGER_REPORT;
+							portalVS.addChild(content);							break;													
 					};
 				} 
 			}
