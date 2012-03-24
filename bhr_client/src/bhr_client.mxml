@@ -83,6 +83,7 @@
 			private var PROJECT_LIST:String = "Administrative Staff Report";
 			private var ACCOUNTING_REPORT:String = "Accounting Report";
 			private var CASE_MANAGER_REPORT:String = "Case Manager Report";
+			private var CASE_MANAGER_REPORT_FOR_MANAGER:String = "Case Manager Report for Manager";
 			
 			private var loggedInUser:User;
 			
@@ -231,7 +232,16 @@
 							cmPanel.percentHeight = 100;
 							content.addElement(cmPanel);
 							content.label = CASE_MANAGER_REPORT;
-							portalVS.addChild(content);							break;													
+							portalVS.addChild(content);							break;
+						case CASE_MANAGER_REPORT_FOR_MANAGER:
+							var cmfmPanel:CaseManagerReportForManagerPanel = new CaseManagerReportForManagerPanel();
+							cmfmPanel.dataService = dataService;
+							cmfmPanel.user = loggedInUser;
+							cmfmPanel.percentWidth = 100;
+							cmfmPanel.percentHeight = 100;
+							content.addElement(cmfmPanel);
+							content.label = CASE_MANAGER_REPORT_FOR_MANAGER;
+							portalVS.addChild(content);							break;																			
 					};
 				} 
 			}

@@ -80,6 +80,7 @@ insert into permission_type values ('Billing Staff Report');
 insert into permission_type values ('UR Staff Report');
 insert into permission_type values ('Administrative Staff Report');
 insert into permission_type values ('Case Manager Report');
+insert into permission_type values ('Case Manager Report for Manager');
 
 insert into permission (object, userId) values ('User Admin', 'Administrator');
 
@@ -162,7 +163,7 @@ CREATE TABLE `billing_task` (
   `appeals` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `hmo_amt` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,  
   `ac_amt` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,  
-  `ccc_amt` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,  
+  `ccc_amt` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
   `private_amt` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,  
   `other_amt` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,    
   other_task1 VARCHAR(100),
@@ -216,7 +217,7 @@ CREATE TABLE `project_list` (
 )
 ENGINE = InnoDB;
 
-CREATE TABLE `case_manager_report` (
+CREATE TABLE `CaseManagerReport` (
   `userId` VARCHAR(20) NOT NULL,
   `date` DATETIME NOT NULL,
   `numConsumer` INTEGER UNSIGNED NOT NULL DEFAULT 0,
@@ -234,11 +235,11 @@ CREATE TABLE `case_manager_report` (
   `numOutsideMeeting` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `numVisitNextWeek` INTEGER UNSIGNED NOT NULL DEFAULT 0,
   `numNonCompliantChart` INTEGER UNSIGNED NOT NULL DEFAULT 0,
-  PRIMARY KEY (`date`)
+  PRIMARY KEY (userId, date)
 )
 ENGINE = InnoDB;
 
-CREATE TABLE `case_manager_note` (
+CREATE TABLE `CaseManagerNote` (
   `userId` VARCHAR(20) NOT NULL,
   `dateOfWeek` DATETIME NOT NULL,
   `plan` varchar(200),
@@ -246,9 +247,10 @@ CREATE TABLE `case_manager_note` (
   `assistanceNeeded` varchar(200),
   `plansForNextWeek` varchar(200),
   `other` varchar(200),
-  PRIMARY KEY (`dateOfWeek`)
+  PRIMARY KEY (userId, dateOfWeek)
 )
 ENGINE = InnoDB;
+
 
 #CREATE TABLE  `version` (
 #  `schemaVersion` int(11) DEFAULT NULL,

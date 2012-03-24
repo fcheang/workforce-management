@@ -2,6 +2,7 @@ package valueObjects
 {	
 	[RemoteClass(alias="com.suntek.model.User")]
 	
+	[Bindable]
 	public class User
 	{
 		public var username:String;
