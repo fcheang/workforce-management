@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   creationComplete="panel1_creationCompleteHandler(event)"
+				   dropShadowVisible="true" borderWeight="1" backgroundColor="white">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.*;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.rpc.events.*;
+			import mx.rpc.remoting.*;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.TextOperationEvent;
+			
+			import valueObjects.*;
+			
+			public var dataService:RemoteObject;
+			public var user:User;
+			
+			[Bindable]
+			private var cmReports1:ArrayCollection;
+			
+			[Bindable]
+			private var cmNote1:CaseManagerNote;
+			
+			[Bindable]
+			private var users:ArrayCollection = new ArrayCollection();			
+			
+			protected function panel1_creationCompleteHandler(event:FlexEvent):void
+			{				
+				dataService.getCaseManagerReportForWeekForManager.addEventListener(ResultEvent.RESULT, dataService_getCaseManagerReportForWeekForManager_resultHandler);
+				dataService.getCaseManagerNoteForManager.addEventListener(ResultEvent.RESULT, dataService_getCaseManagerNoteForManager_resultHandler);
+				dataService.getAllUsers.addEventListener(ResultEvent.RESULT, dataService_getAllUsers_resultHandler);
+				
+				dataService.getAllUsers();
+			}
+			
+			protected function dataService_getCaseManagerReportForWeekForManager_resultHandler(event:ResultEvent):void
+			{
+				cmReports1 = new ArrayCollection();
+				
+				var objects:ArrayCollection = event.result as ArrayCollection;
+				for each (var obj:Object in objects)
+				{
+					var report:CaseManagerReport= new CaseManagerReport();
+					report.date = obj.date;
+					report.dateStr = obj.dateStr;					
+					report.numConsumer = obj.numConsumer;
+					report.numVisits = obj.numVisits;
+					report.numL2Ref = obj.numL2Ref;
+					report.numL3Ref = obj.numL3Ref;
+					report.numL2Seen = obj.numL2Seen;					
+					report.numL3Seen = obj.numL3Seen;
+					report.numPCPReachedOut = obj.numPCPReachedOut;
+					report.numPCPAppts = obj.numPCPAppts;
+					report.numCM = obj.numCM;					
+					report.numEpisodeOpened = obj.numEpisodeOpened;
+					report.numEpisodeClosed = obj.numEpisodeClosed;
+					report.numHPOnCaseloadDueToExpire = obj.numHPOnCaseloadDueToExpire;
+					report.numOutsideMeeting = obj.numOutsideMeeting;
+					report.numVisitNextWeek = obj.numVisitNextWeek;
+					report.numNonCompliantChart = obj.numNonCompliantChart;
+					cmReports1.addItem(report);
+				}
+			}			
+			
+			protected function dataService_getCaseManagerNoteForManager_resultHandler(event:ResultEvent):void
+			{
+				cmNote1 = event.result as CaseManagerNote;
+			}			
+			
+			protected function dataService_getAllUsers_resultHandler(event:ResultEvent):void
+			{
+				users = event.result as ArrayCollection;
+			}
+			
+			protected function dateDF1_changeHandler(event:Event):void
+			{
+				if (dateDF1.selectedDate != null && userCB.selectedIndex != -1){
+					dataService.getCaseManagerReportForWeekForManager(dateDF1.selectedDate, userCB.selectedItem);
+					dataService.getCaseManagerNoteForManager(dateDF1.selectedDate, userCB.selectedItem);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<mx:VBox 
+		width="100%" 
+		height="100%" 
+		paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10">
+		
+		<mx:HBox paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" width="100%">
+			<s:Label text="Date:" paddingLeft="30" paddingTop="6"/>
+			<mx:DateField id="dateDF1" selectedDate="{new Date()}" change="dateDF1_changeHandler(event)"/>
+			<s:Label text="Staff:" paddingLeft="30" paddingTop="6"/>
+			<s:ComboBox id="userCB" dataProvider="{users}" labelField="username" change="dateDF1_changeHandler(event)"/>
+		</mx:HBox>
+		
+		<mx:DataGrid  
+			lockedColumnCount="1" 
+			horizontalScrollPolicy="auto" 
+			verticalScrollPolicy="auto" 
+			resizableColumns="true" width="100%" height="100%" paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"
+			dataProvider="{cmReports1}" editable="false" variableRowHeight="true" wordWrap="true" sortableColumns="false">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Date" dataField="dateStr" editable="false"/>
+				<mx:DataGridColumn headerText="# Consumers on caseload" dataField="numConsumer" editable="false"/>
+				<mx:DataGridColumn headerText="# Face to Face Visits" dataField="numVisits" editable="false"/>
+				<mx:DataGridColumn headerText="# New Level 2 Referrals" dataField="numL2Ref" editable="false"/>
+				<mx:DataGridColumn headerText="# New Level 3 Referrals" dataField="numL3Ref" editable="false"/>
+				<mx:DataGridColumn headerText="# New Level 2 Seen" dataField="numL2Seen" editable="false"/>
+				<mx:DataGridColumn headerText="# New Level 3 Seen" dataField="numL3Seen" editable="false"/>
+				<mx:DataGridColumn headerText="# PCPs Reached Out To" dataField="numPCPReachedOut" editable="false"/>
+				<mx:DataGridColumn headerText="# PCP Appts Scheduled/Confirmed" dataField="numPCPAppts" editable="false"/>
+				<mx:DataGridColumn headerText="# CM Assessments Completed" dataField="numCM" editable="false"/>
+				<mx:DataGridColumn headerText="# New Episodes Opened" dataField="numEpisodeOpened" editable="false"/>
+				<mx:DataGridColumn headerText="# Episodes Closed" dataField="numEpisodeClosed" editable="false"/>
+				<mx:DataGridColumn headerText="# HP on Caseload Due to Expire in 4 Weeks or Less" dataField="numHPOnCaseloadDueToExpire" editable="false"/>
+				<mx:DataGridColumn headerText="# Outside Meetings" dataField="numOutsideMeeting" editable="false"/>
+				<mx:DataGridColumn headerText="# Face to Face Visits Next Week" dataField="numVisitNextWeek" editable="false"/>
+				<mx:DataGridColumn headerText="# Non-compliant Charts" dataField="numNonCompliantChart" editable="false"/>
+			</mx:columns>
+		</mx:DataGrid>
+		
+		<mx:Form width="100%">
+			<mx:FormHeading label="PLANNING:"/>			
+			<mx:FormItem label="PLAN:" minWidth="10">
+				<s:TextInput id="planTA" width="500" text="@{cmNote1.plan}" editable="false"/>
+			</mx:FormItem>
+			<mx:FormItem label="ACTION:">
+				<s:TextInput id="actionTA" width="500" text="@{cmNote1.action}" editable="false"/>
+			</mx:FormItem>
+			<mx:FormItem label="ASSISTANCE NEEDED:">
+				<s:TextInput id="anTA" width="500" text="@{cmNote1.assistanceNeeded}" editable="false"/>
+			</mx:FormItem>
+			<mx:FormItem label="PLANS FOR NEXT WEEK:">
+				<s:TextInput id="pfnwTA" width="500" text="@{cmNote1.plansForNextWeek}" editable="false"/>
+			</mx:FormItem>
+			<mx:FormItem label="OTHER:">
+				<s:TextInput id="otherTA" width="500" text="@{cmNote1.other}" editable="false"/>
+			</mx:FormItem>
+		</mx:Form>	
+		
+	</mx:VBox>
+	
+</s:BorderContainer>

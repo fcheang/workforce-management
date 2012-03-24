@@ -92,6 +92,16 @@ public class DataService {
 		}
 	}
 	
+	public List<User> getAllUsers(){
+		try{
+			logger.debug("getAllUsers");
+			return userDAO.getAllUsers();			
+		}catch(Throwable t){
+			logger.error("Problem in getAllUsers", t);
+			return null;
+		}
+	}
+	
 	// Provider
 	public List<Provider> getAllProvider(){
 		try{
@@ -642,6 +652,10 @@ public class DataService {
 	}
 	
 	// CaseManager Report
+	public List<CaseManagerReport> getCaseManagerReportForWeekForManager(Date date, User user){
+		return getCaseManagerReportForWeek(date, user);
+	}
+	
 	public List<CaseManagerReport> getCaseManagerReportForWeek(Date date, User user){
 		List<CaseManagerReport> rptList = new ArrayList<CaseManagerReport>();		
 		try{
@@ -653,7 +667,7 @@ public class DataService {
 			int numDays = 6;
 			for (int i=0; i<numDays; i++){
 				cal.add(Calendar.DATE, 1);
-				CaseManagerReport rpt = cmDAO.getCaseManagerReport(cal.getTime());
+				CaseManagerReport rpt = cmDAO.getCaseManagerReport(cal.getTime(), user.getUsername());
 				if (rpt == null){
 					rpt = new CaseManagerReport();
 					rpt.setDate(cal.getTime());
@@ -749,6 +763,10 @@ public class DataService {
 		return avg;
 	}
 
+	public CaseManagerNote getCaseManagerNoteForManager(Date date, User user){
+		return getCaseManagerNote(date, user);
+	}
+	
 	public CaseManagerNote getCaseManagerNote(Date date, User user){
 		CaseManagerNote note = null;
 		try{
@@ -757,7 +775,7 @@ public class DataService {
 			cal.setTime(date);
 			int offsetToSunday = 1 - cal.get(Calendar.DAY_OF_WEEK);
 			cal.add(Calendar.DATE, offsetToSunday);
-			note = cmDAO.getCaseManagerNote(cal.getTime());
+			note = cmDAO.getCaseManagerNote(cal.getTime(), user.getUsername());
 			if (note == null){
 				note = new CaseManagerNote();
 				note.setDateOfWeek(cal.getTime());
@@ -777,7 +795,7 @@ public class DataService {
 					cmDAO.updateCaseManagerReport(r, user.getUsername());					
 				}
 			}
-			cmDAO.updateCaseManagerNote(note);
+			cmDAO.updateCaseManagerNote(note, user.getUsername());
 			return true;
 		}catch(Throwable t){
 			t.printStackTrace();

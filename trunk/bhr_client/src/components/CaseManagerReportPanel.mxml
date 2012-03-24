@@ -18,6 +18,8 @@
 			import valueObjects.*;
 			
 			public var dataService:RemoteObject;
+			
+			[Bindable]
 			public var user:User;
 			
 			[Bindable]
@@ -116,7 +118,8 @@
 		<mx:HBox paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" width="100%">
 			<s:Label text="Date:" paddingLeft="30" paddingTop="6"/>
 			<mx:DateField id="dateDF" selectedDate="{new Date()}" change="dateDF_changeHandler(event)"/>
-			<s:Label id="nameL" paddingLeft="30" paddingTop="6"/>
+			<s:Label text="Staff:" paddingLeft="30" paddingTop="6"/>
+			<s:Label text="{user.username}" paddingTop="6"/>
 		</mx:HBox>
 		
 		<mx:DataGrid  

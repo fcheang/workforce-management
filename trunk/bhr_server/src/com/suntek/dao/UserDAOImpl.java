@@ -29,6 +29,11 @@ public class UserDAOImpl extends SimpleJdbcDaoSupport {
 			return null;
 		}
 	}
+	
+	public List<User> getAllUsers(){
+		String sql = "select userId, password, firstName, lastName from user order by userId";		
+		return getSimpleJdbcTemplate().query(sql, userRm);
+	}
 
 	public List<String> getRoles(String userName){
 		String sql = "select roleName from userRole where userId = ?";

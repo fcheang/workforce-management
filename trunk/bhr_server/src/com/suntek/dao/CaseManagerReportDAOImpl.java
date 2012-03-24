@@ -19,9 +19,9 @@ public class CaseManagerReportDAOImpl extends SimpleJdbcDaoSupport {
 	public CaseManagerReportDAOImpl(){		
 	}
 
-	public CaseManagerNote getCaseManagerNote(Date date) {
-		String sql = "SELECT userId, dateOfWeek, plan, action, assistanceNeeded, plansForNextWeek, other from CaseManagerNote where dateOfWeek = ?";
-		List<CaseManagerNote> rs = getSimpleJdbcTemplate().query(sql, noteRm, date);
+	public CaseManagerNote getCaseManagerNote(Date date, String userId) {
+		String sql = "SELECT userId, dateOfWeek, plan, action, assistanceNeeded, plansForNextWeek, other from CaseManagerNote where dateOfWeek = ? and userId = ?";
+		List<CaseManagerNote> rs = getSimpleJdbcTemplate().query(sql, noteRm, date, userId);
 		if (rs.size() > 0){
 			return rs.get(0);
 		}else{
@@ -29,11 +29,11 @@ public class CaseManagerReportDAOImpl extends SimpleJdbcDaoSupport {
 		}
 	}
 
-	public CaseManagerReport getCaseManagerReport(Date date) {
+	public CaseManagerReport getCaseManagerReport(Date date, String userId) {
 		String sql = "SELECT userId, date, numConsumer, numVisits, numL2Ref, numL3Ref, numL2Seen, numL3Seen, numPCPReachedOut, numPCPAppts, numCM, numEpisodeOpened, "+
 					 "numEpisodeClosed, numHPOnCaseloadDueToExpire, numOutsideMeeting, numVisitNextWeek, numNonCompliantChart "+
-					 "from CaseManagerReport where date = ?";
-		List<CaseManagerReport> rs = getSimpleJdbcTemplate().query(sql, rptRm, date);
+					 "from CaseManagerReport where date = ? and userId = ?";
+		List<CaseManagerReport> rs = getSimpleJdbcTemplate().query(sql, rptRm, date, userId);
 		if (rs.size() > 0){
 			return rs.get(0);			
 		}else{
@@ -41,8 +41,8 @@ public class CaseManagerReportDAOImpl extends SimpleJdbcDaoSupport {
 		}
 	}
 
-	public boolean updateCaseManagerNote(CaseManagerNote note) {
-		if (CaseManagerNoteExist(note.getDateOfWeek())){
+	public boolean updateCaseManagerNote(CaseManagerNote note, String userId) {
+		if (CaseManagerNoteExist(note.getDateOfWeek(), userId)){
 			String sql = "update CaseManagerNote set plan = ?, action = ?, assistanceNeeded = ?, plansForNextWeek = ?, other = ?, userId = ? where dateOfWeek = ?";
 			return getSimpleJdbcTemplate().update(sql, note.getPlan(), note.getAction(), note.getAssistanceNeeded(), note.getPlansForNextWeek(), note.getOther(), note.getUserId(), note.getDateOfWeek()) > 0;
 		}else{
@@ -51,13 +51,13 @@ public class CaseManagerReportDAOImpl extends SimpleJdbcDaoSupport {
 		}
 	}
 		
-	private boolean CaseManagerNoteExist(Date date) {
-		String sql = "SELECT count(*) from CaseManagerNote where dateOfWeek = ?";
-		return getSimpleJdbcTemplate().queryForInt(sql, date) > 0;
+	private boolean CaseManagerNoteExist(Date date, String userId) {
+		String sql = "SELECT count(*) from CaseManagerNote where dateOfWeek = ? and userId = ?";
+		return getSimpleJdbcTemplate().queryForInt(sql, date, userId) > 0;
 	}
 
 	public boolean updateCaseManagerReport(CaseManagerReport item, String userId) {
-		if (CaseManagerReportExist(item.getDate())){
+		if (CaseManagerReportExist(item.getDate(), userId)){
 			String sql = "update CaseManagerReport set userId = ?, numConsumer = ?, numVisits = ?, numL2Ref = ?, numL3Ref = ?, numL2Seen = ?, numL3Seen = ?, numPCPReachedOut = ?, numPCPAppts = ?, "+
 						 "numCM = ?, numEpisodeOpened = ?, numEpisodeClosed = ?, numHPOnCaseloadDueToExpire = ?, numOutsideMeeting = ?, numVisitNextWeek = ?, numNonCompliantChart = ? "+
 						 "where date = ?";
@@ -76,9 +76,9 @@ public class CaseManagerReportDAOImpl extends SimpleJdbcDaoSupport {
 		return true;
 	}
 		
-	private boolean CaseManagerReportExist(Date date) {
-		String sql = "SELECT count(*) from CaseManagerReport where date = ?";
-		return getSimpleJdbcTemplate().queryForInt(sql, date) > 0;
+	private boolean CaseManagerReportExist(Date date, String userId) {
+		String sql = "SELECT count(*) from CaseManagerReport where date = ? and userId = ?";
+		return getSimpleJdbcTemplate().queryForInt(sql, date, userId) > 0;
 	}
 	
 	private class CaseManagerNoteRowMapper implements ParameterizedRowMapper<CaseManagerNote>{		
