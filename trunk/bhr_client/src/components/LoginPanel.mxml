@@ -32,7 +32,7 @@
 		</s:VerticalLayout>
 	</s:layout>
 	
-	<s:Panel width="313" height="196" title="Login" dropShadowVisible="true" borderVisible="true" >
+	<s:Panel width="313" height="196" title="Login   (v21.0)" dropShadowVisible="true" borderVisible="true" >
 		<s:Label x="43" y="26" text="Username:"/>
 		<s:TextInput x="115" y="19" id="usernameTF"/>
 		<s:Label x="43" y="60" text="Password:"/>
